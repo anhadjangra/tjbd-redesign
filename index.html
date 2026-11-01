@@ -1,3 +1,11 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#EDEFF2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B0E14" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/png" href="media/icon-black.png">
 <title>TJBD Studio Redesign</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Tarun Jangra Building Designers. Residential, commercial and industrial building design from Upper Mt Gravatt, Brisbane.">
@@ -35,6 +43,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--paper)}
 body.lock{overflow:hidden}
 a{color:inherit}
+button,a{-webkit-tap-highlight-color:transparent}
 img,video{max-width:100%;display:block}
 :focus-visible{outline:2px solid var(--chalk);outline-offset:3px}
 .wrap{padding-left:var(--gut);padding-right:var(--gut-r);max-width:1440px;margin-inline:auto}
@@ -61,8 +70,28 @@ img,video{max-width:100%;display:block}
 .btn:hover{color:var(--chalk-ink)}
 .btn .arr{transition:transform .3s}
 .btn:hover .arr{transform:translateX(4px)}
-@media (max-width:860px){.links{display:none}.nav .btn{margin-left:auto;padding:10px 14px}}
-@media (max-width:420px){.brand small{display:none}}
+.menu-btn{display:none;width:44px;height:44px;border:2px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;position:relative;flex:0 0 auto}
+.menu-btn span{position:absolute;left:10px;right:10px;height:2px;background:currentColor;transition:transform .35s cubic-bezier(.7,0,.2,1),opacity .2s}
+.menu-btn span:nth-child(1){top:14px}.menu-btn span:nth-child(2){top:20px}.menu-btn span:nth-child(3){top:26px}
+.menu-btn[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.menu-btn[aria-expanded="true"] span:nth-child(2){opacity:0}
+.menu-btn[aria-expanded="true"] span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+.mnav{position:fixed;inset:0;z-index:49;background:var(--ink);color:var(--paper);display:flex;flex-direction:column;justify-content:flex-end;gap:28px;
+  padding:calc(env(safe-area-inset-top,0px) + 90px) var(--gut-r) calc(env(safe-area-inset-bottom,0px) + 28px) var(--gut);clip-path:inset(0 0 100% 0);transition:clip-path .6s cubic-bezier(.7,0,.2,1);visibility:hidden}
+.mnav.open{clip-path:inset(0);visibility:visible}
+.mnav a.big{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(52px,16vw,96px);line-height:.9;text-decoration:none;display:flex;align-items:baseline;gap:12px}
+.mnav a.big small{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:color-mix(in srgb,var(--paper) 55%,transparent);font-weight:400}
+.mnav a.big:active,.mnav a.big:hover{color:var(--chalk)}
+.mnav .mono{color:color-mix(in srgb,var(--paper) 60%,transparent);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.mnav ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+body.menu-open .nav{background:var(--ink);color:var(--paper)}
+body.menu-open .nav .menu-btn{border-color:var(--paper);color:var(--paper)}
+body.menu-open .nav .btn{visibility:hidden}
+@media (max-width:860px){.links{display:none}.nav .btn{margin-left:auto;padding:10px 14px;min-height:44px}.menu-btn{display:block}.nav .wrap{gap:10px;padding-block:10px}}
+.brand>span:last-child,.btn,.close{white-space:nowrap}
+@media (max-width:420px){.nav .btn .arr{display:none}.nav .btn{padding-inline:12px;font-size:13px}}
+@media (max-width:340px){.nav .btn{display:none}.menu-btn{margin-left:auto}}
+@media (max-width:420px){.brand small{display:none}.brand{font-size:12px}.mark{width:30px;height:30px}}
 
 /* ---------- hero ---------- */
 .hero{position:relative;padding-block:clamp(28px,5vw,64px) 0}
@@ -79,7 +108,8 @@ img,video{max-width:100%;display:block}
 .hero-side .cta{display:flex;gap:10px;flex-wrap:wrap}
 .ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--ink)}
 .ghost:hover{box-shadow:inset 0 0 0 2px var(--chalk)}
-@media (max-width:900px){.hero-top{grid-template-columns:1fr}}
+@media (max-width:900px){.hero-top{grid-template-columns:1fr;gap:20px}}
+@media (max-width:600px){.hero h1{font-size:clamp(50px,17.5vw,96px)}.hero-meta span:last-child{display:none}.dim span:nth-child(3),.dim span:nth-child(4){display:none}.hero-side .cta .btn{flex:1 1 auto;justify-content:center;min-height:48px}}
 .dim{display:flex;align-items:center;gap:10px;color:var(--ink-soft);padding-block:14px}
 .dim .tick{flex:1;height:1px;background:var(--ink-soft);position:relative;transform-origin:left;animation:grow 1.6s .6s cubic-bezier(.6,0,.2,1) both}
 .dim .tick::before,.dim .tick::after{content:"";position:absolute;top:-5px;width:1px;height:11px;background:var(--ink-soft);transform:rotate(45deg)}
@@ -92,7 +122,7 @@ img,video{max-width:100%;display:block}
 .reel .rec{display:inline-flex;align-items:center;gap:8px}
 .reel .rec::before{content:"";width:8px;height:8px;border-radius:50%;background:#FF3B30;animation:blink 1.4s infinite}
 @keyframes blink{50%{opacity:.2}}
-@media (max-width:700px){.reel{aspect-ratio:4/5}}
+@media (max-width:700px){.reel{aspect-ratio:4/5;max-height:78svh}.reel .cap{flex-direction:column;gap:2px}}
 
 /* ---------- marquee ---------- */
 .marquee{background:var(--ink);color:var(--paper);overflow:hidden;padding-block:18px}
@@ -130,7 +160,7 @@ h2.display{font-size:clamp(54px,9vw,148px);margin:0 0 .3em}
 .feature{background:var(--night);color:var(--night-fg);overflow:hidden;isolation:isolate}
 .feature video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;opacity:.75}
 .feature::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(7,9,13,.9) 0%,rgba(7,9,13,.55) 45%,rgba(7,9,13,.15) 100%)}
-.feature .wrap{padding-block:clamp(64px,10vw,140px);min-height:min(92vh,860px);display:flex;flex-direction:column;justify-content:space-between;gap:48px}
+.feature .wrap{padding-block:clamp(64px,10vw,140px);min-height:min(92vh,860px);min-height:min(92svh,860px);display:flex;flex-direction:column;justify-content:space-between;gap:48px}
 .feature .sheet-head{color:rgba(238,241,245,.7);border-color:rgba(238,241,245,.25);margin:0}
 .feature .sheet-head b{color:var(--night-fg)}
 .feature h2{font-size:clamp(80px,16vw,260px);margin:0;line-height:.8}
@@ -143,7 +173,7 @@ h2.display{font-size:clamp(54px,9vw,148px);margin:0 0 .3em}
 .feature .btn{background:var(--night-fg);color:var(--night);align-self:flex-start}
 .feature .btn:hover{color:#fff}
 .feature .btn::before{background:#2440FF}
-@media (max-width:560px){.stats{grid-template-columns:1fr;row-gap:12px}}
+@media (max-width:560px){.stats{grid-template-columns:1fr 1fr;row-gap:12px}.stats .stat:first-child{grid-column:1/-1}.feature .btn{width:100%;justify-content:center;min-height:48px}.feature .wrap{gap:32px}}
 
 /* ---------- work ---------- */
 .work{background:var(--paper-2)}
@@ -151,6 +181,14 @@ h2.display{font-size:clamp(54px,9vw,148px);margin:0 0 .3em}
 .chip{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.06em;padding:9px 14px;border:1px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;transition:background .2s,color .2s}
 .chip[aria-pressed="true"],.chip:hover{background:var(--ink);color:var(--paper)}
 .chip .c{opacity:.6;margin-left:6px}
+.more{display:none;width:100%;margin-top:20px;justify-content:center;min-height:52px}
+@media (max-width:760px){
+  .filters{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:calc(var(--gut) * -1);padding-inline:var(--gut);scroll-padding-inline:var(--gut)}
+  .filters::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;min-height:42px;white-space:nowrap}
+  .rows.collapsed .row:nth-child(n+9){display:none}
+  .rows.collapsed + .more{display:inline-flex}
+}
 .rows{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink)}
 .row{border-bottom:1px solid var(--rule);position:relative}
 .row button{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:76px minmax(0,1fr) 170px 150px 32px;gap:16px;align-items:center;padding-block:14px;cursor:pointer;position:relative;transition:padding .35s cubic-bezier(.2,.8,.1,1),color .2s}
@@ -203,7 +241,8 @@ h2.display{font-size:clamp(54px,9vw,148px);margin:0 0 .3em}
 .specs dt{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft)}
 .specs dd{margin:0;font-weight:700;font-variant-numeric:tabular-nums}
 .panel-nav{display:flex;justify-content:space-between;gap:12px;padding:0 20px 28px}
-@media (max-width:760px){.drawer{grid-template-columns:0 1fr}.panel-body{grid-template-columns:1fr}.gallery img{height:auto;width:86vw;aspect-ratio:4/3}}
+@media (max-width:760px){.drawer{grid-template-columns:0 1fr}.panel-body{grid-template-columns:1fr;gap:20px;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}.gallery{padding:12px 16px;gap:8px}.gallery img{height:auto;width:84vw;aspect-ratio:4/3}
+  .panel-head{padding:10px 16px}.close{min-height:44px}.panel-nav{padding:0 16px 28px}.panel-nav .btn{flex:1;justify-content:center;min-height:48px}.specs div{grid-template-columns:96px minmax(0,1fr)}}
 
 /* ---------- process (horizontal) ---------- */
 .process{overflow:hidden}
@@ -217,6 +256,9 @@ h2.display{font-size:clamp(54px,9vw,148px);margin:0 0 .3em}
 .js-h .process .pin{height:calc(var(--steps,6) * 70vh)}
 .js-h .process .sticky{position:sticky;top:calc(env(safe-area-inset-top,0px) + 70px);overflow:hidden}
 .js-h .process .track{overflow:visible;scroll-snap-type:none;will-change:transform}
+@media (max-width:900px){.stage{min-height:320px}.stage .num{font-size:88px}.stage h3{font-size:32px}.track{margin-inline:calc(var(--gut) * -1);padding-inline:var(--gut);scroll-padding-inline:var(--gut)}}
+.swipe{display:none;color:var(--ink-soft);margin-top:10px}
+@media (max-width:900px){.swipe{display:block}.progress{display:none}}
 .progress{height:3px;background:var(--rule);margin-top:20px;position:relative}
 .progress span{position:absolute;inset:0;background:var(--chalk);transform-origin:left;transform:scaleX(var(--p,0))}
 
@@ -248,7 +290,8 @@ h2.display{font-size:clamp(54px,9vw,148px);margin:0 0 .3em}
 .person h3{font-family:var(--display);font-weight:700;text-transform:uppercase;font-size:clamp(30px,3vw,44px);line-height:.95;margin:0}
 .person p{margin:0;color:var(--ink-soft);font-size:15px;max-width:42ch}
 @media (max-width:900px){.team-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:520px){.team-grid{grid-template-columns:1fr}}
+@media (max-width:640px){.team-grid{grid-template-columns:1fr 1fr;gap:20px 12px}.person h3{font-size:24px}.person p{font-size:13px;line-height:1.5}.person .ph .role{font-size:9px;padding:4px 6px}}
+@media (hover:none){.person .ph img{filter:grayscale(.15);transform:none}}
 
 /* ---------- on the boards (grassdale film) ---------- */
 .boards{background:var(--night);color:var(--night-fg);overflow:hidden}
@@ -259,7 +302,7 @@ h2.display{font-size:clamp(54px,9vw,148px);margin:0 0 .3em}
 .boards .film{position:relative;aspect-ratio:16/9;max-width:100%;overflow:hidden;border:1px solid rgba(238,241,245,.25)}
 .boards .film video{width:100%;height:100%;object-fit:cover}
 .boards .link{color:var(--night-fg);font-weight:700;background:none;border:0;padding:0;cursor:pointer;font:inherit;font-weight:700;text-decoration:underline;text-underline-offset:5px;text-decoration-color:#2440FF;text-decoration-thickness:2px}
-@media (max-width:860px){.boards .wrap{grid-template-columns:1fr}}
+@media (max-width:860px){.boards .wrap{grid-template-columns:1fr}.boards .film{order:-1}}
 
 /* ---------- contact ---------- */
 .contact{background:var(--ink);color:var(--paper);overflow:hidden}
@@ -270,7 +313,7 @@ h2.display{font-size:clamp(54px,9vw,148px);margin:0 0 .3em}
 .contact-grid>div{min-width:0}
 .contact-grid .mono{color:color-mix(in srgb,var(--paper) 60%,transparent);display:block;margin-bottom:8px}
 .contact-grid .val{font-size:clamp(17px,1.6vw,22px);font-weight:700;overflow-wrap:anywhere}
-.copy{margin-left:10px;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;background:transparent;color:inherit;border:1px solid color-mix(in srgb,var(--paper) 40%,transparent);padding:4px 8px;cursor:pointer;vertical-align:middle}
+.copy{min-height:30px;margin-left:10px;font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;background:transparent;color:inherit;border:1px solid color-mix(in srgb,var(--paper) 40%,transparent);padding:4px 8px;cursor:pointer;vertical-align:middle}
 .copy:hover{background:var(--chalk);border-color:var(--chalk);color:var(--chalk-ink)}
 .contact .btn{background:var(--chalk);color:var(--chalk-ink);font-size:16px;padding:18px 26px}
 .contact .btn::before{background:var(--paper)}
@@ -280,7 +323,7 @@ h2.display{font-size:clamp(54px,9vw,148px);margin:0 0 .3em}
 .socials a{text-decoration:none}
 .socials a:hover{color:var(--chalk)}
 @media (max-width:980px){.contact-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:560px){.contact-grid{grid-template-columns:1fr}}
+@media (max-width:560px){.contact-grid{grid-template-columns:1fr}.contact .btn{width:100%;justify-content:center}.magnet{display:block}}
 .titleblock{display:grid;grid-template-columns:auto 2fr repeat(4,1fr);border:1px solid color-mix(in srgb,var(--paper) 25%,transparent);margin-top:clamp(48px,7vw,96px)}
 .titleblock>div{padding:10px 12px;border-right:1px solid color-mix(in srgb,var(--paper) 25%,transparent);min-width:0}
 .titleblock>div:last-child{border-right:0}
@@ -311,6 +354,8 @@ h2.display{font-size:clamp(54px,9vw,148px);margin:0 0 .3em}
   .js .nudge.pre{transform:none}
 }
 </style>
+</head>
+<body>
 
 <div class="cross" aria-hidden="true"><div class="h"></div><div class="v"></div><div class="box"></div><div class="read"></div></div>
 <div class="preview" aria-hidden="true"><img alt="" id="prevImg"></div>
@@ -329,8 +374,20 @@ h2.display{font-size:clamp(54px,9vw,148px);margin:0 0 .3em}
       <a href="#team">team</a>
     </nav>
     <a class="btn" href="#contact">Start a project <span class="arr">→</span></a>
+    <button class="menu-btn" type="button" id="menuBtn" aria-expanded="false" aria-controls="mnav" aria-label="Open menu"><span></span><span></span><span></span></button>
   </div>
 </header>
+<nav class="mnav" id="mnav" aria-label="Mobile">
+  <ul>
+    <li><a class="big" href="#studio">Studio <small>A-100</small></a></li>
+    <li><a class="big" href="#work">Work <small>A-200</small></a></li>
+    <li><a class="big" href="#process">Process <small>A-300</small></a></li>
+    <li><a class="big" href="#ndis">NDIS <small>A-400</small></a></li>
+    <li><a class="big" href="#team">Team <small>A-500</small></a></li>
+    <li><a class="big" href="#contact">Contact <small>A-600</small></a></li>
+  </ul>
+  <div class="mono"><span>0431 287 724</span><span>Upper Mt Gravatt QLD</span></div>
+</nav>
 
 <main id="top">
   <!-- HERO -->
@@ -358,7 +415,7 @@ h2.display{font-size:clamp(54px,9vw,148px);margin:0 0 .3em}
       <div class="dim mono"><span>0</span><span class="tick"></span><span>Residential · Commercial · Industrial</span><span class="tick"></span><span>1:100</span></div>
     </div>
     <div class="reel" id="reel">
-      <video id="reelVid" src="media/grout-reel.mp4" poster="media/grout-poster.jpg" autoplay muted loop playsinline preload="auto" aria-label="Grout Street Offices, from pencil sketch through construction to finished render"></video>
+      <video id="reelVid" data-src="media/grout-reel.mp4" data-src-m="media/grout-reel-p.mp4" data-eager poster="media/grout-poster.jpg" autoplay muted loop playsinline preload="auto" aria-label="Grout Street Offices, from pencil sketch through construction to finished render"></video>
       <div class="cap mono"><span class="rec">Grout Street Offices · MacGregor</span><span>From sketch to street</span></div>
     </div>
   </section>
@@ -382,14 +439,14 @@ h2.display{font-size:clamp(54px,9vw,148px);margin:0 0 .3em}
             <div class="fact"><span class="n">3</span><span class="mono">Tesla facilities</span></div>
           </div>
         </div>
-        <figure class="teamshot nudge" style="margin:0"><img src="img/team.jpg" alt="The TJBD team reviewing drawings around a table in the studio" id="teamImg" loading="lazy"><figcaption class="mono">The studio, Upper Mt Gravatt</figcaption></figure>
+        <figure class="teamshot nudge" style="margin:0"><img src="img/m/team.jpg" srcset="img/t/team.jpg 480w, img/m/team.jpg 900w, img/team.jpg 1600w" sizes="(max-width:860px) 100vw, 45vw" alt="The TJBD team reviewing drawings around a table in the studio" id="teamImg" loading="lazy"><figcaption class="mono">The studio, Upper Mt Gravatt</figcaption></figure>
       </div>
     </div>
   </section>
 
   <!-- FEATURE: TESLA -->
   <section class="feature" id="feature">
-    <video src="media/tesla-drone.mp4" poster="media/tesla-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>
+    <video data-src="media/tesla-drone.mp4" data-src-m="media/tesla-drone-m.mp4" poster="media/tesla-poster.jpg" autoplay muted loop playsinline preload="none" aria-hidden="true"></video>
     <div class="wrap">
       <div class="sheet-head mono"><b>A-150 · Featured</b><span>6 Ern Harley Drive, Burleigh Heads</span></div>
       <div>
@@ -413,7 +470,8 @@ h2.display{font-size:clamp(54px,9vw,148px);margin:0 0 .3em}
       <div class="sheet-head mono"><b>A-200 · Selected work</b><span>Select a project to open it</span></div>
       <h2 class="display nudge">The <span class="hl">portfolio</span></h2>
       <div class="filters" role="group" aria-label="Filter projects" id="filters"></div>
-      <ul class="rows" id="rows"></ul>
+      <ul class="rows collapsed" id="rows"></ul>
+      <button class="btn more" type="button" id="moreBtn">Show all projects <span class="arr">↓</span></button>
     </div>
   </section>
 
@@ -428,6 +486,7 @@ h2.display{font-size:clamp(54px,9vw,148px);margin:0 0 .3em}
           <h2 class="display">How a project <span class="hl">gets built</span></h2>
           <div class="track" id="track"></div>
           <div class="progress"><span id="prog"></span></div>
+          <p class="mono swipe">Swipe to see all six stages →</p>
         </div>
       </div>
     </div>
@@ -443,8 +502,8 @@ h2.display{font-size:clamp(54px,9vw,148px);margin:0 0 .3em}
           <p class="lede">Specialist Disability Accommodation designed to NDIS requirements, built to feel like home. Two recent residences in Moreton Bay:</p>
         </div>
         <div class="ndis-cards">
-          <article class="ncard nudge"><div class="img"><img src="img/ndis-mcgregor.jpg" alt="Street elevation of the McGregor Street residence" loading="lazy"></div><div class="txt"><span class="mono">SDA · Robust category</span><h3>Robust category residence</h3><span class="mono">McGregor Street, Kippa Ring QLD</span></div></article>
-          <article class="ncard nudge"><div class="img"><img src="img/ndis-oxley.jpg" alt="Street elevation of the Oxley Avenue residence" loading="lazy"></div><div class="txt"><span class="mono">SDA · High physical support</span><h3>High physical support residence</h3><span class="mono">Oxley Avenue, Redcliffe QLD</span></div></article>
+          <article class="ncard nudge"><div class="img"><img src="img/t/ndis-mcgregor.jpg" srcset="img/t/ndis-mcgregor.jpg 480w, img/ndis-mcgregor.jpg 1600w" sizes="(max-width:860px) 90vw, 40vw" alt="Street elevation of the McGregor Street residence" loading="lazy"></div><div class="txt"><span class="mono">SDA · Robust category</span><h3>Robust category residence</h3><span class="mono">McGregor Street, Kippa Ring QLD</span></div></article>
+          <article class="ncard nudge"><div class="img"><img src="img/t/ndis-oxley.jpg" srcset="img/t/ndis-oxley.jpg 480w, img/ndis-oxley.jpg 1600w" sizes="(max-width:860px) 90vw, 40vw" alt="Street elevation of the Oxley Avenue residence" loading="lazy"></div><div class="txt"><span class="mono">SDA · High physical support</span><h3>High physical support residence</h3><span class="mono">Oxley Avenue, Redcliffe QLD</span></div></article>
         </div>
       </div>
     </div>
@@ -468,7 +527,7 @@ h2.display{font-size:clamp(54px,9vw,148px);margin:0 0 .3em}
         <p>A two storey home influenced by French provincial design. A grand entrance framed by columns, arched windows and wrought iron balconies, with two side wings around a central living area.</p>
         <button class="link" type="button" data-open="562-grassdale-road-gumdale">See the renders →</button>
       </div>
-      <div class="film"><video src="media/grassdale.mp4" poster="media/grassdale-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Animated walk-around of the Grassdale Residence design"></video></div>
+      <div class="film"><video data-src="media/grassdale.mp4" data-src-m="media/grassdale-m.mp4" poster="media/grassdale-poster.jpg" autoplay muted loop playsinline preload="none" aria-label="Animated walk-around of the Grassdale Residence design"></video></div>
     </div>
   </section>
 
@@ -558,19 +617,32 @@ rows.innerHTML=PROJECTS.map((p,i)=>`<li class="row" data-cat="${p.cat}"><button 
   <span class="mono cat">${CATS[p.cat]}</span>
   <span class="mono st">${p.status?`<span class="status ${done(p.status)?'done':''}">${esc(p.status)}</span>`:''}</span>
   <span class="go" aria-hidden="true">↗</span>
-  <img class="thumb" src="img/${p.imgs[0][0]}" alt="" loading="lazy"></button></li>`).join('');
+  <img class="thumb" src="img/t/${p.imgs[0][0]}" alt="" loading="lazy" decoding="async"></button></li>`).join('');
 filters.innerHTML=Object.entries(CATS).map(([k,v])=>{const c=k==='all'?PROJECTS.length:PROJECTS.filter(p=>p.cat===k).length;return `<button class="chip" type="button" id="f-${k}" data-k="${k}" aria-pressed="${k==='all'}">${v}<span class="c">${c}</span></button>`}).join('');
 filters.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;const k=b.dataset.k;
   filters.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',x===b));
+  rows.classList.toggle('collapsed',k==='all'&&!expanded);
   rows.querySelectorAll('.row').forEach((r,i)=>{const show=k==='all'||r.dataset.cat===k;r.classList.toggle('hide',!show);
     if(show&&!RM)r.animate([{transform:'translateY(18px)',opacity:.3},{transform:'none',opacity:1}],{duration:450,delay:Math.min(i,10)*25,easing:'cubic-bezier(.2,.8,.1,1)',fill:'backwards'})});
 });
+
+let expanded=false;
+$('#moreBtn').addEventListener('click',()=>{expanded=true;rows.classList.remove('collapsed');rows.querySelectorAll('.row')[8]?.querySelector('button').focus({preventScroll:true})});
+$('#moreBtn').innerHTML=`Show all ${PROJECTS.length} projects <span class="arr">↓</span>`;
+
+/* mobile menu */
+const menuBtn=$('#menuBtn'), mnav=$('#mnav');
+function setMenu(open){menuBtn.setAttribute('aria-expanded',open);menuBtn.setAttribute('aria-label',open?'Close menu':'Open menu');mnav.classList.toggle('open',open);document.body.classList.toggle('menu-open',open);document.body.classList.toggle('lock',open)}
+menuBtn.addEventListener('click',()=>setMenu(menuBtn.getAttribute('aria-expanded')!=='true'));
+mnav.addEventListener('click',e=>{if(e.target.closest('a'))setMenu(false)});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&mnav.classList.contains('open'))setMenu(false)});
+matchMedia('(min-width:861px)').addEventListener('change',e=>{if(e.matches)setMenu(false)});
 
 /* hover preview with real photo */
 const prev=$('.preview'), prevImg=$('#prevImg');
 let px=0,py=0,mx=-200,my=-200,cur=-1;
 if(FINE){
-  rows.addEventListener('mouseover',e=>{const b=e.target.closest('button[data-i]');if(!b)return;const i=+b.dataset.i;if(i!==cur){cur=i;prevImg.src='img/'+PROJECTS[i].imgs[0][0]}prev.classList.add('on')});
+  rows.addEventListener('mouseover',e=>{const b=e.target.closest('button[data-i]');if(!b)return;const i=+b.dataset.i;if(i!==cur){cur=i;prevImg.src='img/t/'+PROJECTS[i].imgs[0][0]}prev.classList.add('on')});
   rows.addEventListener('mouseleave',()=>{prev.classList.remove('on');cur=-1});
 }
 
@@ -582,7 +654,7 @@ function openProject(i){
   $('#dTitle').textContent=p.name;
   $('#dDesc').textContent=p.desc;
   $('#dSpecs').innerHTML=p.specs.map(([k,v])=>`<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('');
-  $('#dGallery').innerHTML=p.imgs.map(([f,w,h],k)=>`<img src="img/${f}" width="${w}" height="${h}" alt="${esc(p.name)}, image ${k+1} of ${p.imgs.length}">`).join('');
+  $('#dGallery').innerHTML=p.imgs.map(([f,w,h],k)=>`<img src="img/m/${f}" srcset="img/m/${f} 900w, img/${f} 1600w" sizes="(max-width:760px) 84vw, 700px" width="${w}" height="${h}" loading="${k?'lazy':'eager'}" decoding="async" alt="${esc(p.name)}, image ${k+1} of ${p.imgs.length}">`).join('');
   $('#dGallery').scrollLeft=0; drawer.querySelector('.panel').scrollTop=0;
   if(!drawer.classList.contains('open')){lastFocus=document.activeElement;drawer.classList.add('open');drawer.setAttribute('aria-hidden','false');document.body.classList.add('lock');setTimeout(()=>$('#dClose').focus(),60)}
 }
@@ -602,7 +674,7 @@ function setH(){document.documentElement.classList.toggle('js-h',H_OK());pin.sty
 setH();addEventListener('resize',setH);
 
 /* team */
-$('#teamGrid').innerHTML=TEAM.map(([n,r,img,b])=>`<article class="person nudge"><div class="ph"><img src="img/${img}.jpg" alt="Portrait of ${esc(n)}" loading="lazy"><span class="mono role">${r}</span></div><h3>${esc(n)}</h3><p>${b}</p></article>`).join('');
+$('#teamGrid').innerHTML=TEAM.map(([n,r,img,b])=>`<article class="person nudge"><div class="ph"><img src="img/t/${img}.jpg" alt="Portrait of ${esc(n)}" loading="lazy"><span class="mono role">${r}</span></div><h3>${esc(n)}</h3><p>${b}</p></article>`).join('');
 
 /* statement: words fill in as you read */
 const st=$('#statement');
@@ -632,10 +704,18 @@ if(!RM&&'IntersectionObserver' in window){
   }
 }
 
-/* pause off-screen films */
-if('IntersectionObserver' in window){
-  const vo=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting&&!RM){const p=v.play();p&&p.catch(()=>{})}else v.pause()}),{threshold:.05});
-  document.querySelectorAll('video').forEach(v=>{if(RM){v.removeAttribute('autoplay');v.pause()}vo.observe(v)});
+/* films: small files on phones, load only near the viewport, pause off-screen, respect data saver */
+const SMALL=matchMedia('(max-width:700px)').matches;
+const SAVE=!!(navigator.connection&&navigator.connection.saveData);
+const vids=[...document.querySelectorAll('video[data-src]')];
+const load=v=>{if(!v.src){v.src=SMALL?v.dataset.srcM:v.dataset.src;v.load()}};
+vids.forEach(v=>{if(RM||SAVE){v.removeAttribute('autoplay');v.preload='none'}else if('eager' in v.dataset)load(v)});
+if(!RM&&!SAVE){
+  if('IntersectionObserver' in window){
+    const near=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){load(e.target);near.unobserve(e.target)}}),{rootMargin:'400px 0px'});
+    const vo=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting){load(v);const p=v.play();p&&p.catch(()=>{})}else v.pause()}),{threshold:.05});
+    vids.forEach(v=>{near.observe(v);vo.observe(v)});
+  }else vids.forEach(v=>{load(v);v.play&&v.play().catch(()=>{})});
 }
 
 /* crosshair + magnetic CTA */
@@ -675,11 +755,16 @@ function frame(){
     const max=track.scrollWidth-track.parentElement.clientWidth;
     track.style.transform=`translateX(${-p*Math.max(0,max)}px)`;prog.style.setProperty('--p',p.toFixed(3));
   }else track.style.transform='';
-  px+=(mx-px)*.18;py+=(my-py)*.18;prev.style.left=px+'px';prev.style.top=py+'px';
-  ch.style.transform=`translateY(${my}px)`;cv.style.transform=`translateX(${mx}px)`;cb.style.left=mx+'px';cb.style.top=my+'px';
-  cr.style.left=mx+'px';cr.style.top=my+'px';cr.textContent=`X ${String(Math.round(mx*10)).padStart(5,'0')}  Y ${String(Math.round((my+y)*10)).padStart(5,'0')}`;
+  if(FINE){
+    px+=(mx-px)*.18;py+=(my-py)*.18;prev.style.left=px+'px';prev.style.top=py+'px';
+    ch.style.transform=`translateY(${my}px)`;cv.style.transform=`translateX(${mx}px)`;cb.style.left=mx+'px';cb.style.top=my+'px';
+    cr.style.left=mx+'px';cr.style.top=my+'px';cr.textContent=`X ${String(Math.round(mx*10)).padStart(5,'0')}  Y ${String(Math.round((my+y)*10)).padStart(5,'0')}`;
+  }
   requestAnimationFrame(frame);
 }
 if(RM)addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>10),{passive:true});else requestAnimationFrame(frame);
 })();
 </script>
+
+</body>
+</html>
