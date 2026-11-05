@@ -213,9 +213,9 @@ dialog#pd[open]{animation:pdIn .35s cubic-bezier(.2,.7,.2,1)}
 .pd-end .k{color:#A8AFB4}
 #pd .pd-scroll > *{transform:translateY(calc(var(--pp,0) * -36px))}
 /* the portal: a hole that opens from the centre and shows the city underneath */
-#pd.pressing{-webkit-mask:radial-gradient(circle at 50% 50%,transparent var(--hr,0px),#000 calc(var(--hr,0px) + .5px));mask:radial-gradient(circle at 50% 50%,transparent var(--hr,0px),#000 calc(var(--hr,0px) + .5px))}
+#pd.pressing{-webkit-mask:radial-gradient(circle at 50% 100%,transparent var(--hr,0px),#000 calc(var(--hr,0px) + .5px));mask:radial-gradient(circle at 50% 100%,transparent var(--hr,0px),#000 calc(var(--hr,0px) + .5px))}
 #pd.pressing::backdrop{background:transparent}
-.pd-portal{position:fixed;left:50%;top:50%;width:calc(var(--hr,0px) * 2 + 8px);height:calc(var(--hr,0px) * 2 + 8px);transform:translate(-50%,-50%);border-radius:50%;border:4px solid var(--zc,#FBFBFA);pointer-events:none;opacity:0;z-index:5}
+.pd-portal{position:fixed;left:50%;top:100%;width:calc(var(--hr,0px) * 2 + 8px);height:calc(var(--hr,0px) * 2 + 8px);transform:translate(-50%,-50%);border-radius:50%;border:4px solid var(--zc,#FBFBFA);pointer-events:none;opacity:0;z-index:5}
 #pd.pressing .pd-portal{opacity:1}
 #pd.leaving{transition:opacity .25s;opacity:0}
 @media (prefers-reduced-motion: reduce){#pd .pd-scroll > *,.pd-end .orb,.pd-end .orb .ar{transform:none}#pd.leaving{transition:none}}
@@ -458,8 +458,9 @@ function openProject(i) {
   $('#pdnextname').textContent = np.name + ' →';
   setBig($('#pdnextimg'), np.imgs[0][0], '100vw');
   $('#pdnextbig').onclick = () => openProject(n);
-  $('#pdscroll').scrollTop = 0;
   if (!dlg.open) dlg.showModal();
+  /* always start at the top, also after a pull back to the city */
+  pdScroll.scrollTop = 0; resetPull();
 }
 const stepP = d => { const list = byZ[P[cur].cat]; openProject(list[(list.indexOf(cur) + d + list.length) % list.length]); };
 $('#pdx').onclick = () => dlg.close();
@@ -473,13 +474,18 @@ const _show = dlg.showModal.bind(dlg); dlg.showModal = () => { document.document
 /* pull past the end of a project to drop back into the city */
 const pdScroll = $('#pdscroll');
 let pp = 0, lastPush = 0, ty0 = null, leaving = false;
+/* The story stops dead at the bottom. A pull only counts once the reader has
+   stopped there and starts a fresh gesture: momentum from the scroll that
+   reached the end is ignored, and the first stretch of a pull does nothing. */
+let lastWheel = 0, arrivedAt = 0, armed = false;
 const atEnd = () => pdScroll.scrollTop + pdScroll.clientHeight >= pdScroll.scrollHeight - 2;
+const maxR = () => Math.hypot(innerWidth / 2, innerHeight) + 8;
+function resetPull() { armed = false; arrivedAt = 0; ty0 = null; setPP(0); }
 function setPP(v) {
   pp = clamp(v, 0, 1); dlg.style.setProperty('--pp', pp.toFixed(3));
-  /* the hole only starts once the push is clearly on purpose, then eases out to cover the screen */
-  const o = RM ? 0 : clamp((pp - .12) / .88, 0, 1);
+  const o = RM ? 0 : clamp((pp - .18) / .82, 0, 1);
   dlg.classList.toggle('pressing', o > 0 || leaving);
-  if (!leaving) dlg.style.setProperty('--hr', (Math.pow(o, 1.5) * Math.hypot(innerWidth, innerHeight) * .32).toFixed(1) + 'px');
+  if (!leaving) dlg.style.setProperty('--hr', (Math.pow(o, 1.35) * maxR() * .55).toFixed(1) + 'px');
   if (pp >= 1) leave();
 }
 function push(v) { lastPush = performance.now(); setPP(pp + v); }
@@ -487,30 +493,39 @@ function leave() {
   if (leaving) return; leaving = true;
   if (RM) { dlg.close(); leaving = false; setPP(0); return; }
   /* finish the circle on its own, then let the city have the screen */
-  const r0 = parseFloat(dlg.style.getPropertyValue('--hr')) || 0, r1 = Math.hypot(innerWidth, innerHeight) / 2 + 8, t0 = performance.now();
+  const r0 = parseFloat(dlg.style.getPropertyValue('--hr')) || 0, r1 = maxR(), t0 = performance.now();
   dlg.classList.add('pressing');
   (function grow(t) {
-    const k = clamp((t - t0) / 420, 0, 1), e = 1 - Math.pow(1 - k, 3);
+    const k = clamp((t - t0) / 480, 0, 1), e = 1 - Math.pow(1 - k, 3);
     dlg.style.setProperty('--hr', (r0 + (r1 - r0) * e).toFixed(1) + 'px');
     if (k < 1) requestAnimationFrame(grow);
     else { dlg.classList.add('leaving'); setTimeout(() => { dlg.close(); dlg.classList.remove('leaving', 'pressing'); leaving = false; setPP(0); }, 250); }
   })(t0);
 }
-pdScroll.addEventListener('wheel', e => {
-  const dy = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? 800 : 1);
-  if (dy > 0 && atEnd()) push(dy / 550);
-  else if (dy < 0 && pp > 0) setPP(pp + dy / 300);
+pdScroll.addEventListener('scroll', () => {
+  if (atEnd()) { if (!arrivedAt) arrivedAt = performance.now(); }
+  else { arrivedAt = 0; armed = false; }
 }, { passive: true });
-pdScroll.addEventListener('touchstart', e => { ty0 = atEnd() ? e.touches[0].clientY : null; }, { passive: true });
+pdScroll.addEventListener('wheel', e => {
+  const now = performance.now(), gap = now - lastWheel; lastWheel = now;
+  const dy = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? 800 : 1);
+  if (dy < 0) { if (pp > 0) setPP(pp + dy / 250); armed = false; return; }
+  if (!atEnd()) return;
+  if (!arrivedAt) arrivedAt = now;
+  /* a new gesture: the wheel went quiet for a moment after reaching the end */
+  if (!armed && gap > 220 && now - arrivedAt > 250) armed = true;
+  if (armed) push(dy / 1100);
+}, { passive: true });
+pdScroll.addEventListener('touchstart', e => { ty0 = atEnd() && arrivedAt && performance.now() - arrivedAt > 250 ? e.touches[0].clientY : null; }, { passive: true });
 pdScroll.addEventListener('touchmove', e => {
-  if (ty0 === null) { if (atEnd()) ty0 = e.touches[0].clientY; return; }
+  if (ty0 === null) return;
   const d = ty0 - e.touches[0].clientY;
-  lastPush = performance.now(); setPP(d / 240);
+  lastPush = performance.now(); setPP(d / 380);
 }, { passive: true });
 pdScroll.addEventListener('touchend', () => { ty0 = null; });
-dlg.addEventListener('keydown', e => { if (['ArrowDown', 'PageDown', ' ', 'End'].includes(e.key) && atEnd()) push(.34); });
+dlg.addEventListener('keydown', e => { if (['ArrowDown', 'PageDown', ' ', 'End'].includes(e.key) && atEnd() && arrivedAt && performance.now() - arrivedAt > 250) push(.26); });
 (function decay(t) {
-  if (dlg.open && pp > 0 && !leaving && ty0 === null && performance.now() - lastPush > 160) setPP(pp - .035);
+  if (dlg.open && pp > 0 && !leaving && ty0 === null && performance.now() - lastPush > 160) { setPP(pp - .03); if (pp === 0) armed = false; }
   requestAnimationFrame(decay);
 })();
 dlg.addEventListener('close', () => { setPP(0); ty0 = null; });
