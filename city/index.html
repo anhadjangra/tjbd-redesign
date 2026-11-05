@@ -202,6 +202,16 @@ dialog#pd[open]{animation:pdIn .35s cubic-bezier(.2,.7,.2,1)}
   .pd-peek{grid-template-columns:repeat(2,minmax(0,1fr));height:90px}
   .pd-peek button:nth-child(3){display:none}
 }
+.pd-end{background:var(--ink);color:#FBFBFA;padding:56px clamp(16px,3vw,40px) calc(64px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.pd-end .meter{width:min(320px,70vw);height:4px;border-radius:2px;background:rgba(251,251,250,.18);overflow:hidden}
+.pd-end .meter i{display:block;height:100%;width:calc(var(--pp,0) * 100%);background:var(--zc,#FBFBFA)}
+.pd-end svg{transform:translateY(calc(var(--pp,0) * 10px));transition:transform .1s}
+.pd-end b{font-size:1.05rem}
+.pd-end .k{color:#A8AFB4}
+#pd .pd-scroll > *{transform:translateY(calc(var(--pp,0) * -48px))}
+#pd.leaving{animation:pdOut .38s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes pdOut{to{opacity:0;transform:translateY(-6%) scale(.97)}}
+@media (prefers-reduced-motion: reduce){#pd .pd-scroll > *{transform:none}#pd.leaving{animation:none;opacity:0}}
 @media (prefers-reduced-motion: reduce){dialog#pd[open]{animation:none}}
 body.nogl .district .stick{position:relative;height:auto;justify-content:center}body.nogl .district{height:auto;padding-block:40px}
 </style>
@@ -307,6 +317,7 @@ body.nogl .district .stick{position:relative;height:auto;justify-content:center}
         <div class="pd-gal" id="pdgal"></div>
       </div>
       <button class="pd-next" type="button" id="pdnextbig"><img id="pdnextimg" alt=""><span class="c"><span class="k" id="pdnextk"></span><b id="pdnextname"></b></span></button>
+      <div class="pd-end" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2v11M3.5 8.5L8 13l4.5-4.5"/></svg><b>Keep scrolling to return to the city</b><div class="meter"><i></i></div><span class="k">Or press Esc</span></div>
     </div>
   </div>
 </dialog>
@@ -446,6 +457,36 @@ dlg.addEventListener('keydown', e => { if (e.key === 'ArrowRight') stepP(1); if 
 dlg.addEventListener('close', () => document.documentElement.style.overflow = '');
 dlg.addEventListener('cancel', () => document.documentElement.style.overflow = '');
 const _show = dlg.showModal.bind(dlg); dlg.showModal = () => { document.documentElement.style.overflow = 'hidden'; _show(); };
+
+/* pull past the end of a project to drop back into the city */
+const pdScroll = $('#pdscroll');
+let pp = 0, lastPush = 0, ty0 = null, leaving = false;
+const atEnd = () => pdScroll.scrollTop + pdScroll.clientHeight >= pdScroll.scrollHeight - 2;
+function setPP(v) { pp = clamp(v, 0, 1); dlg.style.setProperty('--pp', pp.toFixed(3)); if (pp >= 1) leave(); }
+function push(v) { lastPush = performance.now(); setPP(pp + v); }
+function leave() {
+  if (leaving) return; leaving = true;
+  dlg.classList.add('leaving');
+  setTimeout(() => { dlg.close(); dlg.classList.remove('leaving'); leaving = false; setPP(0); }, RM ? 0 : 380);
+}
+pdScroll.addEventListener('wheel', e => {
+  const dy = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? 800 : 1);
+  if (dy > 0 && atEnd()) push(dy / 550);
+  else if (dy < 0 && pp > 0) setPP(pp + dy / 300);
+}, { passive: true });
+pdScroll.addEventListener('touchstart', e => { ty0 = atEnd() ? e.touches[0].clientY : null; }, { passive: true });
+pdScroll.addEventListener('touchmove', e => {
+  if (ty0 === null) { if (atEnd()) ty0 = e.touches[0].clientY; return; }
+  const d = ty0 - e.touches[0].clientY;
+  lastPush = performance.now(); setPP(d / 240);
+}, { passive: true });
+pdScroll.addEventListener('touchend', () => { ty0 = null; });
+dlg.addEventListener('keydown', e => { if (['ArrowDown', 'PageDown', ' ', 'End'].includes(e.key) && atEnd()) push(.34); });
+(function decay(t) {
+  if (dlg.open && pp > 0 && !leaving && ty0 === null && performance.now() - lastPush > 160) setPP(pp - .035);
+  requestAnimationFrame(decay);
+})();
+dlg.addEventListener('close', () => { setPP(0); ty0 = null; });
 let hot = -1;
 document.querySelectorAll('.panel li button').forEach(b => {
   b.onclick = () => openProject(+b.dataset.i);
