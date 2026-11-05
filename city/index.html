@@ -31,7 +31,7 @@
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
-body{background:var(--map);color:var(--ink);font-family:var(--display);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:clip}
+body{margin:0;background:var(--map);color:var(--ink);font-family:var(--display);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:clip}
 a{color:inherit}
 button{font:inherit;color:inherit;cursor:pointer}
 :focus-visible{outline:2px solid var(--ink);outline-offset:3px}
@@ -195,6 +195,56 @@ main{transition:opacity .3s}
 .ndis img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;border-radius:8px}
 .ndis h3{font-size:1.4rem;margin-top:8px;letter-spacing:-.02em}
 @media (max-width:760px){.ndis{grid-template-columns:1fr}}
+/* ---------- team: the studio as a white card model, like the sun study house. Scroll walks desk to desk ---------- */
+.office{position:relative;background:#E4E6E2;border-top:1px solid var(--rule)}
+.ostage{position:sticky;top:0;height:100svh;overflow:hidden;z-index:2}
+#ogl{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:pointer}
+.osteps{margin-top:-100svh}
+.ostep{height:100svh}
+.ohead{position:absolute;top:calc(env(safe-area-inset-top,0px) + 78px);left:0;right:0;pointer-events:none}
+.ohead h2{font-size:clamp(2.2rem,5vw,4.2rem);margin-top:8px;max-width:12ch;transition:opacity .4s,transform .4s}
+.office.at .ohead h2{opacity:0;transform:translateY(-10px)}
+.olabels{position:absolute;inset:0;pointer-events:none}
+.olabels button{position:absolute;left:0;top:0;pointer-events:auto;font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;text-transform:uppercase;background:var(--sheet);border:1px solid var(--rule);border-radius:4px;padding:3px 7px;white-space:nowrap;transition:opacity .3s,background .3s,color .3s;will-change:transform}
+.olabels button.on{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+.olabels button:hover{border-color:var(--ink)}
+.ocard{position:absolute;right:max(var(--gut-r),4vw);top:calc(50% + 28px);transform:translateY(-50%);width:min(380px,34vw);background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:14px;box-shadow:0 22px 44px -26px rgba(27,31,35,.45)}
+.ocard .sw8{transition:opacity .2s,transform .2s}
+.ocard.fade .sw8{opacity:0;transform:translateY(6px)}
+.ocard .ph{height:clamp(170px,34svh,330px);border-radius:6px;overflow:hidden;background:var(--map)}
+.ocard .ph img{width:100%;height:100%;object-fit:cover;object-position:50% 22%;display:block}
+.ocard .tx{padding:12px 2px 0}
+.ocard h3{font-size:clamp(1.5rem,2.2vw,2rem);margin-top:4px}
+.ocard p{color:var(--mute);font-size:.92rem;line-height:1.45;margin-top:8px}
+.ocard .faces{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
+.ocard .faces button{padding:0;border:0;background:var(--map);border-radius:6px;overflow:hidden;aspect-ratio:1;position:relative}
+.ocard .faces img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block}
+.ocard .faces span{position:absolute;left:4px;bottom:4px;font-family:var(--mono);font-size:.6rem;text-transform:uppercase;background:var(--sheet);border-radius:3px;padding:1px 4px}
+.ocard nav{display:flex;justify-content:space-between;align-items:center;margin-top:12px;border-top:1px solid var(--rule);padding-top:10px}
+.ocard nav div{display:flex;gap:6px}
+.ocard nav button{border:1.5px solid var(--ink);background:transparent;border-radius:6px;width:40px;height:34px;font-size:1rem;line-height:1}
+.ocard nav button:disabled{opacity:.3;cursor:default}
+.ofall{display:none}
+.office.flat .ostage,.office.flat .osteps{display:none}
+.office.flat .ofall{display:block}
+@media (max-width:760px){
+  .ostep{scroll-snap-align:start;scroll-snap-stop:always}
+  .ohead{top:calc(env(safe-area-inset-top,0px) + 62px)}
+  .ohead h2{font-size:1.7rem}
+  .ohead{transition:opacity .3s}
+  .office.at .ohead{opacity:0}
+  .olabels button{font-size:.6rem;padding:2px 5px}
+  .ocard{left:0;right:0;bottom:0;top:auto;transform:none;width:auto;border-radius:16px 16px 0 0;border-width:1px 0 0;padding:12px var(--gut-r) calc(12px + env(safe-area-inset-bottom,0px)) var(--gut);box-shadow:0 -20px 40px -24px rgba(27,31,35,.4)}
+  .ocard .sw8.person{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:start}
+  .ocard .person .ph{height:120px}
+  .ocard .person .tx{padding:0}
+  .ocard h3{font-size:1.45rem}
+  .ocard p{font-size:.88rem;margin-top:6px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  .ocard .faces{grid-template-columns:repeat(6,1fr);gap:4px;margin-top:10px}
+  .ocard .faces span{display:none}
+  .ocard nav{margin-top:10px;padding-top:8px}
+  .ocard nav button{width:46px;height:38px}
+}
 .team{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
 .team img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;border-radius:8px}
 .team b{display:block;margin-top:8px;line-height:1.2}
@@ -352,8 +402,15 @@ body.nogl .district .stick{position:relative;height:auto;justify-content:center}
     </div>
   </section>
 
-  <section id="team" class="sec wrap" aria-label="Team" style="border-top:0;padding-top:0">
-    <div class="inner"><div class="sec-head"><div><div class="k">People</div><h2>Directors, associate &amp; graduates</h2></div></div><div class="team" id="teamgrid"></div></div>
+  <section id="team" class="office" aria-label="Team">
+    <div class="ostage">
+      <canvas id="ogl" aria-hidden="true"></canvas>
+      <div class="olabels" id="olabels"></div>
+      <div class="ohead wrap"><div class="k">People · The studio at 1:50</div><h2>Six desks, one studio.</h2></div>
+      <article class="ocard" id="ocard" aria-live="polite"></article>
+    </div>
+    <div class="osteps" id="osteps" aria-hidden="true"></div>
+    <div class="ofall sec wrap"><div class="inner"><div class="sec-head"><div><div class="k">People</div><h2>Directors, associate &amp; graduates</h2></div></div><div class="team" id="teamgrid"></div></div></div>
   </section>
 
   <section id="contact" class="sec wrap" aria-label="Contact">
@@ -943,3 +1000,241 @@ requestAnimationFrame(frame);
 }
 
 </script>
+<script type="module">
+/* The team section: the studio as a white card model (the sun study's house language: card stock, ink edges, soft shadows).
+   Desks line the walls. Scrolling walks the camera desk to desk; the desk you're at lights up and its person's card shows.
+   Placeholder room until the office sketch arrives: 12 × 8 m, two desks per wall. */
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js';
+const BASE = document.querySelector('meta[name="asset-base"]').content;
+const $ = s => document.querySelector(s);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const smooth = t => t * t * (3 - 2 * t);
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const PHONE = matchMedia('(max-width:760px)');
+const sec = $('#team'), stage = sec.querySelector('.ostage'), canvas = $('#ogl'), card = $('#ocard'), labelsEl = $('#olabels');
+const T = TEAM, N = T.length;
+const photo = k => `${BASE}img/${k}.jpg`;
+const first = n => n.split(' ')[0];
+
+let renderer = null;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true }); } catch (e) { }
+if (!renderer) sec.classList.add('flat');
+else {
+$('#osteps').innerHTML = Array.from({ length: N + 1 }, () => '<div class="ostep"></div>').join('');
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.setClearColor(0xE4E6E2);
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+const S = new THREE.Scene();
+const cam = new THREE.PerspectiveCamera(32, 1, .1, 200);
+S.add(new THREE.HemisphereLight(0xffffff, 0x9aa09e, 1.15));
+const sun = new THREE.DirectionalLight(0xffffff, 2.4);
+sun.position.set(-7, 14, 9); sun.castShadow = true;
+Object.assign(sun.shadow.camera, { left: -10, right: 10, top: 10, bottom: -10, near: 1, far: 40 });
+sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -.0005; sun.shadow.normalBias = .03; sun.shadow.radius = 3;
+S.add(sun);
+const lamp = new THREE.PointLight(0xffb25e, 0, 5, 1.6); S.add(lamp);
+
+const ACC = new THREE.Color(0xE07B39), WHITE = new THREE.Color(0xF5F5F2);
+const std = (c, o = {}) => new THREE.MeshStandardMaterial(Object.assign({ color: c, roughness: .92, metalness: 0 }, o));
+const M = { card: std(0xF5F5F2), card2: std(0xE6E6E1), base: std(0xD6D7D1), glass: std(0xA9BDC7, { roughness: .12, transparent: true, opacity: .4, depthWrite: false }), poche: std(0x2A2E33) };
+const LM = new THREE.LineBasicMaterial({ color: 0x1B1F24, transparent: true, opacity: .5 });
+function add(parent, geo, mat, x, y, z, edges = true) {
+  const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = m.receiveShadow = true;
+  if (edges) m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 20), LM));
+  parent.add(m); return m;
+}
+// box by its bottom face: w × h × d, base at y
+const box = (parent, w, h, d, x, y, z, mat = M.card, edges) => add(parent, new THREE.BoxGeometry(w, h, d), mat, x, y + h / 2, z, edges);
+
+/* ---- the room ---- */
+const room = new THREE.Group(); S.add(room);
+const RW = 12, RD = 8, WH = 2.7, WT = .2;
+box(room, RW + 3, .4, RD + 3, 0, -.6, 0, M.base);                              // plinth
+box(room, RW + 2 * WT, .2, RD + 2 * WT, 0, -.2, 0, M.card2);                   // floor slab
+// back wall with a window between the two directors' desks
+box(room, 5 + WT, WH, WT, -3.7 - WT / 2, 0, -RD / 2 - WT / 2);
+box(room, 5 + WT, WH, WT, 3.7 + WT / 2, 0, -RD / 2 - WT / 2);
+box(room, 2.4, .9, WT, 0, 0, -RD / 2 - WT / 2); box(room, 2.4, .4, WT, 0, WH - .4, -RD / 2 - WT / 2);
+box(room, 2.4, WH - 1.3, .04, 0, .9, -RD / 2 - WT / 2, M.glass, false);
+box(room, 2.2, .7, .45, 0, 0, -RD / 2 + .23, M.card2);                          // credenza under the window
+box(room, .5, .32, .4, -.6, .7, -RD / 2 + .23); box(room, .38, .2, .3, .45, .7, -RD / 2 + .23);   // study models on it
+// side walls, full height
+box(room, WT, WH, RD + 2 * WT, -RW / 2 - WT / 2, 0, 0);
+box(room, WT, WH, RD + 2 * WT, RW / 2 + WT / 2, 0, 0);
+// front wall cut low so the room reads like a plan, with the cut face inked; door gap on the right
+const fz = RD / 2 + WT / 2;
+box(room, 8.6, .9, WT, -1.7, 0, fz); box(room, 1.6, .9, WT, 5.2, 0, fz);
+box(room, 8.6, .02, WT, -1.7, .9, fz, M.poche, false); box(room, 1.6, .02, WT, 5.2, .9, fz, M.poche, false);
+// meeting table in the middle, with a house model on it
+const mt = new THREE.Group(); room.add(mt); mt.position.set(0, 0, .5);
+box(mt, 2.8, .05, 1.2, 0, .72, 0);
+[[-1.25, -.5], [1.25, -.5], [-1.25, .5], [1.25, .5]].forEach(([x, z]) => box(mt, .05, .72, .05, x, 0, z, M.card, false));
+[-.85, 0, .85].forEach(x => [-1, 1].forEach(sd => { box(mt, .44, .05, .42, x, .44, sd * .85, M.card2); box(mt, .42, .42, .05, x, .49, sd * 1.05, M.card2); }));
+box(mt, .6, .22, .4, -.2, .77, 0); box(mt, .3, .14, .4, .25, .77, .02, M.card2);
+// plants in two corners, same as the sun study's trees
+function plant(x, z) {
+  box(room, .4, .4, .4, x, 0, z, M.card2);
+  add(room, new THREE.IcosahedronGeometry(.42, 1), M.card, x, 1, z);
+}
+plant(-5.5, 3.5); plant(5.5, -3.5);
+
+/* ---- desks: two on each wall ---- */
+// [x, z, rotation]: local +z faces into the room, the wall is behind local -z. Order follows TEAM and walks the room in a loop
+const SPOTS = [[-2.6, -RD / 2 + .4, 0], [2.6, -RD / 2 + .4, 0], [RW / 2 - .4, -1.4, -Math.PI / 2], [RW / 2 - .4, 1.8, -Math.PI / 2], [-RW / 2 + .4, 1.8, Math.PI / 2], [-RW / 2 + .4, -1.4, Math.PI / 2]];
+const tl = new THREE.TextureLoader();
+const desks = T.map((t, i) => {
+  const [x, z, r] = SPOTS[i % SPOTS.length];
+  const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = r; room.add(g);
+  const top = M.card.clone(), body = M.card.clone();
+  box(g, 1.6, .04, .75, 0, .72, 0, top);
+  box(g, .04, .72, .7, -.76, 0, 0); box(g, .04, .72, .7, .76, 0, 0);
+  box(g, .62, .37, .03, 0, .92, -.22, M.card2); box(g, .06, .16, .06, 0, .76, -.24, M.card2, false);   // screen
+  box(g, .42, .02, .14, 0, .76, .1, M.card2, false);
+  box(g, .14, .3, .14, .6, .76, -.2, M.card2);                                    // a model on the desk
+  // chair
+  box(g, .48, .06, .46, 0, .44, .62, M.card2); box(g, .46, .48, .05, 0, .5, .86, M.card2);
+  box(g, .06, .44, .06, 0, 0, .62, M.card2, false);
+  // the person, model-shop style
+  const fig = new THREE.Group(); g.add(fig);
+  add(fig, new THREE.CapsuleGeometry(.16, .34, 4, 10), body, 0, .9, .64, false);
+  add(fig, new THREE.SphereGeometry(.11, 16, 12), body, 0, 1.37, .6, false);
+  box(fig, .32, .12, .4, 0, .5, .4, body, false);
+  // pin-up above the desk: their photo
+  box(g, 1.2, .72, .03, 0, 1.3, -.37, M.card2);
+  const tex = tl.load(photo(t[2])); tex.colorSpace = THREE.SRGBColorSpace;
+  add(g, new THREE.PlaneGeometry(.44, .55), new THREE.MeshStandardMaterial({ map: tex, roughness: .9 }), -.28, 1.66, -.35, false);
+  box(g, .4, .28, .01, .3, 1.5, -.35, M.card, true);                             // a sketch pinned next to it
+  // floor ring when lit
+  const ring = new THREE.Mesh(new THREE.RingGeometry(1.05, 1.13, 64), new THREE.MeshBasicMaterial({ color: ACC, transparent: true, opacity: 0 }));
+  ring.rotation.x = -Math.PI / 2; ring.position.set(0, .01, .35); g.add(ring);
+  g.traverse(o => o.userData.desk = i + 1);
+  return { g, top, body, ring, h: 0, n: new THREE.Vector3(Math.sin(r), 0, Math.cos(r)), p: new THREE.Vector3(x, 0, z) };
+});
+
+/* ---- camera shots: 0 is the whole room, then one per desk ---- */
+const shots = [];
+function buildShots() {
+  const ph = PHONE.matches;
+  shots.length = 0;
+  // phones look across the short side so the long room runs up the tall screen
+  shots.push(ph ? { p: new THREE.Vector3(16, 30, .01), l: new THREE.Vector3(-4.6, 0, 0) } : { p: new THREE.Vector3(0, 18, 18), l: new THREE.Vector3(0, 0, -2) });
+  desks.forEach(d => {
+    const side = new THREE.Vector3(d.n.z, 0, -d.n.x);   // along the wall
+    const back = ph ? 5.2 : 4.8, up = ph ? 3.4 : 3.1;
+    const p = d.p.clone().addScaledVector(d.n, back).addScaledVector(side, ph ? 1.2 : 1.6); p.y = up;
+    const l = d.p.clone().addScaledVector(d.n, .4); l.y = 1.05;
+    shots.push({ p, l });
+  });
+}
+buildShots();
+
+/* ---- labels over each desk ---- */
+labelsEl.innerHTML = T.map((t, i) => `<button type="button" data-i="${i + 1}" aria-label="Go to ${t[0]}'s desk">${first(t[0])}</button>`).join('');
+const labels = [...labelsEl.children];
+labelsEl.addEventListener('click', e => { const b = e.target.closest('button'); if (b) go(+b.dataset.i); });
+
+/* ---- the card ---- */
+let shown = -1;
+function cardHTML(i) {
+  const nav = `<nav><span class="k">${i ? String(i).padStart(2, '0') + ' / ' + String(N).padStart(2, '0') : 'Studio · Brisbane'}</span><div><button type="button" data-go="${i - 1}" aria-label="Previous desk" ${i ? '' : 'disabled'}>←</button><button type="button" data-go="${i + 1}" aria-label="Next desk" ${i < N ? '' : 'disabled'}>→</button></div></nav>`;
+  if (!i) return `<div class="sw8"><div class="k">The team</div><h3>Two directors, an associate and three graduates.</h3><p>One room in Brisbane. <span class="hv">Scroll</span><span class="tc">Swipe</span> to visit each desk, or pick someone.</p><div class="faces">${T.map((t, k) => `<button type="button" data-go="${k + 1}" aria-label="${t[0]}"><img src="${photo(t[2])}" alt=""><span>${first(t[0])}</span></button>`).join('')}</div>${nav}</div>`;
+  const t = T[i - 1];
+  return `<div class="sw8 person"><div class="ph"><img src="${photo(t[2])}" alt="${t[0]}"></div><div class="tx"><div class="k">${t[1]}</div><h3>${t[0]}</h3><p>${t[3]}</p></div></div><div class="sw8">${nav}</div>`;
+}
+function setCard(i) {
+  if (i === shown) return;
+  const firstTime = shown < 0; shown = i;
+  sec.classList.toggle('at', i > 0);
+  labels.forEach((l, k) => l.classList.toggle('on', k + 1 === i));
+  if (firstTime || RM) { card.innerHTML = cardHTML(i); return; }
+  card.classList.add('fade');
+  clearTimeout(setCard.t);
+  setCard.t = setTimeout(() => { card.innerHTML = cardHTML(shown); requestAnimationFrame(() => card.classList.remove('fade')); }, 180);
+}
+card.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b && !b.disabled) go(+b.dataset.go); });
+T.forEach(t => { const im = new Image(); im.src = photo(t[2]); });   // warm the cache so cards swap without a blank
+
+/* ---- scroll position <-> desk ---- */
+const stepH = () => sec.querySelector('.ostep').offsetHeight || innerHeight;
+const secTop = () => sec.getBoundingClientRect().top + scrollY;
+function go(i) { scrollTo({ top: secTop() + clamp(i, 0, N) * stepH(), behavior: RM ? 'auto' : 'smooth' }); }
+const target = () => clamp(-sec.getBoundingClientRect().top / stepH(), 0, N);
+
+/* tap a desk in the model */
+const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
+let down = null;
+canvas.addEventListener('pointerdown', e => { down = [e.clientX, e.clientY]; });
+canvas.addEventListener('click', e => {
+  if (down && Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 8) return;
+  const r = canvas.getBoundingClientRect();
+  ptr.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1);
+  ray.setFromCamera(ptr, cam);
+  const hit = ray.intersectObjects(desks.map(d => d.g), true).find(h => h.object.userData.desk);
+  if (hit) go(hit.object.userData.desk);
+});
+canvas.addEventListener('pointermove', e => {
+  if (e.pointerType !== 'mouse') return;
+  const r = canvas.getBoundingClientRect();
+  ptr.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1);
+  ray.setFromCamera(ptr, cam);
+  canvas.style.cursor = ray.intersectObjects(desks.map(d => d.g), true).some(h => h.object.userData.desk) ? 'pointer' : 'default';
+});
+
+/* ---- size + framing ---- */
+let W = 0, H = 0;
+function resize() {
+  W = stage.clientWidth; H = stage.clientHeight;
+  renderer.setPixelRatio(Math.min(devicePixelRatio, PHONE.matches ? 1.5 : 2));
+  renderer.setSize(W, H, false);
+  cam.aspect = W / H; cam.fov = PHONE.matches ? 44 : 32;
+  // keep the model clear of the card: shifted left of it on desktop, above the sheet on phones
+  if (PHONE.matches) cam.setViewOffset(W, H, 0, H * .2, W, H); else cam.setViewOffset(W, H, W * .14, 0, W, H);
+  cam.updateProjectionMatrix();
+  buildShots();
+}
+addEventListener('resize', resize); PHONE.addEventListener('change', resize); resize();
+
+let live = false;
+new IntersectionObserver(es => { live = es[0].isIntersecting; }, { rootMargin: '100px' }).observe(sec);
+
+const pos = new THREE.Vector3(), look = new THREE.Vector3(), v = new THREE.Vector3();
+let cur = 0, last = performance.now();
+setCard(0);
+function frame(now) {
+  requestAnimationFrame(frame);
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  if (!live) return;
+  const tg = target();
+  cur = RM ? tg : cur + (tg - cur) * Math.min(1, dt * 5);
+  setCard(Math.round(tg));
+  // hold at each desk, move in between
+  const a = Math.min(N - 1, Math.floor(cur)), f = cur - a, e = smooth(clamp((f - .1) / .8));
+  const A = shots[a], B = shots[a + 1];
+  pos.lerpVectors(A.p, B.p, e); look.lerpVectors(A.l, B.l, e);
+  if (a > 0) pos.y += Math.sin(e * Math.PI) * 1.4;   // lift over the room between desks
+  if (!RM && cur < .02) pos.x += Math.sin(now * .00025) * .6;
+  cam.position.copy(pos); cam.lookAt(look);
+  const act = Math.round(cur);
+  desks.forEach((d, k) => {
+    const on = k + 1 === act ? 1 : 0;
+    d.h += (on - d.h) * (RM ? 1 : Math.min(1, dt * 6));
+    d.top.color.copy(WHITE).lerp(ACC, d.h); d.body.color.copy(WHITE).lerp(ACC, d.h * .9);
+    d.ring.material.opacity = d.h;
+  });
+  if (act > 0) { const d = desks[act - 1]; lamp.position.copy(d.p).addScaledVector(d.n, .4); lamp.position.y = 2.1; }
+  lamp.intensity = act > 0 ? 1.6 * desks[act - 1].h : 0;
+  labels.forEach((l, k) => {
+    const d = desks[k];
+    v.copy(d.p).addScaledVector(d.n, .2); v.y = 2.25; v.project(cam);
+    const x = (v.x * .5 + .5) * W, y = (-v.y * .5 + .5) * H;   // the projection already includes the view offset
+    l.style.transform = `translate(${x}px,${y}px) translate(-50%,-100%)`;
+    l.style.opacity = v.z < 1 && v.z > -1 && y > (PHONE.matches ? 70 : 80) ? 1 : 0;
+    l.style.pointerEvents = l.style.opacity === '1' ? '' : 'none';
+  });
+  renderer.render(S, cam);
+}
+requestAnimationFrame(frame);
+}
+</script>
+
