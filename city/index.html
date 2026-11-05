@@ -52,10 +52,10 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .bar nav a:hover{background:var(--map)}
 @media (max-width:900px){.bar nav{display:none}.bar .logo{height:19px}.bar .btn{padding:.55em .9em;font-size:.8rem}}
 main{position:relative;z-index:3}
-html{touch-action:pan-y pinch-zoom}
 html:not(.grabbing) body{cursor:grab}
 html.grabbing,html.grabbing *{cursor:grabbing!important;user-select:none}
 .panel,.box,.sec,footer,header{cursor:auto}
+@media (hover: none){.hv{display:none}}
 .drag-hint{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:2;pointer-events:none;font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);background:rgba(251,251,250,.9);padding:.5em .8em;border-radius:6px;white-space:nowrap;transition:opacity .4s}
 .drag-hint.gone,.drag-hint.away{opacity:0}
 .lbl{position:fixed;left:0;top:0;z-index:1;pointer-events:none;font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);background:rgba(251,251,250,.9);padding:.2em .5em;border-radius:3px;white-space:nowrap;display:flex;gap:6px;align-items:center;will-change:transform}
@@ -243,7 +243,7 @@ body.nogl .district .stick{position:relative;height:auto;justify-content:center}
     <div class="box">
       <div class="k">Tarun Jangra Building Designers · Brisbane</div>
       <h1>27 projects. One city.</h1>
-      <p>Every building here is one of our projects. Each sits on a lot sized from its real site area and grows taller with its floor area. Hover a building to see which it is, click to open it, drag to look around, or scroll to tour the districts.</p>
+      <p>Every building here is one of our projects. Each sits on a lot sized from its real site area and grows taller with its floor area. Hover a building to see which it is, click to open it, <span class="hv">drag to look around, </span>or scroll to tour the districts.</p>
       <div class="legend" id="legend"></div>
       <div class="row"><a class="btn" href="#d-res">Start the tour</a><a class="btn o" href="#contact">Talk to Tarun</a></div>
       <p class="note">Sizes are indicative and drawn to one scale from each project's published site and floor areas. Where a figure isn't published, the block is estimated and marked as such.</p>
@@ -669,6 +669,8 @@ const U = { az: 0, el: 0, px: 0, pz: 0, zm: 1 };
 let drag = null, dragged = false;
 const UI = 'a,button,input,textarea,select,dialog,.panel,.box,header,.sec,footer,.drag-hint';
 addEventListener('pointerdown', e => {
+  /* phones keep plain scrolling: a touch drag fought with the page scroll */
+  if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
   if (dlg.open || e.target.closest(UI) || (e.pointerType === 'mouse' && e.button !== 0 && e.button !== 2)) return;
   drag = { id: e.pointerId, x: e.clientX, y: e.clientY, pan: !(e.button === 2 || e.shiftKey || e.metaKey || e.ctrlKey), moved: 0, touch: e.pointerType !== 'mouse' };
   dragged = false;
@@ -706,7 +708,8 @@ addEventListener('scroll', () => {
   U.az *= k; U.el *= k; U.px *= k; U.pz *= k; U.zm = 1 + (U.zm - 1) * k;
 }, { passive: true });
 const hint = document.createElement('div'); hint.className = 'drag-hint'; hint.setAttribute('aria-hidden', 'true');
-hint.innerHTML = matchMedia('(pointer: coarse)').matches ? 'Swipe sideways to move along the city' : 'Drag to move · Shift-drag or right-drag to turn · Pinch to zoom';
+hint.textContent = 'Drag to move · Shift-drag or right-drag to turn · Pinch to zoom';
+if (matchMedia('(hover: none)').matches) hint.hidden = true;
 document.body.appendChild(hint);
 
 
