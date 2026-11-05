@@ -134,9 +134,13 @@ main{transition:opacity .3s}
   .panel .sum b{font-size:1.15rem}
   /* the project list swipes sideways on phones, so it never competes with the page's vertical scroll */
   .panel{max-height:none}
-  .panel ol{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));scroll-snap-type:x mandatory;scroll-padding-inline:16px;scrollbar-width:none;overscroll-behavior-x:contain}
+  /* swiped by our own touch handling (below), not native scrolling: iOS often ignores the first native swipe on a sheet that just appeared */
+  .panel ol{display:flex;gap:8px;overflow:visible;padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));touch-action:pan-y;transform:translateX(var(--tx,0px));will-change:transform}
+  .panel ol.ease{transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+  .panel ol{border-top:0}
+  .panel header{border-bottom:1px solid var(--rule)}
   .panel ol::-webkit-scrollbar{display:none}
-  .panel li{flex:0 0 min(86%,320px);scroll-snap-align:start}
+  .panel li{flex:0 0 min(86%,320px)}
   .panel li button{border:1px solid var(--rule);border-radius:10px;padding:8px 10px;height:62px}
   /* name gets the full width of the card; status and floor area share the second line */
   .panel li button{grid-template-columns:52px minmax(0,1fr) auto;grid-template-rows:auto auto;column-gap:10px;row-gap:2px;align-content:center}
@@ -593,6 +597,42 @@ dlg.addEventListener('keydown', e => { if (['ArrowDown', 'PageDown', ' ', 'End']
   requestAnimationFrame(decay);
 })();
 dlg.addEventListener('close', () => { setPP(0); ty0 = null; });
+/* phones: the district card row is a hand-rolled carousel. Sideways drags move it,
+   up/down drags are left to the page (touch-action: pan-y), and it settles on a card. */
+const PHONE = matchMedia('(max-width:760px)');
+document.querySelectorAll('.panel ol').forEach(ol => {
+  let x0 = 0, y0 = 0, t0 = 0, tx = 0, start = 0, dir = 0, id = null, moved = false, lastX = 0, lastT = 0, v = 0;
+  const lis = () => [...ol.children];
+  const minTx = () => { const l = lis(), last = l[l.length - 1]; return last ? Math.min(0, ol.parentElement.clientWidth - (last.offsetLeft + last.offsetWidth + 16)) : 0; };
+  const set = (x, ease) => { tx = x; ol.classList.toggle('ease', !!ease); ol.style.setProperty('--tx', x.toFixed(1) + 'px'); };
+  ol.addEventListener('pointerdown', e => {
+    if (!PHONE.matches || e.pointerType === 'mouse') return;
+    id = e.pointerId; x0 = lastX = e.clientX; y0 = e.clientY; t0 = lastT = performance.now(); start = tx; dir = 0; moved = false; v = 0;
+    ol.classList.remove('ease');
+  });
+  ol.addEventListener('pointermove', e => {
+    if (e.pointerId !== id) return;
+    const dx = e.clientX - x0, dy = e.clientY - y0;
+    if (!dir && Math.hypot(dx, dy) > 6) dir = Math.abs(dx) > Math.abs(dy) ? 1 : -1;
+    if (dir !== 1) return;
+    moved = true;
+    const now = performance.now(); v = (e.clientX - lastX) / Math.max(1, now - lastT); lastX = e.clientX; lastT = now;
+    let x = start + dx; const lo = minTx();
+    if (x > 0) x *= .35; else if (x < lo) x = lo + (x - lo) * .35;
+    set(x);
+  });
+  const end = e => {
+    if (e.pointerId !== id) return; id = null;
+    if (dir !== 1) return;
+    const lo = minTx(), l = lis(), step = l.length > 1 ? l[1].offsetLeft - l[0].offsetLeft : 1;
+    let k = Math.round(-(tx + v * 180) / step); k = clamp(k, 0, l.length - 1);
+    set(clamp(-k * step, lo, 0), true);
+  };
+  ol.addEventListener('pointerup', end); ol.addEventListener('pointercancel', end);
+  ol.addEventListener('click', e => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
+  PHONE.addEventListener('change', () => set(0));
+});
+
 let hot = -1;
 document.querySelectorAll('.panel li button').forEach(b => {
   b.onclick = () => openProject(+b.dataset.i);
