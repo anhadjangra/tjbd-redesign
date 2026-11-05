@@ -1,4 +1,5 @@
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>TJBD Portfolio City</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Tarun Jangra Building Designers. 27 projects drawn as one city: residential, townhouse, commercial and industrial work across South East Queensland.">
@@ -50,23 +51,29 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .bar nav{display:flex;gap:4px;background:rgba(251,251,250,.85);backdrop-filter:blur(8px);border:1px solid var(--rule);border-radius:8px;padding:4px}
 .bar nav a{text-decoration:none;font-size:.86rem;font-weight:500;padding:.35em .7em;border-radius:5px;display:flex;align-items:center;gap:6px}
 .bar nav a:hover{background:var(--map)}
-@media (max-width:900px){.bar nav{display:none}.bar .logo{height:19px}.bar .btn{padding:.55em .9em;font-size:.8rem}}
+@media (max-width:900px){.bar nav{display:none}.bar{background:rgba(251,251,250,.9);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);padding-top:10px;padding-bottom:10px}.bar .logo{height:22px}.bar .btn{padding:.6em 1em;font-size:.88rem}}
 main{position:relative;z-index:3}
 html:not(.grabbing) body{cursor:grab}
 html.grabbing,html.grabbing *{cursor:grabbing!important;user-select:none}
 .panel,.box,.sec,footer,header{cursor:auto}
 @media (hover: none){.hv{display:none}}
+@media (hover: hover){.tc{display:none}}
 .drag-hint{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:2;pointer-events:none;font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);background:rgba(251,251,250,.9);padding:.5em .8em;border-radius:6px;white-space:nowrap;transition:opacity .4s}
 .drag-hint.gone,.drag-hint.away{opacity:0}
 .xplore{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:6;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:0;border-radius:999px;background:var(--ink);color:var(--sheet);font:inherit;font-weight:700;font-size:.9rem;box-shadow:0 10px 30px -10px rgba(27,31,35,.5);transition:opacity .3s}
 .xplore.away{opacity:0;pointer-events:none}
+@media (max-width:900px){.xplore{right:auto;left:max(16px,env(safe-area-inset-left,0px));bottom:auto;top:calc(74px + env(safe-area-inset-top,0px))}}
+.xtip{position:fixed;left:max(16px,env(safe-area-inset-left,0px));top:calc(128px + env(safe-area-inset-top,0px));z-index:6;max-width:250px;background:var(--ink);color:var(--sheet);font-size:.85rem;line-height:1.4;padding:10px 12px;border-radius:8px;box-shadow:0 10px 30px -10px rgba(27,31,35,.5);opacity:0;transform:translateY(-4px);transition:opacity .3s,transform .3s;pointer-events:none}
+.xtip::before{content:"";position:absolute;left:22px;top:-6px;width:12px;height:12px;background:inherit;transform:rotate(45deg);border-radius:2px}
+.xtip.on{opacity:1;transform:none}
+@media (min-width:901px){.xtip{left:auto;right:max(16px,env(safe-area-inset-right,0px));top:auto;bottom:calc(72px + env(safe-area-inset-bottom,0px))}.xtip::before{left:auto;right:30px;top:auto;bottom:-6px}}
 .xlayer{position:fixed;inset:0;z-index:5;touch-action:none;display:none}
 html.exploring{overflow:hidden}
 html.exploring .xlayer{display:block}
 html.exploring main{opacity:0;pointer-events:none}
 html.exploring .xplore{opacity:1;pointer-events:auto;background:var(--sheet);color:var(--ink);box-shadow:0 0 0 1.5px var(--ink),0 10px 30px -10px rgba(27,31,35,.5)}
 main{transition:opacity .3s}
-.xhint{position:fixed;left:50%;top:calc(72px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:6;pointer-events:none;font-family:var(--mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink);background:rgba(251,251,250,.92);padding:.5em .8em;border-radius:6px;white-space:nowrap;opacity:0;transition:opacity .3s}
+.xhint{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:6;pointer-events:none;font-family:var(--mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink);background:rgba(251,251,250,.92);padding:.5em .8em;border-radius:6px;white-space:nowrap;opacity:0;transition:opacity .3s}
 .xhint.on{opacity:1}
 .lbl{position:fixed;left:0;top:0;z-index:1;pointer-events:none;font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);background:rgba(251,251,250,.9);padding:.2em .5em;border-radius:3px;white-space:nowrap;display:flex;gap:6px;align-items:center;will-change:transform}
 .tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--sheet);padding:.5em .75em;border-radius:6px;font-size:.82rem;opacity:0;transition:opacity .12s;max-width:260px}
@@ -75,7 +82,7 @@ main{transition:opacity .3s}
 
 /* chapters */
 .ch{min-height:100vh;position:relative}
-#intro{min-height:100vh;display:flex;align-items:flex-end;padding-bottom:calc(32px + env(safe-area-inset-bottom,0px))}
+#intro{min-height:100vh;display:flex;align-items:flex-end;padding-top:calc(72px + env(safe-area-inset-top,0px));padding-bottom:calc(32px + env(safe-area-inset-bottom,0px))}
 #intro .box{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:26px;max-width:600px;display:flex;flex-direction:column;gap:16px;box-shadow:0 30px 60px -40px rgba(27,31,35,.4)}
 #intro h1{font-size:clamp(2.4rem,5.6vw,4.8rem)}
 .legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 18px;border-top:1px solid var(--rule);padding-top:14px}
@@ -253,7 +260,7 @@ body.nogl .district .stick{position:relative;height:auto;justify-content:center}
     <div class="box">
       <div class="k">Tarun Jangra Building Designers · Brisbane</div>
       <h1>27 projects. One city.</h1>
-      <p>Every building here is one of our projects. Each sits on a lot sized from its real site area and grows taller with its floor area. Hover a building to see which it is, click to open it, <span class="hv">drag to look around, </span>or scroll to tour the districts.</p>
+      <p>Every building here is one of our projects. Each sits on a lot sized from its real site area and grows taller with its floor area. <span class="hv">Hover a building to see which it is, click to open it, drag to look around, or scroll to tour the districts.</span><span class="tc">Tap a building to open it, scroll to tour the districts, or tap Explore to move around the city yourself.</span></p>
       <div class="legend" id="legend"></div>
       <div class="row"><a class="btn" href="#d-res">Start the tour</a><a class="btn o" href="#contact">Talk to Tarun</a></div>
       <p class="note">Sizes are indicative and drawn to one scale from each project's published site and floor areas. Where a figure isn't published, the block is estimated and marked as such.</p>
@@ -714,7 +721,10 @@ let lastY = scrollY;
 addEventListener('scroll', () => {
   const k = Math.exp(-Math.abs(scrollY - lastY) / 500); lastY = scrollY;
   hint.classList.toggle('away', scrollY > innerHeight * .4);
-  xb.classList.toggle('away', chapters[chapters.length - 1].getBoundingClientRect().top < innerHeight * .6);
+  /* on phones the intro card fills the screen, so the button waits for the districts, where the city is in view */
+  const away = chapters[chapters.length - 1].getBoundingClientRect().top < innerHeight * .6 || scrollY < chapters[0].offsetHeight * .55;
+  xb.classList.toggle('away', away);
+  if (away) hideTip(); else if (!tipDone) { tipDone = true; showTip(5500); }
   if (drag) return;
   U.az *= k; U.el *= k; U.px *= k; U.pz *= k; U.zm = 1 + (U.zm - 1) * k;
 }, { passive: true });
@@ -725,7 +735,7 @@ if (TOUCH) hint.hidden = true;
 
 /* phones: an Explore mode. Page scrolling pauses, the panels step aside, and
    one finger moves across the city, two fingers turn, tilt and zoom. */
-const xb = document.createElement('button'); xb.type = 'button'; xb.className = 'xplore'; xb.hidden = !TOUCH;
+const xb = document.createElement('button'); xb.type = 'button'; xb.className = 'xplore away'; xb.hidden = !TOUCH;
 xb.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 1.5v13M1.5 8h13M8 1.5L6 3.5M8 1.5l2 2M8 14.5l-2-2M8 14.5l2-2M1.5 8l2-2M1.5 8l2 2M14.5 8l-2-2M14.5 8l-2 2"/></svg><span>Explore</span>';
 const xl = document.createElement('div'); xl.className = 'xlayer'; xl.setAttribute('aria-hidden', 'true');
 const xh = document.createElement('div'); xh.className = 'xhint'; xh.setAttribute('aria-hidden', 'true');
@@ -738,7 +748,22 @@ function setExplore(on) {
   xb.setAttribute('aria-pressed', on);
   xh.classList.toggle('on', on);
 }
-xb.onclick = () => setExplore(!exploring);
+xb.onclick = () => { hideTip(); setExplore(!exploring); };
+xb.setAttribute('aria-describedby', 'xtip');
+const xt = document.createElement('div'); xt.className = 'xtip'; xt.id = 'xtip'; xt.setAttribute('role', 'tooltip');
+xt.textContent = 'Tap to explore the city yourself: one finger moves, two fingers turn and zoom.';
+document.body.appendChild(xt);
+let tipT = 0;
+function hideTip() { xt.classList.remove('on'); clearTimeout(tipT); }
+let showTip = function (ms) { if (!TOUCH || exploring) return; xt.classList.add('on'); clearTimeout(tipT); tipT = setTimeout(hideTip, ms); }
+/* show it once on arrival, then whenever the button is pressed and held */
+/* the first time the button shows up in a visit, it explains itself */
+let tipDone = false; try { tipDone = sessionStorage.getItem('tjbd-xtip') === '1'; } catch (_) {}
+const _show = showTip; showTip = ms => { _show(ms); try { sessionStorage.setItem('tjbd-xtip', '1'); } catch (_) {} };
+let holdT = 0;
+xb.addEventListener('pointerdown', () => { holdT = setTimeout(() => showTip(3500), 450); });
+['pointerup', 'pointercancel', 'pointerleave'].forEach(t => xb.addEventListener(t, () => clearTimeout(holdT)));
+xb.addEventListener('contextmenu', e => e.preventDefault());
 const tp = new Map(); let g0 = null, tapAt = null;
 const two = () => { const [a, b] = [...tp.values()]; return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, d: Math.hypot(a.x - b.x, a.y - b.y), a: Math.atan2(b.y - a.y, b.x - a.x) }; };
 xl.addEventListener('pointerdown', e => {
