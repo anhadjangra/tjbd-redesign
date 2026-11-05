@@ -58,6 +58,16 @@ html.grabbing,html.grabbing *{cursor:grabbing!important;user-select:none}
 @media (hover: none){.hv{display:none}}
 .drag-hint{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:2;pointer-events:none;font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);background:rgba(251,251,250,.9);padding:.5em .8em;border-radius:6px;white-space:nowrap;transition:opacity .4s}
 .drag-hint.gone,.drag-hint.away{opacity:0}
+.xplore{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:6;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:0;border-radius:999px;background:var(--ink);color:var(--sheet);font:inherit;font-weight:700;font-size:.9rem;box-shadow:0 10px 30px -10px rgba(27,31,35,.5);transition:opacity .3s}
+.xplore.away{opacity:0;pointer-events:none}
+.xlayer{position:fixed;inset:0;z-index:5;touch-action:none;display:none}
+html.exploring{overflow:hidden}
+html.exploring .xlayer{display:block}
+html.exploring main{opacity:0;pointer-events:none}
+html.exploring .xplore{opacity:1;pointer-events:auto;background:var(--sheet);color:var(--ink);box-shadow:0 0 0 1.5px var(--ink),0 10px 30px -10px rgba(27,31,35,.5)}
+main{transition:opacity .3s}
+.xhint{position:fixed;left:50%;top:calc(72px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:6;pointer-events:none;font-family:var(--mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink);background:rgba(251,251,250,.92);padding:.5em .8em;border-radius:6px;white-space:nowrap;opacity:0;transition:opacity .3s}
+.xhint.on{opacity:1}
 .lbl{position:fixed;left:0;top:0;z-index:1;pointer-events:none;font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);background:rgba(251,251,250,.9);padding:.2em .5em;border-radius:3px;white-space:nowrap;display:flex;gap:6px;align-items:center;will-change:transform}
 .tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--sheet);padding:.5em .75em;border-radius:6px;font-size:.82rem;opacity:0;transition:opacity .12s;max-width:260px}
 .tip b{display:block;font-size:.95rem}
@@ -704,12 +714,67 @@ let lastY = scrollY;
 addEventListener('scroll', () => {
   const k = Math.exp(-Math.abs(scrollY - lastY) / 500); lastY = scrollY;
   hint.classList.toggle('away', scrollY > innerHeight * .4);
+  xb.classList.toggle('away', chapters[chapters.length - 1].getBoundingClientRect().top < innerHeight * .6);
   if (drag) return;
   U.az *= k; U.el *= k; U.px *= k; U.pz *= k; U.zm = 1 + (U.zm - 1) * k;
 }, { passive: true });
 const hint = document.createElement('div'); hint.className = 'drag-hint'; hint.setAttribute('aria-hidden', 'true');
 hint.textContent = 'Drag to move · Shift-drag or right-drag to turn · Pinch to zoom';
-if (matchMedia('(hover: none)').matches) hint.hidden = true;
+const TOUCH = matchMedia('(hover: none)').matches;
+if (TOUCH) hint.hidden = true;
+
+/* phones: an Explore mode. Page scrolling pauses, the panels step aside, and
+   one finger moves across the city, two fingers turn, tilt and zoom. */
+const xb = document.createElement('button'); xb.type = 'button'; xb.className = 'xplore'; xb.hidden = !TOUCH;
+xb.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 1.5v13M1.5 8h13M8 1.5L6 3.5M8 1.5l2 2M8 14.5l-2-2M8 14.5l2-2M1.5 8l2-2M1.5 8l2 2M14.5 8l-2-2M14.5 8l-2 2"/></svg><span>Explore</span>';
+const xl = document.createElement('div'); xl.className = 'xlayer'; xl.setAttribute('aria-hidden', 'true');
+const xh = document.createElement('div'); xh.className = 'xhint'; xh.setAttribute('aria-hidden', 'true');
+xh.textContent = 'One finger moves · Two fingers turn and zoom · Tap a building';
+document.body.append(xl, xh, xb);
+let exploring = false;
+function setExplore(on) {
+  exploring = on; document.documentElement.classList.toggle('exploring', on);
+  xb.querySelector('span').textContent = on ? 'Done' : 'Explore';
+  xb.setAttribute('aria-pressed', on);
+  xh.classList.toggle('on', on);
+}
+xb.onclick = () => setExplore(!exploring);
+const tp = new Map(); let g0 = null, tapAt = null;
+const two = () => { const [a, b] = [...tp.values()]; return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, d: Math.hypot(a.x - b.x, a.y - b.y), a: Math.atan2(b.y - a.y, b.x - a.x) }; };
+xl.addEventListener('pointerdown', e => {
+  try { xl.setPointerCapture(e.pointerId); } catch (_) {}
+  tp.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  tapAt = tp.size === 1 ? { x: e.clientX, y: e.clientY, t: performance.now(), moved: 0 } : null;
+  g0 = tp.size === 2 ? two() : null;
+});
+xl.addEventListener('pointermove', e => {
+  const q = tp.get(e.pointerId); if (!q) return;
+  const dx = e.clientX - q.x, dy = e.clientY - q.y; q.x = e.clientX; q.y = e.clientY;
+  if (tapAt) tapAt.moved += Math.abs(dx) + Math.abs(dy);
+  if (tp.size === 1) {
+    const az = st.az + U.az, k = st.d * U.zm * 1.6 / Hh;
+    U.px += (-Math.cos(az) * dx - Math.sin(az) * dy) * k;
+    U.pz += (Math.sin(az) * dx - Math.cos(az) * dy) * k;
+    const lim = Math.max(TW, TD) * .6; U.px = clamp(U.px, -lim, lim); U.pz = clamp(U.pz, -lim, lim);
+  } else if (tp.size === 2 && g0) {
+    const g = two();
+    let da = g.a - g0.a; if (da > Math.PI) da -= 2 * Math.PI; if (da < -Math.PI) da += 2 * Math.PI;
+    U.az -= da;
+    U.zm = clamp(U.zm * g0.d / Math.max(g.d, 1), .35, 1.8);
+    U.el = clamp(U.el + (g.y - g0.y) * .004, .22 - st.el, 1.4 - st.el);
+    g0 = g;
+  }
+});
+const xEnd = e => {
+  tp.delete(e.pointerId);
+  if (tapAt && e.type === 'pointerup' && tapAt.moved < 8 && performance.now() - tapAt.t < 400) {
+    pt.set(tapAt.x / W * 2 - 1, -tapAt.y / Hh * 2 + 1); ray.setFromCamera(pt, cam);
+    const hit = ray.intersectObjects(pickables, false)[0];
+    if (hit) openProject(hit.object.userData.i);
+  }
+  tapAt = null; g0 = tp.size === 2 ? two() : null;
+};
+xl.addEventListener('pointerup', xEnd); xl.addEventListener('pointercancel', xEnd);
 document.body.appendChild(hint);
 
 
