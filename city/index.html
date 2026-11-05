@@ -477,15 +477,15 @@ let pp = 0, lastPush = 0, ty0 = null, leaving = false;
 /* The story stops dead at the bottom. A pull only counts once the reader has
    stopped there and starts a fresh gesture: momentum from the scroll that
    reached the end is ignored, and the first stretch of a pull does nothing. */
-let lastWheel = 0, arrivedAt = 0, armed = false;
+let lastWheel = 0, lastDy = 0, arrivedAt = 0, armed = false;
 const atEnd = () => pdScroll.scrollTop + pdScroll.clientHeight >= pdScroll.scrollHeight - 2;
 const maxR = () => Math.hypot(innerWidth / 2, innerHeight) + 8;
 function resetPull() { armed = false; arrivedAt = 0; ty0 = null; setPP(0); }
 function setPP(v) {
   pp = clamp(v, 0, 1); dlg.style.setProperty('--pp', pp.toFixed(3));
-  const o = RM ? 0 : clamp((pp - .12) / .88, 0, 1);
+  const o = RM ? 0 : clamp((pp - .04) / .96, 0, 1);
   dlg.classList.toggle('pressing', o > 0 || leaving);
-  if (!leaving) dlg.style.setProperty('--hr', (Math.pow(o, 1.35) * maxR() * .55).toFixed(1) + 'px');
+  if (!leaving) dlg.style.setProperty('--hr', (Math.pow(o, 1.1) * maxR() * .6).toFixed(1) + 'px');
   if (pp >= 1) leave();
 }
 function push(v) { lastPush = performance.now(); setPP(pp + v); }
@@ -508,15 +508,16 @@ pdScroll.addEventListener('scroll', () => {
 }, { passive: true });
 pdScroll.addEventListener('wheel', e => {
   const now = performance.now(), gap = now - lastWheel; lastWheel = now;
-  const dy = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? 800 : 1);
+  const dy = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? 800 : 1), prev = lastDy; lastDy = dy;
   if (dy < 0) { if (pp > 0) setPP(pp + dy / 250); armed = false; return; }
   if (!atEnd()) return;
   if (!arrivedAt) arrivedAt = now;
-  /* a new gesture: the wheel went quiet for a moment after reaching the end */
-  if (!armed && gap > 220 && now - arrivedAt > 250) armed = true;
-  if (armed) push(dy / 480);
+  /* a new gesture: the wheel went quiet for a moment, or (on a trackpad, where
+     momentum never goes quiet) the deltas start rising again instead of fading */
+  if (!armed && now - arrivedAt > 120 && (gap > 120 || (dy > 3 && dy > prev * 1.25 + 1))) armed = true;
+  if (armed) push(dy / 420);
 }, { passive: true });
-pdScroll.addEventListener('touchstart', e => { ty0 = atEnd() && arrivedAt && performance.now() - arrivedAt > 250 ? e.touches[0].clientY : null; }, { passive: true });
+pdScroll.addEventListener('touchstart', e => { ty0 = atEnd() && arrivedAt && performance.now() - arrivedAt > 120 ? e.touches[0].clientY : null; }, { passive: true });
 pdScroll.addEventListener('touchmove', e => {
   if (ty0 === null) return;
   const d = ty0 - e.touches[0].clientY;
@@ -525,7 +526,7 @@ pdScroll.addEventListener('touchmove', e => {
 pdScroll.addEventListener('touchend', () => { ty0 = null; });
 dlg.addEventListener('keydown', e => { if (['ArrowDown', 'PageDown', ' ', 'End'].includes(e.key) && atEnd() && arrivedAt && performance.now() - arrivedAt > 250) push(.26); });
 (function decay(t) {
-  if (dlg.open && pp > 0 && !leaving && ty0 === null && performance.now() - lastPush > 160) { setPP(pp - .03); if (pp === 0) armed = false; }
+  if (dlg.open && pp > 0 && !leaving && ty0 === null && performance.now() - lastPush > 220) { setPP(pp - .025); if (pp === 0) armed = false; }
   requestAnimationFrame(decay);
 })();
 dlg.addEventListener('close', () => { setPP(0); ty0 = null; });
