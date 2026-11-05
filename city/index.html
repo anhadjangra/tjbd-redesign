@@ -663,14 +663,14 @@ addEventListener('pointermove', e => {
 });
 addEventListener('click', e => { if (dragged) return; if (hover >= 0 && !e.target.closest('a,button,dialog,.panel,.box')) openProject(hover); });
 
-/* drag to look around. The scroll tour stays in charge: drag sets an offset on
+/* drag to move around (shift or right button to turn). The scroll tour stays in charge: drag sets an offset on
    top of it (orbit, pan, zoom), and scrolling eases the offset back to zero. */
 const U = { az: 0, el: 0, px: 0, pz: 0, zm: 1 };
 let drag = null, dragged = false;
 const UI = 'a,button,input,textarea,select,dialog,.panel,.box,header,.sec,footer,.drag-hint';
 addEventListener('pointerdown', e => {
   if (dlg.open || e.target.closest(UI) || (e.pointerType === 'mouse' && e.button !== 0 && e.button !== 2)) return;
-  drag = { id: e.pointerId, x: e.clientX, y: e.clientY, pan: e.button === 2 || e.shiftKey || e.metaKey || e.ctrlKey, moved: 0, touch: e.pointerType !== 'mouse' };
+  drag = { id: e.pointerId, x: e.clientX, y: e.clientY, pan: !(e.button === 2 || e.shiftKey || e.metaKey || e.ctrlKey), moved: 0, touch: e.pointerType !== 'mouse' };
   dragged = false;
   if (e.pointerType === 'mouse') { e.preventDefault(); getSelection().removeAllRanges(); }
 });
@@ -706,7 +706,7 @@ addEventListener('scroll', () => {
   U.az *= k; U.el *= k; U.px *= k; U.pz *= k; U.zm = 1 + (U.zm - 1) * k;
 }, { passive: true });
 const hint = document.createElement('div'); hint.className = 'drag-hint'; hint.setAttribute('aria-hidden', 'true');
-hint.innerHTML = matchMedia('(pointer: coarse)').matches ? 'Swipe sideways to turn the city' : 'Drag to turn · Shift-drag or right-drag to move · Pinch to zoom';
+hint.innerHTML = matchMedia('(pointer: coarse)').matches ? 'Swipe sideways to move along the city' : 'Drag to move · Shift-drag or right-drag to turn · Pinch to zoom';
 document.body.appendChild(hint);
 
 
