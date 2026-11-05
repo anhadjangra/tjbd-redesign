@@ -111,9 +111,21 @@ main{transition:opacity .3s}
 .panel .ar{text-align:right;font-variant-numeric:tabular-nums;font-size:.82rem;line-height:1.3;white-space:nowrap}
 .panel .ar small{display:block;font-family:var(--mono);font-size:.6rem;color:var(--mute);text-transform:uppercase}
 @media (max-width:760px){
-  .district .stick{align-items:flex-end;padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
-  .panel{max-height:52vh}
-  .panel header{padding:12px 14px 10px}
+  /* phones: the panels become bottom sheets and the top half of the screen is the city */
+  .district .stick{height:100svh;align-items:flex-end;padding:0}
+  .panel{width:100%;max-height:min(50svh,460px);border-radius:16px 16px 0 0;border-width:1px 0 0;box-shadow:0 -20px 40px -24px rgba(27,31,35,.4)}
+  .panel header{padding:12px 16px 10px;gap:4px}
+  .panel h2{font-size:1.7rem}
+  .panel .note{display:none}
+  .panel .sum b{font-size:1.15rem}
+  .panel li:last-child button{padding-bottom:calc(7px + env(safe-area-inset-bottom,0px))}
+  #intro,#intro.wrap{min-height:100svh;padding-left:0;padding-right:0;padding-inline:0;padding-bottom:0;max-width:none;margin:0}
+  #intro .box{max-width:none;width:100%;border-radius:16px 16px 0 0;border-width:1px 0 0;padding:18px 16px calc(16px + env(safe-area-inset-bottom,0px));gap:12px;box-shadow:0 -20px 40px -24px rgba(27,31,35,.4)}
+  #intro h1{font-size:2.3rem}
+  #intro .box > p{font-size:.95rem;line-height:1.45}
+  #intro .box > p.note{font-size:.72rem;line-height:1.4}
+  .legend{gap:4px 14px;padding-top:10px}
+  .legend button{font-size:.85rem}
   .panel li button{grid-template-columns:52px minmax(0,1fr) auto;padding:7px 14px}
   .panel img{width:52px;height:39px}
 }
@@ -260,7 +272,7 @@ body.nogl .district .stick{position:relative;height:auto;justify-content:center}
     <div class="box">
       <div class="k">Tarun Jangra Building Designers · Brisbane</div>
       <h1>27 projects. One city.</h1>
-      <p>Every building here is one of our projects. Each sits on a lot sized from its real site area and grows taller with its floor area. <span class="hv">Hover a building to see which it is, click to open it, drag to look around, or scroll to tour the districts.</span><span class="tc">Tap a building to open it, scroll to tour the districts, or tap Explore to move around the city yourself.</span></p>
+      <p>Every building here is one of our projects. Each sits on a lot sized from its real site area and grows taller with its floor area. <span class="hv">Hover a building to see which it is, click to open it, drag to look around, or scroll to tour the districts.</span><span class="tc">Tap a building to open it, or scroll to tour the districts.</span></p>
       <div class="legend" id="legend"></div>
       <div class="row"><a class="btn" href="#d-res">Start the tour</a><a class="btn o" href="#contact">Talk to Tarun</a></div>
       <p class="note">Sizes are indicative and drawn to one scale from each project's published site and floor areas. Where a figure isn't published, the block is estimated and marked as such.</p>
@@ -646,8 +658,10 @@ for (let k = 0; k < 40; k++) {
 const labels = ZK.map(z => { const d = document.createElement('div'); d.className = 'lbl'; d.innerHTML = `<span class="sw" style="background:var(${Z[z].css})"></span>${Z[z].name}`; $('#labels').appendChild(d); return { d, z }; });
 
 /* camera keyframes: overview, then one per district */
-const OV = () => ({ x: 0, z: 0, az: -.7, el: .78, d: Math.max(TW, TD) * (SMALL() ? 2.6 : 1.55) });
-const DK = z => { const c = centers[z]; return { x: c.x, z: c.z, az: { res: -.5, th: .5, com: -1.1, ind: .9 }[z], el: .62, d: Math.max(9, c.r * (SMALL() ? 3.1 : 2.1)) }; };
+const OV = () => ({ x: 0, z: 0, y: 0, az: -.7, el: .78, d: Math.max(TW, TD) * (SMALL() ? 2.6 : 1.55) });
+/* phones see a narrow slice, so aim at the buildings themselves rather than the middle of the district's land */
+const bmid = z => { city.updateMatrixWorld(true); const w = new THREE.Vector3(), a = { x: 0, z: 0, y: 0 }, bs = blocks.filter(b => b.z === z); bs.forEach(b => { b.m.getWorldPosition(w); a.x += w.x; a.z += w.z; a.y = Math.max(a.y, w.y); }); a.x /= bs.length; a.z /= bs.length; a.y *= .8; return a; };
+const DK = z => { const c = centers[z], m = SMALL() ? bmid(z) : c; return { x: m.x, z: m.z, y: m.y || 0, az: { res: -.5, th: .5, com: -1.1, ind: .9 }[z], el: .62, d: SMALL() ? Math.max(20, c.r * 3.9) : Math.max(9, c.r * 2.1) }; };
 const KEYS = () => [OV(), ...ZK.map(DK), OV()];
 let keys = KEYS();
 const st = Object.assign({}, keys[0]);
@@ -822,8 +836,8 @@ function frame(t) {
     const k = RM ? 1 : 1 - Math.pow(.003, dt);
     for (const q in tgt) st[q] = lerp(st[q], tgt[q], k);
     const az = st.az + smx * .15 + U.az, el = clamp(st.el + U.el, .22, 1.4), d = st.d * U.zm, cx = st.x + U.px, cz = st.z + U.pz;
-    cam.position.set(cx + Math.sin(az) * Math.cos(el) * d, Math.sin(el) * d, cz + Math.cos(az) * Math.cos(el) * d);
-    cam.lookAt(cx, 0, cz);
+    cam.position.set(cx + Math.sin(az) * Math.cos(el) * d, st.y + Math.sin(el) * d, cz + Math.cos(az) * Math.cos(el) * d);
+    cam.lookAt(cx, st.y, cz);
     const focusZ = idx >= 1 && idx <= 4 ? ZK[idx - 1] : null;
     blocks.forEach(b => {
       const on = b.i === hover || b.i === hot;
