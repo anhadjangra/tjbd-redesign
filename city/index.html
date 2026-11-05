@@ -126,7 +126,9 @@ main{transition:opacity .3s}
   #intro,.district{scroll-snap-align:start;scroll-snap-stop:always}
   #films,.sec{scroll-snap-align:start}
   .district{height:100svh}
-  .district .stick{height:100svh;align-items:flex-end;padding:0}
+  /* sticky makes its own stacking layer, so lift it: otherwise the next section, which peeks in when Safari's toolbar
+     collapses (the screen is then taller than 100svh), paints over the pinned sheet */
+  .district .stick{height:100svh;align-items:flex-end;padding:0;z-index:4}
   /* hidden sheets also get visibility:hidden: iOS still routes swipes to a scroller that is only
      pointer-events:none, so a hidden sheet stacked on top was swallowing the first swipe */
   #intro .box,.district .panel{position:fixed;left:0;right:0;bottom:0;z-index:4;opacity:0;visibility:hidden;transform:translateY(16px);pointer-events:none;transition:opacity .3s,transform .3s,visibility 0s .3s}
