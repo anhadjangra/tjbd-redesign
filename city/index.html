@@ -121,7 +121,11 @@ main{transition:opacity .3s}
   /* phones: the panels become bottom sheets and the top half of the screen is the city */
   /* one sheet pinned to the bottom of the screen: scrolling flies the camera and the
      sheet swaps its content in place, so it never travels up the screen half way */
-  .district{height:120svh}
+  /* one flick moves exactly one district: the page snaps to each district and can't skip past one */
+  html{scroll-snap-type:y mandatory}
+  #intro,.district{scroll-snap-align:start;scroll-snap-stop:always}
+  #films,.sec{scroll-snap-align:start}
+  .district{height:100svh}
   .district .stick{height:100svh;align-items:flex-end;padding:0}
   /* hidden sheets also get visibility:hidden: iOS still routes swipes to a scroller that is only
      pointer-events:none, so a hidden sheet stacked on top was swallowing the first swipe */
@@ -135,7 +139,7 @@ main{transition:opacity .3s}
   /* the project list swipes sideways on phones, so it never competes with the page's vertical scroll */
   .panel{max-height:none}
   /* swiped by our own touch handling (below), not native scrolling: iOS often ignores the first native swipe on a sheet that just appeared */
-  .panel ol{display:flex;gap:8px;overflow:visible;padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));touch-action:pan-y;transform:translateX(var(--tx,0px));will-change:transform}
+  .panel ol{display:flex;gap:8px;overflow:visible;padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));touch-action:none;transform:translateX(var(--tx,0px));will-change:transform}
   .panel ol.ease{transition:transform .35s cubic-bezier(.2,.7,.2,1)}
   .panel ol{border-top:0}
   .panel header{border-bottom:1px solid var(--rule)}
@@ -607,13 +611,15 @@ document.querySelectorAll('.panel ol').forEach(ol => {
   const set = (x, ease) => { tx = x; ol.classList.toggle('ease', !!ease); ol.style.setProperty('--tx', x.toFixed(1) + 'px'); };
   ol.addEventListener('pointerdown', e => {
     if (!PHONE.matches || e.pointerType === 'mouse') return;
-    id = e.pointerId; x0 = lastX = e.clientX; y0 = e.clientY; t0 = lastT = performance.now(); start = tx; dir = 0; moved = false; v = 0;
+    id = e.pointerId; try { ol.setPointerCapture(id); } catch (_) {}
+    x0 = lastX = e.clientX; y0 = e.clientY; t0 = lastT = performance.now(); start = tx; dir = 0; moved = false; v = 0;
     ol.classList.remove('ease');
   });
   ol.addEventListener('pointermove', e => {
     if (e.pointerId !== id) return;
     const dx = e.clientX - x0, dy = e.clientY - y0;
-    if (!dir && Math.hypot(dx, dy) > 6) dir = Math.abs(dx) > Math.abs(dy) ? 1 : -1;
+    /* the row owns every drag that starts on it (touch-action: none), so a slightly diagonal swipe can't scroll the page to another district */
+    if (!dir && Math.hypot(dx, dy) > 5) dir = 1;
     if (dir !== 1) return;
     moved = true;
     const now = performance.now(); v = (e.clientX - lastX) / Math.max(1, now - lastT); lastX = e.clientX; lastT = now;
@@ -625,7 +631,9 @@ document.querySelectorAll('.panel ol').forEach(ol => {
     if (e.pointerId !== id) return; id = null;
     if (dir !== 1) return;
     const lo = minTx(), l = lis(), step = l.length > 1 ? l[1].offsetLeft - l[0].offsetLeft : 1;
-    let k = Math.round(-(tx + v * 180) / step); k = clamp(k, 0, l.length - 1);
+    /* one card per swipe: a short swipe or a flick moves to the neighbouring card, never further */
+    const k0 = Math.round(-start / step), d = tx - start;
+    let k = Math.abs(d) > 30 || Math.abs(v) > .3 ? k0 + (d < 0 ? 1 : -1) : k0; k = clamp(k, 0, l.length - 1);
     set(clamp(-k * step, lo, 0), true);
   };
   ol.addEventListener('pointerup', end); ol.addEventListener('pointercancel', end);
