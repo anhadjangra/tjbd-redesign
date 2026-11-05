@@ -130,7 +130,12 @@ main{transition:opacity .3s}
   .panel h2{font-size:1.7rem}
   .panel .note{display:none}
   .panel .sum b{font-size:1.15rem}
-  .panel li:last-child button{padding-bottom:calc(7px + env(safe-area-inset-bottom,0px))}
+  /* the project list swipes sideways on phones, so it never competes with the page's vertical scroll */
+  .panel{max-height:none}
+  .panel ol{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));scroll-snap-type:x mandatory;scroll-padding-inline:16px;scrollbar-width:none;overscroll-behavior-x:contain}
+  .panel ol::-webkit-scrollbar{display:none}
+  .panel li{flex:0 0 min(80%,300px);scroll-snap-align:start}
+  .panel li button{border:1px solid var(--rule);border-radius:10px;padding:8px 10px;height:100%}
   #intro,#intro.wrap{min-height:100svh;padding-left:0;padding-right:0;padding-inline:0;padding-bottom:0;max-width:none;margin:0}
   #intro .box{max-width:none;width:100%;border-radius:16px 16px 0 0;border-width:1px 0 0;padding:18px 16px calc(16px + env(safe-area-inset-bottom,0px));gap:12px;box-shadow:0 -20px 40px -24px rgba(27,31,35,.4)}
   #intro h1{font-size:2.3rem}
@@ -446,14 +451,14 @@ document.querySelectorAll('[data-poster]').forEach(el => el.poster = BASE + el.d
 $('#caps').innerHTML = CAPS.map(c => `<li>${c}</li>`).join('');
 $('#stages').innerHTML = STAGES.map(s => `<li><b>${s[0]}</b><span>${s[1] === '—' ? '' : s[1]}</span><p>${s[2]}</p></li>`).join('');
 $('#teamgrid').innerHTML = TEAM.map(t => `<article><img src="${BASE}img/${t[2]}.jpg" alt="${t[0]}" loading="lazy"><b>${t[0]}</b><div class="k">${t[1]}</div><p>${t[3]}</p></article>`).join('');
-const byZ = Object.fromEntries(ZK.map(z => [z, P.map((p, i) => i).filter(i => P[i].cat === z).sort((a, b) => P[b].built - P[a].built)]));
+const byZ = Object.fromEntries(ZK.map(z => [z, P.map((p, i) => i).filter(i => P[i].cat === z).sort((a, b) => (P[a].builtTxt === '—') - (P[b].builtTxt === '—') || P[b].built - P[a].built)]));
 $('#legend').innerHTML = ZK.map(z => `<button type="button" data-z="${z}"><span class="sw" style="background:var(${Z[z].css})"></span><span>${Z[z].name}</span><b>${byZ[z].length}</b></button>`).join('');
 $('#legend').querySelectorAll('button').forEach(b => b.onclick = () => $('#d-' + b.dataset.z).scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }));
 $('#topnav').innerHTML = ZK.map(z => `<a href="#d-${z}"><span class="sw" style="background:var(${Z[z].css})"></span>${Z[z].name.split(' ')[0]}</a>`).join('') + '<a href="#films">Films</a><a href="#studio">Studio</a><a href="#team">Team</a>';
 $('#districts').innerHTML = ZK.map(z => {
   const ids = byZ[z], site = ids.reduce((a, i) => a + P[i].site, 0), built = ids.reduce((a, i) => a + P[i].built, 0);
   return `<section class="district" id="d-${z}" data-z="${z}" aria-label="${Z[z].name} projects"><div class="stick"><div class="panel" style="--zc:var(${Z[z].css})">
-    <header><div class="k">District · ${ids.length} projects · tallest first</div><h2>${Z[z].name}</h2><p class="note">${Z[z].blurb}</p>
+    <header><div class="k">District · ${ids.length} projects · largest floor area first</div><h2>${Z[z].name}</h2><p class="note">${Z[z].blurb}</p>
     <div class="sum"><div><b>${fmt(built)}</b><span class="k">Floor m² total</span></div><div><b>${fmt(site)}</b><span class="k">Site m² total</span></div></div></header>
     <ol>${ids.map(i => { const p = P[i]; return `<li><button type="button" data-i="${i}"><img src="${BASE}img/t/${p.imgs[0][0]}" alt="" loading="lazy"><span><span class="nm">${p.name}</span><span class="mt">${[p.loc, p.status].filter(Boolean).join(' · ') || '&nbsp;'}</span></span><span class="ar">${p.builtTxt}<small>Floor</small></span></button></li>`; }).join('')}</ol>
   </div></div></section>`;
