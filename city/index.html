@@ -1,0 +1,1240 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TJBD Portfolio City</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Tarun Jangra Building Designers. 27 projects drawn as one city: residential, townhouse, commercial and industrial work across South East Queensland.">
+<meta name="asset-base" content="../">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;900&family=Fragment+Mono&display=swap">
+<style>
+/* Layout: one fixed 3D city behind the page. Every project is a lot and a building, sized from its own site and floor area,
+   grouped into districts coloured the way a town-planning zoning map colours land use. Scroll flies district to district;
+   a panel lists that district's projects with their numbers. */
+:root{
+  --map:#E6E9E8;        /* planning-map paper */
+  --sheet:#FBFBFA;
+  --ink:#1B1F23;
+  --mute:#5F676E;
+  --rule:rgba(27,31,35,.14);
+  --z-res:#E3B93C;      /* zoning colours: the palette is the land-use legend */
+  --z-th:#E07B39;
+  --z-com:#D2434E;
+  --z-ind:#8463BF;
+  --act:var(--ink);
+  --display:"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif;
+  --mono:"Fragment Mono",ui-monospace,Menlo,monospace;
+  --gut:max(16px, env(safe-area-inset-left, 0px));
+  --gut-r:max(16px, env(safe-area-inset-right, 0px));
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--map);color:var(--ink);font-family:var(--display);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:clip}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+h1,h2,h3{font-weight:900;letter-spacing:-.035em;line-height:.92;margin:0;text-wrap:balance}
+p{margin:0;max-width:62ch}
+.k{font-family:var(--mono);font-size:.7rem;letter-spacing:.04em;text-transform:uppercase;color:var(--mute)}
+.wrap{padding-left:var(--gut);padding-right:var(--gut-r)}
+.inner{max-width:1320px;margin:0 auto}
+.btn{display:inline-flex;align-items:center;gap:.5em;padding:.7em 1.15em;border-radius:6px;background:var(--ink);color:var(--sheet);text-decoration:none;font-weight:700;font-size:.92rem;border:0;white-space:nowrap}
+.btn.o{background:transparent;color:var(--ink);border:1.5px solid var(--ink)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:2px;flex:none}
+
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;background:var(--map)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--map)}
+.bar{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px var(--gut-r) 12px var(--gut)}
+.bar .logo{height:24px;width:auto;display:block}
+.bar nav{display:flex;gap:4px;background:rgba(251,251,250,.85);backdrop-filter:blur(8px);border:1px solid var(--rule);border-radius:8px;padding:4px}
+.bar nav a{text-decoration:none;font-size:.86rem;font-weight:500;padding:.35em .7em;border-radius:5px;display:flex;align-items:center;gap:6px}
+.bar nav a:hover{background:var(--map)}
+@media (max-width:900px){.bar nav{display:none}.bar{background:rgba(251,251,250,.9);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);padding-top:10px;padding-bottom:10px}.bar .logo{height:22px}.bar .btn{padding:.6em 1em;font-size:.88rem}}
+main{position:relative;z-index:3}
+html:not(.grabbing) body{cursor:grab}
+html.grabbing,html.grabbing *{cursor:grabbing!important;user-select:none}
+.panel,.box,.sec,footer,header{cursor:auto}
+@media (hover: none){.hv{display:none}}
+@media (hover: hover){.tc{display:none}}
+.drag-hint{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:2;pointer-events:none;font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);background:rgba(251,251,250,.9);padding:.5em .8em;border-radius:6px;white-space:nowrap;transition:opacity .4s}
+.drag-hint.gone,.drag-hint.away{opacity:0}
+.xplore{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:6;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:0;border-radius:999px;background:var(--ink);color:var(--sheet);font:inherit;font-weight:700;font-size:.9rem;box-shadow:0 10px 30px -10px rgba(27,31,35,.5);transition:opacity .3s}
+.xplore.away{opacity:0;pointer-events:none}
+.xplore[hidden],.xtip[hidden]{display:none}
+@media (max-width:900px){.xplore{right:auto;left:max(16px,env(safe-area-inset-left,0px));bottom:auto;top:calc(74px + env(safe-area-inset-top,0px))}}
+.xtip{position:fixed;left:max(16px,env(safe-area-inset-left,0px));top:calc(128px + env(safe-area-inset-top,0px));z-index:6;max-width:250px;background:var(--ink);color:var(--sheet);font-size:.85rem;line-height:1.4;padding:10px 12px;border-radius:8px;box-shadow:0 10px 30px -10px rgba(27,31,35,.5);opacity:0;transform:translateY(-4px);transition:opacity .3s,transform .3s;pointer-events:none}
+.xtip::before{content:"";position:absolute;left:22px;top:-6px;width:12px;height:12px;background:inherit;transform:rotate(45deg);border-radius:2px}
+.xtip.on{opacity:1;transform:none}
+@media (min-width:901px){.xtip{left:auto;right:max(16px,env(safe-area-inset-right,0px));top:auto;bottom:calc(72px + env(safe-area-inset-bottom,0px))}.xtip::before{left:auto;right:30px;top:auto;bottom:-6px}}
+.xlayer{position:fixed;inset:0;z-index:5;touch-action:none;display:none}
+html.exploring{overflow:hidden}
+html.exploring .xlayer{display:block}
+html.exploring main{opacity:0;pointer-events:none}
+html.exploring .xplore{opacity:1;pointer-events:auto;background:var(--sheet);color:var(--ink);box-shadow:0 0 0 1.5px var(--ink),0 10px 30px -10px rgba(27,31,35,.5)}
+main{transition:opacity .3s}
+.xhint{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:6;pointer-events:none;font-family:var(--mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink);background:rgba(251,251,250,.92);padding:.5em .8em;border-radius:6px;white-space:nowrap;opacity:0;transition:opacity .3s}
+.xhint.on{opacity:1}
+.lbl{position:fixed;left:0;top:0;z-index:1;pointer-events:none;font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);background:rgba(251,251,250,.9);padding:.2em .5em;border-radius:3px;white-space:nowrap;display:flex;gap:6px;align-items:center;will-change:transform}
+.tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--sheet);padding:.5em .75em;border-radius:6px;font-size:.82rem;opacity:0;transition:opacity .12s;max-width:260px}
+.tip b{display:block;font-size:.95rem}
+.tip span{font-family:var(--mono);font-size:.68rem;opacity:.75}
+
+/* chapters */
+.ch{min-height:100vh;position:relative}
+#intro{min-height:100vh;display:flex;align-items:flex-end;padding-top:calc(72px + env(safe-area-inset-top,0px));padding-bottom:calc(32px + env(safe-area-inset-bottom,0px))}
+#intro .box{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:26px;max-width:600px;display:flex;flex-direction:column;gap:16px;box-shadow:0 30px 60px -40px rgba(27,31,35,.4)}
+#intro h1{font-size:clamp(2.4rem,5.6vw,4.8rem)}
+.legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 18px;border-top:1px solid var(--rule);padding-top:14px}
+.legend button{all:unset;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:.9rem}
+.legend button b{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:700}
+.legend button:hover span:not(.sw){text-decoration:underline}
+.legend button:focus-visible{outline:2px solid var(--ink)}
+.note{font-size:.78rem;color:var(--mute)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+
+.district{height:170vh;position:relative}
+.district .stick{position:sticky;top:0;height:100vh;display:flex;justify-content:flex-end;align-items:center;padding:calc(64px + env(safe-area-inset-top,0px)) var(--gut-r) 20px var(--gut);pointer-events:none}
+.panel{pointer-events:auto;width:min(440px,100%);max-height:100%;display:flex;flex-direction:column;background:var(--sheet);border:1px solid var(--rule);border-radius:10px;overflow:hidden;box-shadow:0 30px 60px -40px rgba(27,31,35,.45)}
+.panel header{padding:18px 18px 14px;border-top:6px solid var(--zc);display:flex;flex-direction:column;gap:8px}
+.panel h2{font-size:clamp(1.9rem,3.2vw,2.7rem)}
+.panel .sum{display:flex;gap:18px;flex-wrap:wrap}
+.panel .sum div{display:flex;flex-direction:column}
+.panel .sum b{font-size:1.35rem;font-variant-numeric:tabular-nums;line-height:1.1}
+.panel ol{list-style:none;margin:0;padding:0;overflow:auto;border-top:1px solid var(--rule);overscroll-behavior:contain}
+.panel li button{all:unset;cursor:pointer;box-sizing:border-box;width:100%;display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:12px;align-items:center;padding:9px 18px;border-bottom:1px solid var(--rule)}
+.panel li button:hover,.panel li button.hot{background:color-mix(in srgb,var(--zc) 16%,var(--sheet))}
+.panel li button:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
+.panel img{width:64px;height:48px;object-fit:cover;display:block;border-radius:3px}
+.panel .nm{font-weight:700;line-height:1.15;display:block}
+.panel .mt{font-family:var(--mono);font-size:.66rem;color:var(--mute);text-transform:uppercase;display:block;margin-top:2px}
+.panel .ar{text-align:right;font-variant-numeric:tabular-nums;font-size:.82rem;line-height:1.3;white-space:nowrap}
+.panel .ar small{display:block;font-family:var(--mono);font-size:.6rem;color:var(--mute);text-transform:uppercase}
+/* desktop: the district panel is pinned on the right and crossfades between districts
+   while scroll flies the camera, so a panel never slides off as the next one arrives */
+@media (min-width:761px){
+  .district .panel{position:fixed;right:var(--gut-r);top:calc(50% + 32px);max-height:calc(100vh - 104px);transform:translateY(calc(-50% + 16px));opacity:0;visibility:hidden;pointer-events:none;transition:opacity .3s,transform .3s,visibility 0s .3s;z-index:4}
+  .district .panel.on{opacity:1;visibility:visible;transform:translateY(-50%);pointer-events:auto;z-index:5;transition:opacity .3s,transform .3s,visibility 0s}
+}
+@media (max-width:760px){
+  /* phones: the panels become bottom sheets and the top half of the screen is the city */
+  /* one sheet pinned to the bottom of the screen: scrolling flies the camera and the
+     sheet swaps its content in place, so it never travels up the screen half way */
+  /* one flick moves exactly one district: the page snaps to each district and can't skip past one */
+  html{scroll-snap-type:y mandatory}
+  #intro,.district{scroll-snap-align:start;scroll-snap-stop:always}
+  #films,.sec{scroll-snap-align:start}
+  .district{height:100svh}
+  /* sticky makes its own stacking layer, so lift it: otherwise the next section, which peeks in when Safari's toolbar
+     collapses (the screen is then taller than 100svh), paints over the pinned sheet */
+  .district .stick{height:100svh;align-items:flex-end;padding:0;z-index:4}
+  /* hidden sheets also get visibility:hidden: iOS still routes swipes to a scroller that is only
+     pointer-events:none, so a hidden sheet stacked on top was swallowing the first swipe */
+  #intro .box,.district .panel{position:fixed;left:0;right:0;bottom:0;z-index:4;opacity:0;visibility:hidden;transform:translateY(16px);pointer-events:none;transition:opacity .3s,transform .3s,visibility 0s .3s}
+  #intro .box.on,.district .panel.on{opacity:1;visibility:visible;transform:none;pointer-events:auto;z-index:5;transition:opacity .3s,transform .3s,visibility 0s}
+  .panel{width:100%;max-height:min(50svh,460px);border-radius:16px 16px 0 0;border-width:1px 0 0;box-shadow:0 -20px 40px -24px rgba(27,31,35,.4)}
+  .panel header{padding:12px 16px 10px;gap:4px}
+  .panel h2{font-size:1.7rem}
+  .panel .note{display:none}
+  .panel .sum b{font-size:1.15rem}
+  /* the project list swipes sideways on phones, so it never competes with the page's vertical scroll */
+  .panel{max-height:none}
+  /* swiped by our own touch handling (below), not native scrolling: iOS often ignores the first native swipe on a sheet that just appeared */
+  .panel ol{display:flex;gap:8px;overflow:visible;padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));touch-action:none;transform:translateX(var(--tx,0px));will-change:transform}
+  .panel ol.ease{transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+  .panel ol{border-top:0}
+  .panel header{border-bottom:1px solid var(--rule)}
+  .panel ol::-webkit-scrollbar{display:none}
+  .panel li{flex:0 0 min(86%,320px)}
+  .panel li button{border:1px solid var(--rule);border-radius:10px;padding:8px 10px;height:62px}
+  /* name gets the full width of the card; status and floor area share the second line */
+  .panel li button{grid-template-columns:52px minmax(0,1fr) auto;grid-template-rows:auto auto;column-gap:10px;row-gap:2px;align-content:center}
+  .panel li button > span:nth-child(2){display:contents}
+  .panel li button img{grid-row:1/3;grid-column:1}
+  .panel li .nm{grid-column:2/4;grid-row:1;min-width:0}
+  .panel li .mt{grid-column:2;grid-row:2;min-width:0}
+  .panel li .ar{grid-column:3;grid-row:2;display:flex;gap:4px;align-items:baseline;font-size:.8rem}
+  .panel li .ar small{display:inline}
+  .panel li .nm,.panel li .mt{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #intro,#intro.wrap{min-height:100svh;padding-left:0;padding-right:0;padding-inline:0;padding-bottom:0;max-width:none;margin:0}
+  #intro .box{max-width:none;width:100%;border-radius:16px 16px 0 0;border-width:1px 0 0;padding:18px 16px calc(16px + env(safe-area-inset-bottom,0px));gap:12px;box-shadow:0 -20px 40px -24px rgba(27,31,35,.4)}
+  #intro h1{font-size:2.3rem}
+  #intro .box > p{font-size:.95rem;line-height:1.45}
+  #intro .box > p.note{font-size:.72rem;line-height:1.4}
+  .legend{gap:4px 14px;padding-top:10px}
+  .legend button{font-size:.85rem}
+  .panel li button{grid-template-columns:52px minmax(0,1fr) auto;padding:7px 14px}
+  .panel img{width:52px;height:39px}
+}
+
+/* plain sections */
+.sec{background:var(--sheet);padding-block:clamp(72px,10vw,130px);position:relative;border-top:1px solid var(--rule)}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:clamp(24px,4vw,44px)}
+.sec-head h2{font-size:clamp(2.2rem,5vw,4.2rem);max-width:15ch}
+.sec-head p{color:var(--mute)}
+.films{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.films figure{margin:0;display:flex;flex-direction:column;gap:10px}
+.films video{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;border-radius:8px;background:#ccc}
+.films b{font-size:1.15rem}
+@media (max-width:760px){.films{grid-template-columns:1fr}}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,80px)}
+@media (max-width:760px){.split{grid-template-columns:1fr}}
+.lead{font-size:clamp(1.5rem,2.6vw,2.2rem);font-weight:700;letter-spacing:-.025em;line-height:1.1}
+.about p+p{margin-top:12px}
+.about p:not(.lead){color:#3b4248}
+.chips{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:18px 0 0;padding:0}
+.chips li{border:1px solid var(--rule);border-radius:999px;padding:.3em .85em;font-size:.88rem}
+.stages{list-style:none;margin:0;padding:0;counter-reset:s;border-top:1px solid var(--rule)}
+.stages li{display:grid;grid-template-columns:40px 1fr auto;gap:10px;padding:12px 0;border-bottom:1px solid var(--rule);counter-increment:s;align-items:baseline}
+.stages li::before{content:counter(s,decimal-leading-zero);font-family:var(--mono);font-size:.75rem;color:var(--mute)}
+.stages b{font-weight:700}
+.stages span{font-family:var(--mono);font-size:.7rem;color:var(--mute)}
+.stages p{grid-column:2/4;color:var(--mute);font-size:.9rem}
+.ndis{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ndis img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;border-radius:8px}
+.ndis h3{font-size:1.4rem;margin-top:8px;letter-spacing:-.02em}
+@media (max-width:760px){.ndis{grid-template-columns:1fr}}
+/* ---------- team: the studio as a white card model, like the sun study house. Scroll walks desk to desk ---------- */
+.office{position:relative;background:#E4E6E2;border-top:1px solid var(--rule)}
+.ostage{position:sticky;top:0;height:100svh;overflow:hidden;z-index:2}
+#ogl{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:pointer}
+.osteps{margin-top:-100svh}
+.ostep{height:100svh}
+.ohead{position:absolute;top:calc(env(safe-area-inset-top,0px) + 78px);left:0;right:0;pointer-events:none}
+.ohead h2{font-size:clamp(2.2rem,5vw,4.2rem);margin-top:8px;max-width:12ch;transition:opacity .4s,transform .4s}
+.office.at .ohead h2{opacity:0;transform:translateY(-10px)}
+.olabels{position:absolute;inset:0;pointer-events:none}
+.olabels button{position:absolute;left:0;top:0;pointer-events:auto;font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;text-transform:uppercase;background:var(--sheet);border:1px solid var(--rule);border-radius:4px;padding:3px 7px;white-space:nowrap;transition:opacity .3s,background .3s,color .3s;will-change:transform}
+.olabels button.on{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+.olabels button:hover{border-color:var(--ink)}
+.ocard{position:absolute;right:max(var(--gut-r),4vw);top:calc(50% + 28px);transform:translateY(-50%);width:min(380px,34vw);background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:14px;box-shadow:0 22px 44px -26px rgba(27,31,35,.45)}
+.ocard .sw8{transition:opacity .2s,transform .2s}
+.ocard.fade .sw8{opacity:0;transform:translateY(6px)}
+.ocard .ph{height:clamp(170px,34svh,330px);border-radius:6px;overflow:hidden;background:var(--map)}
+.ocard .ph img{width:100%;height:100%;object-fit:cover;object-position:50% 22%;display:block}
+.ocard .tx{padding:12px 2px 0}
+.ocard h3{font-size:clamp(1.5rem,2.2vw,2rem);margin-top:4px}
+.ocard p{color:var(--mute);font-size:.92rem;line-height:1.45;margin-top:8px}
+.ocard .faces{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
+.ocard .faces button{padding:0;border:0;background:var(--map);border-radius:6px;overflow:hidden;aspect-ratio:1;position:relative}
+.ocard .faces img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block}
+.ocard .faces span{position:absolute;left:4px;bottom:4px;font-family:var(--mono);font-size:.6rem;text-transform:uppercase;background:var(--sheet);border-radius:3px;padding:1px 4px}
+.ocard nav{display:flex;justify-content:space-between;align-items:center;margin-top:12px;border-top:1px solid var(--rule);padding-top:10px}
+.ocard nav div{display:flex;gap:6px}
+.ocard nav button{border:1.5px solid var(--ink);background:transparent;border-radius:6px;width:40px;height:34px;font-size:1rem;line-height:1}
+.ocard nav button:disabled{opacity:.3;cursor:default}
+.ofall{display:none}
+.office.flat .ostage,.office.flat .osteps{display:none}
+.office.flat .ofall{display:block}
+@media (max-width:760px){
+  .ostep{scroll-snap-align:start;scroll-snap-stop:always}
+  .ohead{top:calc(env(safe-area-inset-top,0px) + 62px)}
+  .ohead h2{font-size:1.7rem}
+  .ohead{transition:opacity .3s}
+  .office.at .ohead{opacity:0}
+  .olabels button{font-size:.6rem;padding:2px 5px}
+  .ocard{left:0;right:0;bottom:0;top:auto;transform:none;width:auto;border-radius:16px 16px 0 0;border-width:1px 0 0;padding:12px var(--gut-r) calc(12px + env(safe-area-inset-bottom,0px)) var(--gut);box-shadow:0 -20px 40px -24px rgba(27,31,35,.4)}
+  .ocard .sw8.person{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:start}
+  .ocard .person .ph{height:120px}
+  .ocard .person .tx{padding:0}
+  .ocard h3{font-size:1.45rem}
+  .ocard p{font-size:.88rem;margin-top:6px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  .ocard .faces{grid-template-columns:repeat(6,1fr);gap:4px;margin-top:10px}
+  .ocard .faces span{display:none}
+  .ocard nav{margin-top:10px;padding-top:8px}
+  .ocard nav button{width:46px;height:38px}
+}
+.team{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.team img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;border-radius:8px}
+.team b{display:block;margin-top:8px;line-height:1.2}
+.team p{font-size:.8rem;color:var(--mute);line-height:1.4;margin-top:4px}
+@media (max-width:1000px){.team{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:560px){.team{grid-template-columns:repeat(2,minmax(0,1fr))}.team p{display:none}}
+#contact{background:var(--ink);color:var(--sheet)}
+#contact .k{color:#a8afb4}
+#contact h2{font-size:clamp(3rem,9vw,8rem);letter-spacing:-.05em}
+.lines{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin-top:36px;border-top:1px solid rgba(251,251,250,.18);padding-top:20px}
+.lines div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.lines a,.lines span.v{text-decoration:none;font-size:1.05rem;overflow-wrap:anywhere}
+.copy{align-self:flex-start;background:transparent;border:1px solid rgba(251,251,250,.3);border-radius:4px;padding:.2em .6em;font-family:var(--mono);font-size:.62rem;text-transform:uppercase;color:var(--sheet)}
+#contact .btn{background:var(--sheet);color:var(--ink)}
+@media (max-width:860px){.lines{grid-template-columns:1fr 1fr}}
+@media (max-width:480px){.lines{grid-template-columns:1fr}}
+footer{background:var(--ink);color:#a8afb4;font-size:.8rem;padding-block:20px calc(20px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(251,251,250,.12);position:relative;z-index:1}
+footer .inner{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer .social{display:flex;gap:16px}footer a{text-decoration:none}
+
+/* project story: a full-screen takeover */
+dialog#pd{border:0;padding:0;width:100vw;height:100dvh;max-width:100vw;max-height:100dvh;margin:0;inset:0;background:var(--ink);color:var(--sheet);overflow:hidden}
+dialog#pd::backdrop{background:var(--ink)}
+dialog#pd[open]{animation:pdIn .35s cubic-bezier(.2,.7,.2,1)}
+@keyframes pdIn{from{opacity:0;transform:scale(1.02)}to{opacity:1;transform:none}}
+.pd-scroll{height:100%;overflow-y:auto;overscroll-behavior:contain;outline:0}
+.pd-top{position:fixed;top:0;left:0;right:0;z-index:3;display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));pointer-events:none}
+.pd-top > *{pointer-events:auto}
+.glass{background:rgba(17,17,17,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#FBFBFA;border:0;border-radius:8px;min-height:44px;display:inline-flex;align-items:center;gap:10px;padding:0 16px;font-weight:700;font-size:.92rem;text-decoration:none}
+.glass.i{width:44px;padding:0;justify-content:center}
+.glass .k{color:#E6E9E8}
+.pd-arrows{display:flex;gap:8px}
+.pd-hero{position:relative;height:100dvh;min-height:560px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+.pd-hero > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pd-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(17,17,17,.5) 0%,rgba(17,17,17,0) 22%,rgba(17,17,17,0) 42%,rgba(17,17,17,.88) 84%)}
+.pd-cap{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));max-width:1440px;width:100%;margin:0 auto;padding-inline:clamp(16px,3vw,40px)}
+.pd-cap .k{color:#E6E9E8}
+.pd-cap h2{font-size:clamp(3rem,9vw,8.4rem);letter-spacing:-.05em;line-height:.86;margin-top:12px;max-width:12ch}
+.pd-nums{display:flex;gap:clamp(18px,3vw,36px);padding-bottom:8px}
+.pd-nums div{display:flex;flex-direction:column}
+.pd-nums b{font-size:clamp(1.6rem,3vw,2.6rem);letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1.05}
+.pd-peek{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;height:110px;margin-top:36px;padding-inline:clamp(16px,3vw,40px);max-width:1440px;width:100%;margin-inline:auto}
+.pd-peek button{all:unset;cursor:pointer;display:block;height:150px;border-radius:8px 8px 0 0;overflow:hidden}
+.pd-peek button:focus-visible{outline:2px solid #FBFBFA;outline-offset:2px}
+.pd-peek img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.pd-peek button:hover img{transform:scale(1.03)}
+.pd-body{background:var(--sheet);color:var(--ink);position:relative}
+.pd-band{height:8px;background:var(--zc,var(--ink))}
+.pd-inner{max-width:1440px;margin:0 auto;padding:clamp(40px,6vw,88px) clamp(16px,3vw,40px)}
+.pd-story{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(28px,5vw,80px)}
+.pd-story .lead{font-size:clamp(1.2rem,1.8vw,1.55rem);line-height:1.4;font-weight:500;letter-spacing:-.01em;color:var(--ink)}
+.pd-story dl{margin:0;border-top:1px solid var(--rule)}
+.pd-story dl div{display:grid;grid-template-columns:130px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid var(--rule)}
+.pd-story dt{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;color:var(--mute);padding-top:3px}
+.pd-story dd{margin:0;font-variant-numeric:tabular-nums}
+.pd-rank{margin-top:22px;display:flex;flex-direction:column;gap:6px}
+.pd-rank .bars{display:grid;grid-template-columns:minmax(0,150px) 1fr 64px;gap:5px 10px;align-items:center;font-size:.82rem}
+.pd-rank .bars i{display:block;height:8px;border-radius:2px;background:#C9CDD0}
+.pd-rank .bars .me{font-weight:700}
+.pd-rank .bars .me i{background:var(--zc)}
+.pd-rank .bars span:nth-child(3n){text-align:right;font-variant-numeric:tabular-nums}
+.pd-gal{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:clamp(36px,5vw,64px)}
+.pd-gal img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block;border-radius:8px}
+.pd-gal img:first-child:nth-last-child(odd),.pd-gal img.wide{grid-column:1/-1;aspect-ratio:16/8}
+.pd-next{display:block;position:relative;height:clamp(260px,40vh,420px);overflow:hidden;color:#FBFBFA;text-decoration:none;cursor:pointer;border:0;padding:0;width:100%;background:#111;font:inherit;text-align:left}
+.pd-next img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.7;transition:opacity .3s,transform .6s}
+.pd-next:hover img{opacity:.9;transform:scale(1.02)}
+.pd-next span.c{position:absolute;left:clamp(16px,3vw,40px);right:clamp(16px,3vw,40px);bottom:clamp(20px,3vw,40px);display:flex;flex-direction:column;gap:8px}
+.pd-next .k{color:#E6E9E8}
+.pd-next b{font-size:clamp(2.2rem,6vw,5.4rem);font-weight:900;letter-spacing:-.045em;line-height:.9}
+@media (max-width:760px){
+  .pd-top .glass.back span{display:none}
+  .pd-chip{display:none!important}
+  .pd-story{grid-template-columns:1fr}
+  .pd-gal{grid-template-columns:1fr}
+  .pd-gal img.wide{aspect-ratio:3/2}
+  .pd-peek{grid-template-columns:repeat(2,minmax(0,1fr));height:90px}
+  .pd-peek button:nth-child(3){display:none}
+}
+.pd-end{padding:clamp(56px,9vh,96px) 16px calc(clamp(72px,12vh,120px) + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;background:var(--ink);color:#FBFBFA}
+.pd-end .orb{position:relative;width:76px;height:76px;display:grid;place-items:center;transform:scale(calc(1 + var(--pp,0) * .35))}
+.pd-end .orb svg.ring{position:absolute;inset:0;transform:rotate(-90deg)}
+.pd-end .orb svg.ring circle{fill:none;stroke-width:2}
+.pd-end .orb .bg{stroke:rgba(251,251,250,.18)}
+.pd-end .orb .fg{stroke:var(--zc,#FBFBFA);stroke-dasharray:226.2;stroke-dashoffset:calc(226.2 - var(--pp,0) * 226.2);stroke-linecap:round}
+.pd-end .orb .ar{transform:translateY(calc(var(--pp,0) * 6px))}
+.pd-end b{font-size:1.05rem}
+.pd-end .k{color:#A8AFB4}
+#pd .pd-scroll > *{transform:translateY(calc(var(--pp,0) * -36px))}
+/* the portal: a hole that opens from the centre and shows the city underneath */
+#pd.pressing{-webkit-mask:radial-gradient(circle at 50% 100%,transparent var(--hr,0px),#000 calc(var(--hr,0px) + .5px));mask:radial-gradient(circle at 50% 100%,transparent var(--hr,0px),#000 calc(var(--hr,0px) + .5px))}
+#pd.pressing::backdrop{background:transparent}
+.pd-portal{position:fixed;left:50%;top:100%;width:calc(var(--hr,0px) * 2 + 8px);height:calc(var(--hr,0px) * 2 + 8px);transform:translate(-50%,-50%);border-radius:50%;border:4px solid var(--zc,#FBFBFA);pointer-events:none;opacity:0;z-index:5}
+#pd.pressing .pd-portal{opacity:1}
+#pd.leaving{transition:opacity .25s;opacity:0}
+@media (prefers-reduced-motion: reduce){#pd .pd-scroll > *,.pd-end .orb,.pd-end .orb .ar{transform:none}#pd.leaving{transition:none}}
+@media (prefers-reduced-motion: reduce){dialog#pd[open]{animation:none}}
+body.nogl .district .stick{position:relative;height:auto;justify-content:center}body.nogl .district{height:auto;padding-block:40px}
+</style>
+
+<header class="bar">
+  <a href="#top" aria-label="Tarun Jangra Building Designers, back to top"><img class="logo" data-src="media/logo-black.png" src="../media/logo-black.png" alt="Tarun Jangra Building Designers" width="705" height="129"></a>
+  <nav aria-label="Districts and sections" id="topnav"></nav>
+  <a class="btn" href="#contact">Start a project</a>
+</header>
+<canvas id="gl" aria-hidden="true"></canvas>
+<div id="labels" aria-hidden="true"></div>
+<div class="tip" id="tip"></div>
+
+<main id="top">
+  <section id="intro" class="ch wrap" aria-label="Introduction">
+    <div class="box">
+      <div class="k">Tarun Jangra Building Designers · Brisbane</div>
+      <h1>27 projects. One city.</h1>
+      <p>Every building here is one of our projects. Each sits on a lot sized from its real site area and grows taller with its floor area. <span class="hv">Hover a building to see which it is, click to open it, drag to look around, or scroll to tour the districts.</span><span class="tc">Tap a building to open it, or scroll to tour the districts.</span></p>
+      <div class="legend" id="legend"></div>
+      <div class="row"><a class="btn" href="#d-res">Start the tour</a><a class="btn o" href="#contact">Talk to Tarun</a></div>
+      <p class="note">Sizes are indicative and drawn to one scale from each project's published site and floor areas. Where a figure isn't published, the block is estimated and marked as such.</p>
+    </div>
+  </section>
+  <div id="districts"></div>
+
+  <section id="films" class="sec wrap" aria-label="Films">
+    <div class="inner">
+      <div class="sec-head"><div><div class="k">Films</div><h2>Three projects in motion.</h2></div></div>
+      <div class="films">
+        <figure><video muted loop playsinline preload="none" data-poster="media/tesla-poster.jpg" data-src="media/tesla-drone.mp4" data-src-m="media/tesla-drone-m.mp4" aria-label="Drone film of Tesla Burleigh Heads"></video><figcaption><div class="k">Drone film · Industrial</div><b>Tesla Burleigh Heads</b></figcaption></figure>
+        <figure><video muted loop playsinline preload="none" data-poster="media/grassdale-poster.jpg" data-src="media/grassdale.mp4" data-src-m="media/grassdale-m.mp4" aria-label="Walk-around of the Grassdale Residence"></video><figcaption><div class="k">Walk-around · Residential</div><b>Grassdale Residence</b></figcaption></figure>
+        <figure><video muted loop playsinline preload="none" data-poster="media/grout-poster.jpg" data-src="media/grout-reel.mp4" data-src-m="media/grout-reel-p.mp4" aria-label="Grout Street Offices, sketch to render"></video><figcaption><div class="k">Sketch to render · Commercial</div><b>Grout Street Offices</b></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="studio" class="sec wrap" aria-label="Studio and process">
+    <div class="inner split">
+      <div class="about">
+        <div class="k">Studio · Est. 1999 · Brisbane since 2006</div>
+        <p class="lead" style="margin-top:12px">We go beyond the mere construction of structures. We craft experiences.</p>
+        <p style="margin-top:18px">Led by principal Tarun Jangra, TJBD is a team of passionate building designers who specialise in residential, commercial and industrial projects. We prioritise collaboration and communication to exceed client expectations.</p>
+        <p>Each design is thought through to resonate with the people who use it. Whether it shapes a quiet moment inside a home or a landmark on a busy street, the aim is the same: places that inspire and enrich lives.</p>
+        <ul class="chips" id="caps"></ul>
+      </div>
+      <div><div class="k" style="margin-bottom:10px">Six stages, one team</div><ol class="stages" id="stages"></ol></div>
+    </div>
+  </section>
+
+  <section id="ndis" class="sec wrap" aria-label="NDIS compliant homes" style="border-top:0;padding-top:0">
+    <div class="inner">
+      <div class="sec-head"><div><div class="k">Special mention</div><h2>NDIS compliant homes</h2></div><p>Specialist Disability Accommodation designed to NDIS requirements, built to feel like home.</p></div>
+      <div class="ndis">
+        <article><img data-src="img/ndis-mcgregor.jpg" alt="Robust category SDA residence, McGregor Street, Kippa Ring" loading="lazy"><div class="k" style="margin-top:10px">SDA · Robust category</div><h3>McGregor Street, Kippa Ring</h3></article>
+        <article><img data-src="img/ndis-oxley.jpg" alt="High physical support SDA residence, Oxley Avenue, Redcliffe" loading="lazy"><div class="k" style="margin-top:10px">SDA · High physical support</div><h3>Oxley Avenue, Redcliffe</h3></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="team" class="office" aria-label="Team">
+    <div class="ostage">
+      <canvas id="ogl" aria-hidden="true"></canvas>
+      <div class="olabels" id="olabels"></div>
+      <div class="ohead wrap"><div class="k">People · The studio at 1:50</div><h2>Six desks, one studio.</h2></div>
+      <article class="ocard" id="ocard" aria-live="polite"></article>
+    </div>
+    <div class="osteps" id="osteps" aria-hidden="true"></div>
+    <div class="ofall sec wrap"><div class="inner"><div class="sec-head"><div><div class="k">People</div><h2>Directors, associate &amp; graduates</h2></div></div><div class="team" id="teamgrid"></div></div></div>
+  </section>
+
+  <section id="contact" class="sec wrap" aria-label="Contact">
+    <div class="inner">
+      <div class="k">Get in touch</div>
+      <h2 style="margin-top:10px">Add yours to the map.</h2>
+      <div class="lines">
+        <div><span class="k">Call</span><a href="tel:+61431287724">0431 287 724</a><button class="copy" type="button" data-copy="0431 287 724">Copy</button></div>
+        <div><span class="k">Call</span><a href="tel:+61481861415">0481 861 415</a><button class="copy" type="button" data-copy="0481 861 415">Copy</button></div>
+        <div><span class="k">Email</span><a href="mailto:tarun@tjbuildingdesigners.com.au">tarun@tjbuildingdesigners.com.au</a><button class="copy" type="button" data-copy="tarun@tjbuildingdesigners.com.au">Copy</button></div>
+        <div><span class="k">Visit</span><span class="v">71 Kempsie Rd, Upper Mt Gravatt QLD 4122</span></div>
+      </div>
+      <div style="margin-top:32px"><a class="btn" href="https://tjbuildingdesigners.com.au/contact-us" target="_blank" rel="noopener">Start your project</a></div>
+    </div>
+  </section>
+</main>
+<footer class="wrap"><div class="inner"><span>© 2026 Tarun Jangra Building Designers · Brisbane, the Gold Coast, the Sunshine Coast, Moreton Bay and the Lockyer Valley</span><span class="social"><a href="https://www.instagram.com/tjbuildingdesigners" target="_blank" rel="noopener">Instagram ↗</a><a href="https://www.facebook.com/tjbuildingdesigners" target="_blank" rel="noopener">Facebook ↗</a><a href="https://www.linkedin.com/company/tj-building-designers" target="_blank" rel="noopener">LinkedIn ↗</a></span></div></footer>
+
+<dialog id="pd" aria-labelledby="pdname">
+  <div class="pd-top">
+    <button class="glass back" type="button" id="pdx" aria-label="Back to the city"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg><span>Back to the city</span></button>
+    <div class="glass pd-chip" id="pdchip"></div>
+    <div class="pd-arrows"><button class="glass i" type="button" id="pdprev" aria-label="Previous project"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg></button><button class="glass i" type="button" id="pdnext" aria-label="Next project"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg></button></div>
+  </div>
+  <div class="pd-scroll" id="pdscroll" tabindex="-1" autofocus>
+    <header class="pd-hero">
+      <img id="pdimg" alt="">
+      <div class="pd-cap">
+        <div><div class="k" id="pdmeta"></div><h2 id="pdname"></h2></div>
+        <div class="pd-nums" id="pdnums"></div>
+      </div>
+      <div class="pd-peek" id="pdpeek"></div>
+    </header>
+    <div class="pd-body">
+      <div class="pd-band"></div>
+      <div class="pd-inner">
+        <div class="pd-story">
+          <div><div class="k" style="margin-bottom:14px">The project</div><p class="lead" id="pddesc"></p></div>
+          <div><dl id="pdspecs"></dl><div class="pd-rank"><span class="k" id="pdrankk"></span><div class="bars" id="pdrank"></div></div></div>
+        </div>
+        <div class="pd-gal" id="pdgal"></div>
+      </div>
+      <button class="pd-next" type="button" id="pdnextbig"><img id="pdnextimg" alt=""><span class="c"><span class="k" id="pdnextk"></span><b id="pdnextname"></b></span></button>
+      <div class="pd-end" aria-hidden="true"><div class="orb"><svg class="ring" width="76" height="76" viewBox="0 0 76 76"><circle class="bg" cx="38" cy="38" r="36"/><circle class="fg" cx="38" cy="38" r="36"/></svg><svg class="ar" width="22" height="22" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2v11M3.5 8.5L8 13l4.5-4.5"/></svg></div><b>Keep scrolling to return to the city</b><span class="k">Or press Esc</span></div>
+    </div>
+  </div>
+<div class="pd-portal" aria-hidden="true"></div>
+</dialog>
+
+<script>
+const PROJECTS=[{"slug": "tesla-ern-harley-drive", "name": "Tesla Burleigh Heads", "loc": "Burleigh Heads", "cat": "ind", "status": "Completed", "desc": "The Tesla showroom located at 6 Ern Harley Drive, Burleigh Heads is a newly delivered automotive retail facility with a total gross floor area of 4,912.92 m². The development has been designed in accordance with Tesla’s global showroom standards, ensuring consistency with the brand’s international identity and customer experience. The facility integrates vehicle display, customer service, and delivery functions within a cohesive layout. Architecturally, the building presents a contemporary form that reflects Tesla’s core values of innovation, precision, and forward-thinking design, creating a refined and high-performance retail environment aligned with the brand’s vision.", "specs": [["Site area", "12,212 m²"], ["Site cover", "50.6 %"], ["Status", "Completed"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["tesla-ern-harley-drive-1.jpg", 1600, 1066], ["tesla-ern-harley-drive-2.jpg", 1600, 1067], ["tesla-ern-harley-drive-3.jpg", 1600, 1066], ["tesla-ern-harley-drive-4.jpg", 1600, 1280]]}, {"slug": "562-grassdale-road-gumdale", "name": "Grassdale Residence", "loc": "Gumdale", "cat": "res", "status": "Design Phase", "desc": "This elegant two storey home influenced by french provincial design with a grand entrance framed by columns and a decorative pediment. The symmetrical layout creates balance and uniformity, with arched windows and detailed trim work giving the home its classical character. Wrought iron balcony handrails add a touch of sophistication to the upper level facade treatment. The home is organised with a central living area and two side wings that house the family room, study and guest bedroom. The layout provides clear separation between entertaining spaces and private family areas. The design works well on a large block, with covered verandahs at the rear extending the living space outdoors.", "specs": [["Built-up area", "897.8 m²"], ["Status", "Design Phase"]], "imgs": [["562-grassdale-road-gumdale-1.jpg", 1600, 1143], ["562-grassdale-road-gumdale-2.jpg", 1600, 1143], ["562-grassdale-road-gumdale-3.jpg", 1600, 1067]]}, {"slug": "grout-street-macgregor", "name": "Grout Street Offices", "loc": "MacGregor", "cat": "com", "status": "Design Stage", "desc": "The radically contemporary offices located on Grout Street offer a unique alternative to the established style of office. The bold formatic approach with the smooth rounded corner makes for a welcoming building, combined with the abundant use of natural materials such as timber and stone throughout the entirety of the building. The unique form combined with the other facades allows for privacy for the occupants from the surrounding site, but still allows for natural daylighting to occur deep within the floorplate. The organisation of the program allows for both ample parking space, with a safe and interesting pedestrian entry that can be easily identified from both the street and within the carpark. This also allows for a large amount of space dedicated to greenery on the lower floors, activating the ground floor.", "specs": [["Site area", "612.6 m²"], ["Built-up area", "369.5 m²"], ["Status", "Design Stage"]], "imgs": [["grout-street-macgregor-1.jpg", 1600, 1131], ["grout-street-macgregor-2.jpg", 1600, 1067], ["grout-street-macgregor-3.jpg", 1600, 1131], ["grout-street-macgregor-4.jpg", 1600, 1067]]}, {"slug": "378-380-redbank-plains", "name": "Redbank Plains Townhouses", "loc": "Redbank Plains", "cat": "th", "status": "DA Stage", "desc": "Discover modern living at its finest in Redbank Plains, Queensland. TJ Building Designers present a luxuriously designed residential community across 7169m² with light-filled homes throughout without compromising on density which also brings vertical rhythm and streetscape presence to the composition. This carefully designed Community Living ensures each residence benefits from adequate building setbacks, ventilation, and natural surroundings. Beyond your front door, ample space for communal area awaits to unwind, connect with neighbours, and enjoy the lifestyle you deserve. This is more than a development; it’s a place to belong. A rare collection of architecturally designed townhouses in Redbank Plains, crafted for those who are seeking luxurious lifestyle, connection with nature and community.", "specs": [["Site area", "7169 m²"], ["Status", "DA Stage"], ["Builder", "Signature Homes"]], "imgs": [["378-380-redbank-plains-1.jpg", 1600, 1131], ["378-380-redbank-plains-2.jpg", 1600, 800]]}, {"slug": "tesla-flinders-lane", "name": "Tesla Maroochydore", "loc": "Maroochydore", "cat": "ind", "status": "Construction Phase", "desc": "The Tesla Showroom at Lot 409, Flinders Lane in Maroochydore is a purpose-built automotive retail and service facility, encompassing a total gross floor area of 3,010.4 m² with a site coverage of approximately 49.6%. Its architectural simplicity is intentionally designed to contrast with the advanced technology it represents. A generous glazed façade creates a strong visual connection between the street and the interior. Inside, the spatial layout carefully guides visitors through a curated and immersive brand experience. From the sequence of arrival to the selection of materials and finishes, every element reflects Tesla’s commitment to technology infused with luxury and defined by simplicity..", "specs": [["Built-up area", "3,010.4 m²"], ["Status", "Construction Phase"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["tesla-flinders-lane-1.jpg", 1600, 686], ["tesla-flinders-lane-2.jpg", 1600, 592], ["tesla-flinders-lane-3.jpg", 1600, 694], ["tesla-flinders-lane-4.jpg", 1600, 547]]}, {"slug": "jasper-street", "name": "Jasper Street", "loc": "", "cat": "res", "status": "Design Stage", "desc": "An innovative contemporary form of differing volumes with a calculated use of materials, this residence is the culmination of local site context mixed with a high degree of luxury. Opting to use a significant amount of glass on the facade means that the home is well lit with an abundance of natural light, complimented by beautiful views of the whites hill reserve from the front balcony and living room. The interior finishes reinforce luxury living in the home, with a strong selection of soft natural materials that compliment the natural light being filtered through to the interior spaces. A large double height space opens up the open plan kitchen/living/dining room, creating a living central node for the home.", "specs": [["Site area", "728 m²"], ["Built-up area", "755 m²"], ["Status", "Design Stage"], ["Engineer", "SECS Engineering"]], "imgs": [["jasper-street-1.jpg", 1600, 1200], ["jasper-street-2.jpg", 1600, 1200], ["jasper-street-3.jpg", 1600, 1200], ["jasper-street-4.jpg", 1600, 1200]]}, {"slug": "chandler-house", "name": "Chandler House", "loc": "", "cat": "res", "status": "Completed", "desc": "A renovation to an existing home, the client approached with the need for much larger living spaces for a growing family and a facelift to the existing dwelling. Utilising the existing modern forms from the previous dwelling, the extension carefully extends into the generous landscape while retaining the essence of the home. The exterior material choices accentuate and modernise the existing building, and allow the building to respond to the surrrounding site context. The updated interiors are bold and contemporary, finished with a luxurious touch. The material choices and updated design create an environment of opulence, with succint bold accents and generous space within each room combined with multiple double height spaces to allow for ample natural light and ventilation, as well as creating intimate moments of delight throughout.", "specs": [["Site area", "10,889.3 m² / 2.69 Acres"], ["Built-up area", "1085.5 m²"], ["Status", "Completed"], ["Engineer", "M&J Consulting Engineers"]], "imgs": [["chandler-house-1.jpg", 1600, 1200], ["chandler-house-2.jpg", 1600, 1200], ["chandler-house-3.jpg", 1600, 1200], ["chandler-house-4.jpg", 1600, 1200]]}, {"slug": "huet-street", "name": "Huet Street", "loc": "", "cat": "res", "status": "Completed", "desc": "A deliberate and bold use of the contemporary form juxtaposes this house within its context, choosing to stand out over blending in. The modern exterior form is characterised by its use of stark material contrast, using a combination of aluminium cladding with white render and tile framed in black to create distinction and identity to each element of the facade. This carries down throughout the design, highlighting each individual element on the facade as it continues through. The spaces are concieved on three different levels, with both a covered and uncovered front balcony area capturing distant city views from kitchen and living areas on top level. An abundance of natural light and air flows into the dining and living areas on both floors utilising an open plan configuration, optimising energy passivity and environmental comfort in the home.", "specs": [["Site area", "568.8 m²"], ["Built-up area", "291.3 m²"], ["Status", "Completed"], ["Engineer", "M&J Consulting Engineers"]], "imgs": [["huet-street-1.jpg", 1600, 1200], ["huet-street-2.jpg", 1600, 1200], ["huet-street-3.jpg", 1600, 1200], ["huet-street-4.jpg", 1600, 1200]]}, {"slug": "janda-street", "name": "Janda Street", "loc": "", "cat": "res", "status": "Completed", "desc": "Built as an addition to an original dwelling, the extension pulls away dramatically from the original building’s form and style, cementing itself as a new visual identity for the dwelling. On approach from the street, the extension is largely hidden behind the existing home, only to be revealed by walking through into the new space. The extension is characterised by a new contemporary selection of both form and material, with brick and black trimdek cladding as the main facade materials. Additionally the main aspect of the extension looks back into the backyard and bush, away from the street-face which in turn provides opportunity for more intimate, private living spaces. Multiple void spaces deep in the floorplate punch through the upper floor and are fed light from exterior skylights, bringing abundant natural light into all spaces of the renovation to create visual comfort for the occupants. Additionally, the interior spaces are grand, with large spaces in combination with a strong visual consistency with its material selection that complements the new exterior material language.", "specs": [["Site area", "1694 m²"], ["Built-up area", "873.3 m²"], ["Status", "Completed"]], "imgs": [["janda-street-1.jpg", 1600, 1200], ["janda-street-2.jpg", 1600, 1200], ["janda-street-3.jpg", 1600, 1200], ["janda-street-4.jpg", 1600, 1200]]}, {"slug": "gatton-residence", "name": "Gatton Residence", "loc": "", "cat": "res", "status": "Design Stage", "desc": "Being afforded the luxury of acreage in the town of Gatton, this Residence extends through a series of axis’ along the site. The dramatic symmetry of the central living area defines both the architectural style, as well as an informal meeting point within the series of forms. The two wings that offshoot from the central node house both bedrooms and other practical spaces, each having a defined program however formally are all stitched together to the node through glazed hallways that define the physical connection. The dwelling rises from the earth, complimenting the existing movement of the topography instead of defining a new movement, while the materials continue the respect to the local context. This is primarily through the use of locally sourced and available materials, which are recycled timber and steel. In further respect to both local climate and context, there is a signficant amount of expansive outdoor areas that allow for living to not solely be contained to the interior of the dwelling.", "specs": [["Site area", "283.5 Hectares"], ["Built-up area", "1601.1 m²"], ["Status", "Design Stage"], ["Engineer", "Paterdis Structural Engineering"], ["Builder", "Proudlock Pty Ltd"]], "imgs": [["gatton-residence-1.jpg", 1600, 1200], ["gatton-residence-2.jpg", 1600, 1200], ["gatton-residence-3.jpg", 1600, 1200], ["gatton-residence-4.jpg", 1600, 1200]]}, {"slug": "ellington-street", "name": "Ellington Street", "loc": "", "cat": "res", "status": "Design Stage", "desc": "An 800sqm lot with a steep slope at the back has been subdivided into two separate residences on small lots respectively, and as such the architectural form and decisions made purposefully define each dwelling as its on separate entity from the other. This is achieved from differing forms, and alternating materials with 51 Ellington Street having a unique visual identity with its use of arches, softer formatic approach and material selection while 53 Ellington takes a more rigid approach with a darker selection of materials. However the consistent choice of the same brick elements bring the buildings in together, completing the ying and yang like conditions. The interior approach is identical, with both interior details complimenting each respective exterior conditions but in stark contrast to the other. In this specific instance however the material selections, although different, are both strongly based in natural materials or with a subtle tone to make the most of the small room sizes defined by the lot size. However there is no hinderance to the amount of natural light and ventilation each recieve, as well as the ability for each dwellings living room to expand out into the backyard to make use of the climatic conditions.", "specs": [["Site area", "51 – 404 m² / 53 – 404.6 m²"], ["Built-up area", "51 – 288.8 m² / 53 – 285.7 m²"], ["Status", "Design Stage"], ["Engineer", "M&J Consulting Engineers"], ["Builder", "Proudlock Pty Ltd"]], "imgs": [["ellington-street-1.jpg", 1457, 1093], ["ellington-street-2.jpg", 1600, 1200], ["ellington-street-3.jpg", 1600, 1200], ["ellington-street-4.jpg", 1600, 1200]]}, {"slug": "moncrief-street", "name": "Moncrief Street", "loc": "", "cat": "res", "status": "Construction", "desc": "A simple and elegent contemporary architectural form, this residence sits within its context with a strong visual identity and use of contrasting materials. The simplistic facade has been delicately ornamented with a repetition of dark aluminium slats, to provide interest as well as opportunity for privacy and shading. Furthermore, the large massed form of the entrance sits heavily over which defines the entrance as a space of compression to allow for a greater moment of expansion once travelled through to the living room. The open plan living/kitchen/dining space is emboldended by the large double height space, spilling natural light into the space in combination with the exterior glazing which carefully bridges the gap between interior and exterior space. This creates an opportunity for the occupants to expand their living space and let it spill out into the outdoor living/pool area. Additionally, the open plan and natural material choices allow them to benefit from visual and thermal comfort conditions that the site and architecture provides them with.", "specs": [["Site area", "614.7 m²"], ["Built-up area", "504 m²"], ["Status", "Construction"], ["Engineer", "GDS Consulting Engineers"], ["Builder", "Bright Black Developments"]], "imgs": [["moncrief-street-1.jpg", 1600, 1200], ["moncrief-street-2.jpg", 1600, 1200], ["moncrief-street-3.jpg", 1600, 1200]]}, {"slug": "servius-street", "name": "Servius Street", "loc": "", "cat": "res", "status": "Construction", "desc": "The strong contemporary form of this dwelling is articulated with confident straight lines that clearly define the prominent, symmetrical masses of the building. These large spaces are further defined by the bold use of timber and stone which provide the building with an earthy, natural tone to immediately dictate a comfortable environment for the users of the space. The building responds to the existing site conditions with consistent views towards the city from the inside and out provided by ample exterior balcony spaces along the side of the building. The interiors are filled with an abundance of natural light and ventilation and complimented by multiple double height spaces that regularly punctuate the upper floor plan. This brings the light downward, and fills the space. The interior finish complements the exterior elements with soft, light finishes and an open-plan style living/kitchen/dining.", "specs": [["Site area", "717.3 m²"], ["Built-up area", "361.3 m²"], ["Status", "Construction"]], "imgs": [["servius-street-1.jpg", 1600, 1200], ["servius-street-2.jpg", 1440, 1080], ["servius-street-3.jpg", 1600, 1200], ["servius-street-4.jpg", 1600, 1200]]}, {"slug": "boston-road-residence", "name": "Boston Road Residence", "loc": "", "cat": "res", "status": "Design Stage", "desc": "The Boston Road Residence is a grand celebration of classical architecture, situated on vast acreage in Belmont. In a decision to return to the classical, a series of symmetrical grand gestures are made on the front facade and centred on the seven metre high entry into the home adorned with ornamentation. On approach from the road entry, the visually theatrical water fountain sits aligned with the axis of the building, reinforcing the grandeur of the residence. The opulent and spacious interiors of the home are a continuation of the themes present from the interior, and are finished with rigorous ornate details and luxurious materials. The home is divided into two different designated zones, the entry and bedrooms divided with the open plan kitchen /living /dining being joined by a small walkway, defining public and private spaces clearly.", "specs": [["Site area", "10,113.6 m² / 2.5 Acres"], ["Built-up area", "805 m²"], ["Status", "Design Stage"]], "imgs": [["boston-road-residence-1.jpg", 1600, 1200], ["boston-road-residence-2.jpg", 1600, 1200], ["boston-road-residence-3.jpg", 1600, 1200], ["boston-road-residence-4.jpg", 1600, 1200]]}, {"slug": "st-leonards-road", "name": "St Leonards Road", "loc": "", "cat": "res", "status": "", "desc": "Built as an addition to an original dwelling, the extension pulls away dramatically from the original building’s form and style, cementing itself as a new visual identity for the dwelling. On approach from the street, the extension is largely hidden behind the existing home, only to be revealed by walking through into the new space. The extension is characterised by a new contemporary selection of both form and material, with brick and black trimdek cladding as the main facade materials. Additionally the main aspect of the extension looks back into the backyard and bush, away from the street-face which in turn provides opportunity for more intimate, private living spaces. Multiple void spaces deep in the floorplate punch through the upper floor and are fed light from exterior skylights, bringing abundant natural light into all spaces of the renovation to create visual comfort for the occupants. Additionally, the interior spaces are grand, with large spaces in combination with a strong visual consistency with its material selection that complements the new exterior material language.", "specs": [], "imgs": [["st-leonards-road-1.jpg", 1600, 1200], ["st-leonards-road-2.jpg", 1600, 1200], ["st-leonards-road-3.jpg", 1600, 1200]]}, {"slug": "watford-street", "name": "Watford Street", "loc": "", "cat": "res", "status": "Completed", "desc": "A modern queensland home with a minimalistic form defined by clean lines, for a small family on a small lot. Its repetitive use of natural finishes inside and out, along with its strong connection to the gardens surrounding the building this home creates a safe and tranquil experience for its occupants in a environment that reflects contemporary ideals around nature and architecture. Once entered, a gracious and welcoming double height entry foyer leads to an open plan kitchen/living/dining space, providing glimpses to Mt Gravatt hills throughout. These spaces are finished with light and natural materials that enhance the spatial qualities of each room in the home, supporting a safe and family orientated environment.", "specs": [["Site area", "434 m²"], ["Built-up area", "184.2 m²"], ["Status", "Completed"], ["Engineer", "M&J Consulting Engineers"]], "imgs": [["watford-street-1.jpg", 1600, 1200], ["watford-street-2.jpg", 1600, 1200], ["watford-street-3.jpg", 1600, 1200], ["watford-street-4.jpg", 1600, 1200]]}, {"slug": "childcare-centre", "name": "Childcare Centre", "loc": "", "cat": "com", "status": "DA Approved", "desc": "An irregular roof-edge line defines the new centre with a strong and unique architectural identity, which identifies each classroom subtly through its contemporary form. The consistent use of timber and other earthy tones re-inforces physical and visual connection to nature as an important tenent for education centres, while the subtle and soft nature of the materials contributes to a safe and engaging environment for the childcare centre. The interior design is designed with the intention to be flexible, and allow educators to dictate the interior condition to the methods or subject of teaching required.Additionally the expansive green space connects all of the classrooms together, creating an informal meeting space between the classrooms as well as providing varied modes of play for the children. It also strengthens the visual connection to the outdoors.", "specs": [["Site area", "11,665 m² / 2.8 Acres"], ["Built-up area", "1291.8 m²"], ["Status", "DA Approved"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["childcare-centre-1.jpg", 1600, 1200], ["childcare-centre-2.jpg", 1600, 1200], ["childcare-centre-3.jpg", 1600, 1200]]}, {"slug": "village-complex", "name": "Village Complex", "loc": "", "cat": "com", "status": "DA Approved", "desc": "Proposed mixed-use complex comprising of a specialised medical centre, fitness centre, furniture store and generalised shops to serve as a new node for Crestmead. The complex is comprised of two large forms separated by a large parking lot, providing a clear distinction between the programs that are situated within the separate buildings. The material choices are unique in their selection between the two buildings, with the form of each stitching them together across the parking lot.The medical centre, acting as the central node for the lot, situates itself with its materiality and practical application of plan to provide users with the feeling of comfort, and safety with a strong use of natural materials and use of greenery surrounding. Conversely, the retail dwellings use a bolder and more exciting form of material selection to provide interest and intrigue, promoting the businesses they house.", "specs": [["Site area", "15,968 m² / 3.94 Acres"], ["Built-up area", "6973.5 m² / 1.7 Acres"], ["Status", "DA Approved"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["village-complex-1.jpg", 1600, 1200], ["village-complex-2.jpg", 1544, 1158], ["village-complex-3.jpg", 1600, 1200]]}, {"slug": "emporio-shopping", "name": "Emporio Shopping", "loc": "", "cat": "com", "status": "Completed", "desc": "Renovation of an existing building to create a new identity for the shopping precinct in Underwood. The renovation took the design language in a new direction, opting to modernise an aging and forgotten precinct and updating it to become a vibrant and diverse centre. The contemporary style of commercial building introduces a simplistic form with purposeful repetition of elements to create interest and a new visual identity. Additionally, the use of an new aluminium louvres ties together the exterior cladding across the expanded entry massing, providing cohesion in the highlighted elements. The new shopping precinct has the ability to house a diverse range of clientel, and adds value to the current site context with its new visual identity, as well as opportunities for small businesses to establish themselves in the local area.", "specs": [["Site area", "3626.3 m²"], ["Built-up area", "983.7 m²"], ["Status", "Completed"], ["Engineer", "SECS Engineering"]], "imgs": [["emporio-shopping-1.jpg", 1600, 1200], ["emporio-shopping-2.jpg", 1600, 1200], ["emporio-shopping-3.jpg", 1600, 1200], ["emporio-shopping-4.jpg", 1600, 1200]]}, {"slug": "equestrian-centre", "name": "Equestrian Centre", "loc": "", "cat": "com", "status": "Design Stage", "desc": "Defined by its unique open-air approach to equestrian stadium design, the proposed multi-purpose arena situates itself within the existing Boonah Showgrounds Precinct, drastically adding more alternative sports and events to the Showgrounds venue. The expansive pitched roof provides cover from the weather elements while being an impressive architectural element that is achieved through a series of hidden trusses. As the stadium sits down within the site context, it appears as if the building conforms to the landscape around it along with the open air nature of the facade to provide passive cooling and ventilation for the stadium.", "specs": [["Site area", "88,005 m² / 8.8 Hectares"], ["Built-up area", "5468.9 m² / 1.35 Acres"], ["Status", "Design Stage"], ["Engineer", "SECS Engineering"]], "imgs": [["equestrian-centre-1.jpg", 1600, 1200], ["equestrian-centre-2.jpg", 1600, 1200], ["equestrian-centre-3.jpg", 1600, 1200]]}, {"slug": "tesla", "name": "Tesla Delivery Centre", "loc": "", "cat": "ind", "status": "Completed", "desc": "Designed in combination with a strong company design language and rigorous functionality requirements, the Tesla Delivery Centre delivers a bold architectural statement consistent with the company vision and values that embody Tesla. The simplistic and contemporary facility exterior designates a desired sense of luxury and efficiency, and allows for the signage and entry to become the focal points. The design language as a whole takes on an innovative, futuristic identity which is consistent through to the interior space. Inside the warehouse the rigorously-efficient plan is the antithesis of the company’s existing practices, as everything has been organised with a high level of functionality and efficiency for its intended purpose. Architecturally the interior elements support this high degree of functionality, providing a well illuminated space with high ceilings in the main warehouse space alongside a resolved material palette that complements the company’s futuristic aesthetic which is carried through into the office spaces and entry.", "specs": [["Site area", "14,908 m² / 3.6 Acres"], ["Built-up area", "11,154.8 m² / 2.75 Acres"], ["Status", "Completed"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["tesla-1.jpg", 1600, 1200], ["tesla-2.jpg", 1600, 1200], ["tesla-3.jpg", 1600, 1200], ["tesla-4.jpg", 1600, 1200]]}, {"slug": "meakin-road", "name": "Meakin Road", "loc": "", "cat": "ind", "status": "Completed", "desc": "Designed in combination with a strong company design language and rigorous functionality requirements, the Tesla Delivery Centre delivers a bold architectural statement consistent with the company vision and values that embody Tesla. The simplistic and contemporary facility exterior designates a desired sense of luxury and efficiency, and allows for the signage and entry to become the focal points. The design language as a whole takes on an innovative, futuristic identity which is consistent through to the interior space. Inside the warehouse the rigorously-efficient plan is the antithesis of the company’s existing practices, as everything has been organised with a high level of functionality and efficiency for its intended purpose. Architecturally the interior elements support this high degree of functionality, providing a well illuminated space with high ceilings in the main warehouse space alongside a resolved material palette that complements the company’s futuristic aesthetic which is carried through into the office spaces and entry.", "specs": [["Site area", "3422.2 m²"], ["Built-up area", "2483.4 m²"], ["Status", "Completed"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["meakin-road-1.jpg", 1600, 1200], ["meakin-road-2.jpg", 1600, 1200], ["meakin-road-3.jpg", 1600, 1200], ["meakin-road-4.jpg", 1600, 1200]]}, {"slug": "queens-road", "name": "Queens Road", "loc": "", "cat": "ind", "status": "Completed", "desc": "A series of warehouses located on Queens Road, the simplistic and contemporary forms create a refined architectural palette reflect the functionality requirements of the warehouse precinct, opting to stand out with the colours chosen over the architectural form. The dark grey concrete masses are subtly divided by the designated office locations, defined by the alternative colorbond finish and strong horizontal lines created by the exterior glazing which brings a sufficient amount of daylighting deep into the floorplate. In the larger warehouse spaces, a large floorplan dominates the space which has been allocated for potential occupants of these spaces to complete their specific industrial use, as well as access to vital amenities such large double-height spaces and roller doors. The pre-cast concrete panel construction additionally allows for fast and efficient construction and demolition if need be.", "specs": [["Site area", "3904.4 m²"], ["Built-up area", "2598.9 m²"], ["Status", "Completed"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["queens-road-1.jpg", 1600, 1200], ["queens-road-2.jpg", 1600, 1200], ["queens-road-3.jpg", 1600, 1200], ["queens-road-4.jpg", 1600, 1200]]}, {"slug": "lot-3031", "name": "Lot 30 + 31", "loc": "", "cat": "ind", "status": "Construction", "desc": "An office and production precinct located within Crestmead, the buildings provide beneficial industry and service to the local area. The architectural form of the proposal articulates a strong difference between the human-centred office locations and the industrial production program of the precinct. It is articulated through the complexity of the area, where the offices are visual markers for the potential clients through the use of colour, repetitive elements and changes within the massing and form. Additionally, these areas provide passive shading to the interior spaces without taking away from the interior light quality. In the larger production spaces, ample space has been allocated for potential occupants of these spaces for their specific industrial use, and access to vital amenities has been provided within the architecture, such as large double-height spaces and roller doors. The pre-cast concrete panel construction additionally allows for fast and efficient construction and demolition if need be.", "specs": [["Site area", "30 – 3495.9 m² / 31 – 3496 m²"], ["Built-up area", "30 – 2804 m² / 31 – 2539 m²"], ["Status", "Construction"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["lot-3031-1.jpg", 1600, 1200], ["lot-3031-2.jpg", 1600, 1200], ["lot-3031-3.jpg", 1600, 1200], ["lot-3031-4.jpg", 1600, 1201]]}, {"slug": "lot-29", "name": "Lot 29", "loc": "", "cat": "ind", "status": "Construction", "desc": "A dual warehouse development located within Crestmead, the bold modern forms of the office spaces protrude from the established mass effectively defining the differing uses of space from the warehouse space. Primarily, these forms are abundant with strong horizontal lines and exterior glazing, effectively daylighting the offices spaces inside. The concept of natural daylighting continues through to the warehouse spaces too, with a series of repetitious windows breaking up the large exterior form. Additionally, the contemporary colour palette creates interest and visual amenity for the offices, promoting the businesses from the road and carpark as well as establishing itself as a node for the human-centred spaces. In the larger warehouse areas, a significant amount of space has been allocated for the occupants of these spaces to complete their specific industrial use, and access to vital amenities has been provided within the architecture such as large double-height spaces and roller doors. The pre-cast concrete panel construction additionally allows for fast and efficient construction and demolition if need be, and can be easily repainted.", "specs": [["Site area", "8078.3 m² / 1.9 Acres"], ["Built-up area", "6301.1 m² / 1.5 Acres"], ["Status", "Construction"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["lot-29-1.jpg", 1600, 1200], ["lot-29-2.jpg", 1600, 1200], ["lot-29-3.jpg", 1600, 1200]]}, {"slug": "bartlett-street", "name": "Bartlett Street", "loc": "", "cat": "th", "status": "DA Approved", "desc": "A sophisticated collection of modern townhouses situated in the suburb of Morningside, designed with a strong emphasis on community living and lifestyle. The series of townhouses are emboldened by the contemporary approach to both form and materiality, offering a natural selection of materials that complements the surrounding context and creating a strong visual coordination with the strong forms seen in each townhouse. The interior design choices for each individual townhouses are uniquely bold and contemporary, finished with a combination of a strong sense of warmth, quality of design and precision to stand the test of time. The spaces also offer large expanses for outdoor living and connection to the surrounding context through both the priority of open plan living and a strong focus on natural daylight and visual connection.", "specs": [["Site area", "607.4 m²"], ["Built-up area", "538.4 m²"], ["Status", "DA Approved"], ["Engineer", "M&J Consulting Engineers"]], "imgs": [["bartlett-street-1.jpg", 1600, 1200], ["bartlett-street-2.jpg", 1600, 1200], ["bartlett-street-3.jpg", 1600, 1200]]}, {"slug": "gallagher-street", "name": "Gallagher Street", "loc": "", "cat": "th", "status": "Design Stage", "desc": "A boutique and beautifully crafted collection of modern townhouses situated in Kedron, designed with a strong emphasis on community living and lifestyle. The series of townhouses are emboldened by the simplistic but contemporary approach to both form and materiality, offering a soft and natural selection of materials that complements the surrounding context. The unique entrance to the site offers a strong visual threshold, establishing a new and unique indentity for the dwellings. The interior design choices for each individual townhouses are uniquely bold and contemporary, finished with a combination of a strong sense of warmth, quality of design and precision to stand the test of time. All townhouses boast an impressive open plan living/kitchen/dining space which is complimented by the large double height space, spilling natural light into the space in combination with the exterior glazing which carefully bridges the gap between interior and exterior space.", "specs": [["Site area", "634.8 m²"], ["Built-up area", "936.99 m²"], ["Status", "Design Stage"], ["Engineer", "SECS Engineering"], ["Builder", "Sustainable Homes"]], "imgs": [["gallagher-street-1.jpg", 1600, 1200], ["gallagher-street-2.jpg", 1600, 1171], ["gallagher-street-3.jpg", 1600, 1199], ["gallagher-street-4.jpg", 1600, 1170]]}];
+const CAPS=['New residential','Alterations & additions','Industrial','Commercial','Multi-residential','Heritage design','Hospitality & retail'];
+const CATS={all:'All',res:'Residential',com:'Commercial',ind:'Industrial',th:'Townhouse / Apartment'};
+const STAGES=[
+ ['Concept / schematic design','1:200','We listen, visit the site and sketch options until the big moves feel right.'],
+ ['Design development','1:100','Plans, elevations and materials get resolved and tested against budget and council rules.'],
+ ['Interior design','1:50','Layouts, joinery and finishes so the inside works as hard as the outside.'],
+ ['Construction documentation','1:20','The full drawing set and details your builder and certifier need to price and build.'],
+ ['Tendering','—','We help you get comparable quotes from builders and choose with confidence.'],
+ ['Contract administration','—','We stay on through construction to keep the build true to the drawings.'],
+];
+const TEAM=[
+ ['Tarun Jangra','Director','tarun','B.Arch, University of Kerala (1997). Founded The Design Grid in Chandigarh in 1999, then moved to Brisbane in 2006 and became a registered Building Designer.'],
+ ['Sonika Jangra','Director','sonika','B.Arch, Chandigarh College of Architecture (1996). Residences, interiors, commercial and industrial work in Chandigarh and Brisbane.'],
+ ['Khushbu “K” Bansal','Associate','khushbu','M.Arch, Deakin University (2021). Drawn to vernacular architecture.'],
+ ['Luke Vellacott','Graduate of Architecture','luke','Hons B.Design, QUT (2022). Technical detailing and compliance documentation.'],
+ ['Nora Ip','Graduate of Architecture','nora','Graduate of QUT.'],
+ ['Franz San Jose','Graduate of Architecture','franz','Graduate of QUT, majoring in architecture.'],
+];
+window.PROJECTS=PROJECTS;
+</script>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js';
+const BASE = document.querySelector('meta[name="asset-base"]').content;
+const $ = s => document.querySelector(s);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const smooth = t => t * t * (3 - 2 * t);
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SMALL = () => innerWidth <= 760;
+const P = PROJECTS;
+const Z = {
+  res: { name: 'Residential', css: '--z-res', hex: 0xE3B93C, blurb: 'Houses from compact infill lots to acreage, in Brisbane and the Lockyer Valley.' },
+  th: { name: 'Townhouse / Apartment', css: '--z-th', hex: 0xE07B39, blurb: 'Townhouse and apartment developments.' },
+  com: { name: 'Commercial', css: '--z-com', hex: 0xD2434E, blurb: 'Offices, childcare, retail and an equestrian centre.' },
+  ind: { name: 'Industrial', css: '--z-ind', hex: 0x8463BF, blurb: 'Warehouses, showrooms and three Tesla facilities.' },
+};
+const ZK = ['res', 'th', 'com', 'ind'];
+const fmt = n => Math.round(n).toLocaleString('en-AU');
+
+/* ---------- areas from the published specs ---------- */
+function area(str) {
+  if (!str) return null;
+  const parts = str.split('/');
+  const one = s => { const m = s.match(/([\d,.]+)\s*(m²|Hectares|Acres)?/); if (!m) return null; let v = parseFloat(m[1].replace(/,/g, '')); if (m[2] === 'Hectares') v *= 10000; if (m[2] === 'Acres') v *= 4046.86; return v; };
+  if (parts[0].includes('–')) return parts.reduce((a, s) => a + (one(s.split('–')[1] || '') || 0), 0);   // two lots: add them
+  return one(parts[0]);
+}
+const OVERRIDE = { 'tesla-ern-harley-drive': { built: 4913 } };   // from the project description
+P.forEach(p => {
+  const sp = Object.fromEntries(p.specs);
+  let site = area(sp['Site area']), built = area(sp['Built-up area']);
+  if (OVERRIDE[p.slug]) built = OVERRIDE[p.slug].built;
+  p.est = !site || !built;
+  if (!site && built) site = built * 1.8;
+  if (!built && site) built = site * .4;
+  if (!site && !built) { site = 700; built = 300; }
+  p.site = site; p.built = built;
+  p.siteTxt = sp['Site area'] ? fmt(site) + ' m²' : '—';
+  p.builtTxt = (sp['Built-up area'] || OVERRIDE[p.slug]) ? fmt(built) + ' m²' : '—';
+});
+
+/* ---------- static content ---------- */
+document.querySelectorAll('img[data-src]').forEach(el => el.src = BASE + el.dataset.src);
+document.querySelectorAll('[data-poster]').forEach(el => el.poster = BASE + el.dataset.poster);
+$('#caps').innerHTML = CAPS.map(c => `<li>${c}</li>`).join('');
+$('#stages').innerHTML = STAGES.map(s => `<li><b>${s[0]}</b><span>${s[1] === '—' ? '' : s[1]}</span><p>${s[2]}</p></li>`).join('');
+$('#teamgrid').innerHTML = TEAM.map(t => `<article><img src="${BASE}img/${t[2]}.jpg" alt="${t[0]}" loading="lazy"><b>${t[0]}</b><div class="k">${t[1]}</div><p>${t[3]}</p></article>`).join('');
+const byZ = Object.fromEntries(ZK.map(z => [z, P.map((p, i) => i).filter(i => P[i].cat === z).sort((a, b) => (P[a].builtTxt === '—') - (P[b].builtTxt === '—') || P[b].built - P[a].built)]));
+$('#legend').innerHTML = ZK.map(z => `<button type="button" data-z="${z}"><span class="sw" style="background:var(${Z[z].css})"></span><span>${Z[z].name}</span><b>${byZ[z].length}</b></button>`).join('');
+$('#legend').querySelectorAll('button').forEach(b => b.onclick = () => $('#d-' + b.dataset.z).scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }));
+$('#topnav').innerHTML = ZK.map(z => `<a href="#d-${z}"><span class="sw" style="background:var(${Z[z].css})"></span>${Z[z].name.split(' ')[0]}</a>`).join('') + '<a href="#films">Films</a><a href="#studio">Studio</a><a href="#team">Team</a>';
+$('#districts').innerHTML = ZK.map(z => {
+  const ids = byZ[z], site = ids.reduce((a, i) => a + P[i].site, 0), built = ids.reduce((a, i) => a + P[i].built, 0);
+  return `<section class="district" id="d-${z}" data-z="${z}" aria-label="${Z[z].name} projects"><div class="stick"><div class="panel" style="--zc:var(${Z[z].css})">
+    <header><div class="k">District · ${ids.length} projects · largest floor area first</div><h2>${Z[z].name}</h2><p class="note">${Z[z].blurb}</p>
+    <div class="sum"><div><b>${fmt(built)}</b><span class="k">Floor m² total</span></div><div><b>${fmt(site)}</b><span class="k">Site m² total</span></div></div></header>
+    <ol>${ids.map(i => { const p = P[i]; return `<li><button type="button" data-i="${i}"><img src="${BASE}img/t/${p.imgs[0][0]}" alt="" loading="lazy"><span><span class="nm">${p.name}</span><span class="mt">${[p.loc, p.status].filter(Boolean).join(' · ') || '&nbsp;'}</span></span><span class="ar">${p.builtTxt}<small>Floor</small></span></button></li>`; }).join('')}</ol>
+  </div></div></section>`;
+}).join('');
+
+/* ---------- copy, videos ---------- */
+document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', () => {
+  const done = () => { b.textContent = 'Copied'; setTimeout(() => b.textContent = 'Copy', 1600); };
+  const fallback = () => { const r = document.createRange(); r.selectNodeContents(b.previousElementSibling); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+  try { navigator.clipboard.writeText(b.dataset.copy).then(done, fallback); } catch { fallback(); }
+}));
+const vio = new IntersectionObserver(es => es.forEach(e => {
+  const v = e.target;
+  if (e.isIntersecting) { if (!v.src) v.src = BASE + (SMALL() && v.dataset.srcM ? v.dataset.srcM : v.dataset.src); if (!RM) v.play().catch(() => {}); } else v.pause();
+}), { rootMargin: '200px' });
+document.querySelectorAll('video[data-src]').forEach(v => vio.observe(v));
+
+/* ---------- project story (full-screen) ---------- */
+const ORDER = ZK.flatMap(z => byZ[z]);
+const dlg = $('#pd'); let cur = 0;
+const zcVar = p => `var(${Z[p.cat].css})`;
+/* story photos come from the original files: 1200 px and 2400 px WebP */
+const wp = n => n.replace(/\.jpg$/, '.webp');
+const big = (n, sizes) => `src="${BASE}img/l/${wp(n)}" srcset="${BASE}img/l/${wp(n)} 1200w, ${BASE}img/xl/${wp(n)} 2400w" sizes="${sizes}"`;
+const setBig = (el, n, sizes) => { el.removeAttribute('srcset'); el.sizes = sizes; el.src = BASE + 'img/l/' + wp(n); el.srcset = `${BASE}img/l/${wp(n)} 1200w, ${BASE}img/xl/${wp(n)} 2400w`; };
+function openProject(i) {
+  cur = i; const p = P[i], list = byZ[p.cat], k = list.indexOf(i);
+  dlg.style.setProperty('--zc', zcVar(p));
+  $('#pdchip').innerHTML = `<span class="sw" style="background:${zcVar(p)}"></span><span class="k">${Z[p.cat].name} · ${k + 1} of ${list.length}</span>`;
+  $('#pdmeta').textContent = [p.loc, p.status].filter(Boolean).join(' · ') || Z[p.cat].name;
+  $('#pdname').textContent = p.name;
+  setBig($('#pdimg'), p.imgs[0][0], '100vw'); $('#pdimg').alt = p.name;
+  const sp = Object.fromEntries(p.specs);
+  const nums = [];
+  if (sp['Site area']) nums.push([p.siteTxt.replace(' m²', ''), 'Site m²']);
+  if (sp['Built-up area'] || p.slug === 'tesla-ern-harley-drive') nums.push([p.builtTxt.replace(' m²', ''), 'Floor m²']);
+  if (sp['Site cover']) nums.push([sp['Site cover'].replace(' %', '%'), 'Site cover']);
+  $('#pdnums').innerHTML = nums.map(n => `<div><b>${n[0]}</b><span class="k">${n[1]}</span></div>`).join('');
+  $('#pdpeek').innerHTML = p.imgs.slice(1, 4).map((im, j) => `<button type="button" aria-label="See photo ${j + 2}"><img src="${BASE}img/m/${im[0]}" alt="" loading="lazy"></button>`).join('');
+  $('#pdpeek').querySelectorAll('button').forEach(b => b.onclick = () => $('#pdgal').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }));
+  $('#pddesc').textContent = p.desc;
+  $('#pdspecs').innerHTML = [['Category', Z[p.cat].name], ...p.specs].map(s => `<div><dt>${s[0]}</dt><dd>${s[1]}</dd></div>`).join('');
+  $('#pdrankk').textContent = `Floor area in the ${Z[p.cat].name.toLowerCase()} district`;
+  const max = Math.max(...list.map(j => P[j].built));
+  $('#pdrank').innerHTML = list.map(j => { const q = P[j]; return `<span${j === i ? ' class="me"' : ''}>${q.name}</span><span${j === i ? ' class="me"' : ''}><i style="width:${(q.built / max * 100).toFixed(1)}%"></i></span><span${j === i ? ' class="me"' : ''}>${q.builtTxt === '—' ? 'est.' : fmt(q.built)}</span>`; }).join('');
+  $('#pdgal').innerHTML = p.imgs.map((im, j) => `<img ${big(im[0], j === 0 && p.imgs.length % 2 === 1 ? '(max-width: 760px) 100vw, 1300px' : '(max-width: 760px) 100vw, 650px')} alt="${p.name}, photo ${j + 1} of ${p.imgs.length}" loading="lazy"${j === 0 && p.imgs.length % 2 === 1 ? ' class="wide"' : ''}>`).join('');
+  const n = list[(k + 1) % list.length], np = P[n];
+  $('#pdnextk').textContent = `Next in ${Z[p.cat].name} · ${(k + 2 > list.length ? 1 : k + 2)} of ${list.length}`;
+  $('#pdnextname').textContent = np.name + ' →';
+  setBig($('#pdnextimg'), np.imgs[0][0], '100vw');
+  $('#pdnextbig').onclick = () => openProject(n);
+  if (!dlg.open) dlg.showModal();
+  /* always start at the top, also after a pull back to the city */
+  pdScroll.scrollTop = 0; resetPull();
+}
+const stepP = d => { const list = byZ[P[cur].cat]; openProject(list[(list.indexOf(cur) + d + list.length) % list.length]); };
+$('#pdx').onclick = () => dlg.close();
+$('#pdprev').onclick = () => stepP(-1);
+$('#pdnext').onclick = () => stepP(1);
+dlg.addEventListener('keydown', e => { if (e.key === 'ArrowRight') stepP(1); if (e.key === 'ArrowLeft') stepP(-1); });
+dlg.addEventListener('close', () => document.documentElement.style.overflow = '');
+dlg.addEventListener('cancel', () => document.documentElement.style.overflow = '');
+const _show = dlg.showModal.bind(dlg); dlg.showModal = () => { document.documentElement.style.overflow = 'hidden'; _show(); };
+
+/* pull past the end of a project to drop back into the city */
+const pdScroll = $('#pdscroll');
+let pp = 0, lastPush = 0, ty0 = null, leaving = false;
+/* The story stops dead at the bottom. A pull only counts once the reader has
+   stopped there and starts a fresh gesture: momentum from the scroll that
+   reached the end is ignored, and the first stretch of a pull does nothing. */
+let lastWheel = 0, lastDy = 0, arrivedAt = 0, armed = false;
+const atEnd = () => pdScroll.scrollTop + pdScroll.clientHeight >= pdScroll.scrollHeight - 2;
+const maxR = () => Math.hypot(innerWidth / 2, innerHeight) + 8;
+function resetPull() { armed = false; arrivedAt = 0; ty0 = null; setPP(0); }
+function setPP(v) {
+  pp = clamp(v, 0, 1); dlg.style.setProperty('--pp', pp.toFixed(3));
+  const o = RM ? 0 : clamp((pp - .04) / .96, 0, 1);
+  dlg.classList.toggle('pressing', o > 0 || leaving);
+  if (!leaving) dlg.style.setProperty('--hr', (Math.pow(o, 1.1) * maxR() * .6).toFixed(1) + 'px');
+  if (pp >= 1) leave();
+}
+function push(v) { lastPush = performance.now(); setPP(pp + v); }
+function leave() {
+  if (leaving) return; leaving = true;
+  if (RM) { dlg.close(); leaving = false; setPP(0); return; }
+  /* finish the circle on its own, then let the city have the screen */
+  const r0 = parseFloat(dlg.style.getPropertyValue('--hr')) || 0, r1 = maxR(), t0 = performance.now();
+  dlg.classList.add('pressing');
+  (function grow(t) {
+    const k = clamp((t - t0) / 480, 0, 1), e = 1 - Math.pow(1 - k, 3);
+    dlg.style.setProperty('--hr', (r0 + (r1 - r0) * e).toFixed(1) + 'px');
+    if (k < 1) requestAnimationFrame(grow);
+    else { dlg.classList.add('leaving'); setTimeout(() => { dlg.close(); dlg.classList.remove('leaving', 'pressing'); leaving = false; setPP(0); }, 250); }
+  })(t0);
+}
+pdScroll.addEventListener('scroll', () => {
+  if (atEnd()) { if (!arrivedAt) arrivedAt = performance.now(); }
+  else { arrivedAt = 0; armed = false; }
+}, { passive: true });
+pdScroll.addEventListener('wheel', e => {
+  const now = performance.now(), gap = now - lastWheel; lastWheel = now;
+  const dy = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? 800 : 1), prev = lastDy; lastDy = dy;
+  if (dy < 0) { if (pp > 0) setPP(pp + dy / 250); armed = false; return; }
+  if (!atEnd()) return;
+  if (!arrivedAt) arrivedAt = now;
+  /* a new gesture: the wheel went quiet for a moment, or (on a trackpad, where
+     momentum never goes quiet) the deltas start rising again instead of fading */
+  if (!armed && now - arrivedAt > 120 && (gap > 120 || (dy > 3 && dy > prev * 1.25 + 1))) armed = true;
+  if (armed) push(dy / 420);
+}, { passive: true });
+pdScroll.addEventListener('touchstart', e => { ty0 = atEnd() && arrivedAt && performance.now() - arrivedAt > 120 ? e.touches[0].clientY : null; }, { passive: true });
+pdScroll.addEventListener('touchmove', e => {
+  if (ty0 === null) return;
+  const d = ty0 - e.touches[0].clientY;
+  lastPush = performance.now(); setPP(d / 380);
+}, { passive: true });
+pdScroll.addEventListener('touchend', () => { ty0 = null; });
+dlg.addEventListener('keydown', e => { if (['ArrowDown', 'PageDown', ' ', 'End'].includes(e.key) && atEnd() && arrivedAt && performance.now() - arrivedAt > 250) push(.26); });
+(function decay(t) {
+  if (dlg.open && pp > 0 && !leaving && ty0 === null && performance.now() - lastPush > 220) { setPP(pp - .025); if (pp === 0) armed = false; }
+  requestAnimationFrame(decay);
+})();
+dlg.addEventListener('close', () => { setPP(0); ty0 = null; });
+/* phones: the district card row is a hand-rolled carousel. Sideways drags move it,
+   up/down drags are left to the page (touch-action: pan-y), and it settles on a card. */
+const PHONE = matchMedia('(max-width:760px)');
+document.querySelectorAll('.panel ol').forEach(ol => {
+  let x0 = 0, y0 = 0, t0 = 0, tx = 0, start = 0, dir = 0, id = null, moved = false, lastX = 0, lastT = 0, v = 0;
+  const lis = () => [...ol.children];
+  const minTx = () => { const l = lis(), last = l[l.length - 1]; return last ? Math.min(0, ol.parentElement.clientWidth - (last.offsetLeft + last.offsetWidth + 16)) : 0; };
+  const set = (x, ease) => { tx = x; ol.classList.toggle('ease', !!ease); ol.style.setProperty('--tx', x.toFixed(1) + 'px'); };
+  ol.addEventListener('pointerdown', e => {
+    if (!PHONE.matches || e.pointerType === 'mouse') return;
+    id = e.pointerId; try { ol.setPointerCapture(id); } catch (_) {}
+    x0 = lastX = e.clientX; y0 = e.clientY; t0 = lastT = performance.now(); start = tx; dir = 0; moved = false; v = 0;
+    ol.classList.remove('ease');
+  });
+  ol.addEventListener('pointermove', e => {
+    if (e.pointerId !== id) return;
+    const dx = e.clientX - x0, dy = e.clientY - y0;
+    /* the row owns every drag that starts on it (touch-action: none), so a slightly diagonal swipe can't scroll the page to another district */
+    if (!dir && Math.hypot(dx, dy) > 5) dir = 1;
+    if (dir !== 1) return;
+    moved = true;
+    const now = performance.now(); v = (e.clientX - lastX) / Math.max(1, now - lastT); lastX = e.clientX; lastT = now;
+    let x = start + dx; const lo = minTx();
+    if (x > 0) x *= .35; else if (x < lo) x = lo + (x - lo) * .35;
+    set(x);
+  });
+  const end = e => {
+    if (e.pointerId !== id) return; id = null;
+    if (dir !== 1) return;
+    const lo = minTx(), l = lis(), step = l.length > 1 ? l[1].offsetLeft - l[0].offsetLeft : 1;
+    /* one card per swipe: a short swipe or a flick moves to the neighbouring card, never further */
+    const k0 = Math.round(-start / step), d = tx - start;
+    let k = Math.abs(d) > 30 || Math.abs(v) > .3 ? k0 + (d < 0 ? 1 : -1) : k0; k = clamp(k, 0, l.length - 1);
+    set(clamp(-k * step, lo, 0), true);
+  };
+  ol.addEventListener('pointerup', end); ol.addEventListener('pointercancel', end);
+  ol.addEventListener('click', e => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
+  PHONE.addEventListener('change', () => set(0));
+});
+
+let hot = -1;
+document.querySelectorAll('.panel li button').forEach(b => {
+  b.onclick = () => openProject(+b.dataset.i);
+  b.onpointerenter = () => hot = +b.dataset.i; b.onpointerleave = () => hot = -1;
+  b.onfocus = () => hot = +b.dataset.i; b.onblur = () => hot = -1;
+});
+
+/* ---------- WebGL city ---------- */
+const canvas = $('#gl');
+let renderer = null;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true }); } catch (e) { document.body.classList.add('nogl'); }
+if (renderer) {
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.setPixelRatio(Math.min(devicePixelRatio, SMALL() ? 1.5 : 2));
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const S = new THREE.Scene();
+S.background = new THREE.Color(0xE6E9E8);
+S.fog = new THREE.Fog(0xE6E9E8, 60, 140);
+const cam = new THREE.PerspectiveCamera(32, 1, .5, 400);
+S.add(new THREE.HemisphereLight(0xffffff, 0xa9b0ae, 1.3));
+const sun = new THREE.DirectionalLight(0xffffff, 2.4);
+sun.position.set(-30, 50, 25); sun.castShadow = true;
+Object.assign(sun.shadow.camera, { left: -45, right: 45, top: 45, bottom: -45, near: 1, far: 160 });
+sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -.0004; sun.shadow.normalBias = .03;
+S.add(sun);
+const loader = new THREE.TextureLoader();
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.MeshStandardMaterial({ color: 0xDCE0DF, roughness: 1 }));
+ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; S.add(ground);
+
+// pack each district's lots into rows
+const GAP = .7, districts = {};
+ZK.forEach(z => {
+  const items = byZ[z].map(i => ({ i, L: clamp(Math.sqrt(P[i].site) * .045, 1.5, 6.5) }));
+  const sumA = items.reduce((a, it) => a + (it.L + GAP) ** 2, 0);
+  const maxW = Math.max(Math.sqrt(sumA) * 1.15, Math.max(...items.map(it => it.L)) + GAP);
+  let x = 0, y = 0, rowH = 0, w = 0;
+  [...items].sort((a, b) => b.L - a.L).forEach(it => {
+    if (x + it.L > maxW && x > 0) { x = 0; y += rowH + GAP; rowH = 0; }
+    it.x = x + it.L / 2; it.y = y + it.L / 2; x += it.L + GAP; rowH = Math.max(rowH, it.L); w = Math.max(w, x - GAP);
+  });
+  districts[z] = { items, w, d: y + rowH };
+});
+// 2 × 2 arrangement with roads between
+const ROAD = 4;
+const colW = [Math.max(districts.res.w, districts.com.w), Math.max(districts.th.w, districts.ind.w)];
+const rowD = [Math.max(districts.res.d, districts.th.d), Math.max(districts.com.d, districts.ind.d)];
+const OFF = { res: [0, 0], th: [colW[0] + ROAD, 0], com: [0, rowD[0] + ROAD], ind: [colW[0] + ROAD, rowD[0] + ROAD] };
+const TW = colW[0] + colW[1] + ROAD, TD = rowD[0] + rowD[1] + ROAD;
+const city = new THREE.Group(); city.position.set(-TW / 2, 0, -TD / 2); S.add(city);
+// roads
+const roadMat = new THREE.MeshStandardMaterial({ color: 0xC5CACA, roughness: 1 });
+[[TW / 2, colW[0] + ROAD / 2, TW + 8, ROAD - 1.2, 'x'], [TD / 2, rowD[0] + ROAD / 2, TD + 8, ROAD - 1.2, 'z']].forEach(([c, at, len, wid, dir]) => {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(dir === 'x' ? wid : len, .04, dir === 'x' ? len : wid), roadMat);
+  if (dir === 'x') m.position.set(at, .02, TD / 2); else m.position.set(TW / 2, .02, at);
+  m.receiveShadow = true; city.add(m);
+});
+const blocks = [], white = new THREE.MeshStandardMaterial({ color: 0xF4F4F1, roughness: .9 });
+const centers = {};
+ZK.forEach(z => {
+  const D = districts[z], [ox, oz] = OFF[z], zc = new THREE.Color(Z[z].hex);
+  const pad = new THREE.Mesh(new THREE.BoxGeometry(D.w + 1, .08, D.d + 1), new THREE.MeshStandardMaterial({ color: zc.clone().lerp(new THREE.Color(0xffffff), .72), roughness: 1 }));
+  pad.position.set(ox + D.w / 2, .04, oz + D.d / 2); pad.receiveShadow = true; city.add(pad);
+  centers[z] = { x: ox + D.w / 2 - TW / 2, z: oz + D.d / 2 - TD / 2, r: Math.max(D.w, D.d) };
+  D.items.forEach(it => {
+    const p = P[it.i];
+    const lot = new THREE.Mesh(new THREE.BoxGeometry(it.L, .1, it.L), new THREE.MeshStandardMaterial({ color: zc.clone().lerp(new THREE.Color(0xffffff), .45), roughness: 1 }));
+    lot.position.set(ox + it.x, .1, oz + it.y); lot.receiveShadow = true; lot.userData.i = it.i; city.add(lot);
+    const B = clamp(.4 + Math.sqrt(p.built) * .032, .7, it.L * .86), H = .5 + Math.sqrt(p.built) * .042;
+    const side = (k) => { const m = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .8 }); loader.load(BASE + 'img/t/' + p.imgs[k % p.imgs.length][0], t => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; m.map = t; m.needsUpdate = true; }); return m; };
+    const roof = new THREE.MeshStandardMaterial({ color: zc, roughness: .8, emissive: zc, emissiveIntensity: 0 });
+    const mats = [side(1), white, roof, white, side(0), white];
+    const m = new THREE.Mesh(new THREE.BoxGeometry(B, H, B), mats);
+    m.position.set(ox + it.x, .15 + H / 2, oz + it.y); m.castShadow = m.receiveShadow = true;
+    m.userData = { i: it.i, y: m.position.y, z };
+    m.add(new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry), new THREE.LineBasicMaterial({ color: 0x1B1F23, transparent: true, opacity: .25 })));
+    city.add(m); blocks.push({ m, mats, roof, z, i: it.i, lift: 0 });
+  });
+});
+// trees along the roads for scale
+const treeMat = new THREE.MeshStandardMaterial({ color: 0xF1F2EE, roughness: 1 });
+const treeGeo = new THREE.IcosahedronGeometry(.26, 1), trunkGeo = new THREE.CylinderGeometry(.03, .04, .45, 5);
+for (let k = 0; k < 40; k++) {
+  const alongX = k % 2, t = (k / 40) * (alongX ? TD : TW) + 1, side = (k % 4 < 2 ? -1 : 1) * (ROAD / 2 - .25);
+  const g = new THREE.Group();
+  const c = new THREE.Mesh(treeGeo, treeMat); c.position.y = .62; const s = new THREE.Mesh(trunkGeo, treeMat); s.position.y = .3;
+  c.castShadow = s.castShadow = true; g.add(c, s);
+  if (alongX) g.position.set(colW[0] + ROAD / 2 + side, 0, t); else g.position.set(t, 0, rowD[0] + ROAD / 2 + side);
+  city.add(g);
+}
+// district labels
+const labels = ZK.map(z => { const d = document.createElement('div'); d.className = 'lbl'; d.innerHTML = `<span class="sw" style="background:var(${Z[z].css})"></span>${Z[z].name}`; $('#labels').appendChild(d); return { d, z }; });
+
+/* camera keyframes: overview, then one per district */
+const OV = () => ({ x: 0, z: 0, y: 0, az: -.7, el: .78, d: Math.max(TW, TD) * (SMALL() ? 2.6 : 1.55) });
+/* phones see a narrow slice, so aim at the buildings themselves rather than the middle of the district's land */
+const bmid = z => { city.updateMatrixWorld(true); const w = new THREE.Vector3(), a = { x: 0, z: 0, y: 0 }, bs = blocks.filter(b => b.z === z); bs.forEach(b => { b.m.getWorldPosition(w); a.x += w.x; a.z += w.z; a.y = Math.max(a.y, w.y); }); a.x /= bs.length; a.z /= bs.length; a.y *= .8; return a; };
+const DK = z => { const c = centers[z], m = SMALL() ? bmid(z) : c; return { x: m.x, z: m.z, y: m.y || 0, az: { res: -.5, th: .5, com: -1.1, ind: .9 }[z], el: .62, d: SMALL() ? Math.max(20, c.r * 3.9) : Math.max(9, c.r * 2.1) }; };
+const KEYS = () => [OV(), ...ZK.map(DK), OV()];
+let keys = KEYS();
+const st = Object.assign({}, keys[0]);
+let W = 1, Hh = 1;
+function resize() {
+  W = innerWidth; Hh = innerHeight; renderer.setSize(W, Hh, false); cam.aspect = W / Hh;
+  // keep the focus clear of the panel: left of it on desktop, above it on phones
+  cam.setViewOffset(W, Hh, SMALL() ? 0 : Math.min(240, W * .17), SMALL() ? Hh * .24 : 0, W, Hh);
+  cam.updateProjectionMatrix(); keys = KEYS();
+}
+addEventListener('resize', resize); resize();
+
+/* pointer */
+const ray = new THREE.Raycaster(), pt = new THREE.Vector2(), tip = $('#tip');
+let hover = -1, mx = 0, smx = 0;
+const pickables = blocks.map(b => b.m);
+addEventListener('pointermove', e => {
+  mx = e.clientX / W - .5;
+  if (dragged) return;
+  if (e.target.closest('.panel,.box,header,dialog,.sec,footer')) { hover = -1; tip.style.opacity = 0; document.body.style.cursor = ''; return; }
+  pt.set(e.clientX / W * 2 - 1, -e.clientY / Hh * 2 + 1); ray.setFromCamera(pt, cam);
+  const hit = ray.intersectObjects(pickables, false)[0];
+  hover = hit ? hit.object.userData.i : -1;
+  document.body.style.cursor = hover >= 0 ? 'pointer' : '';
+  if (hover >= 0) {
+    const p = P[hover];
+    tip.innerHTML = `<b>${p.name}</b><span>${Z[p.cat].name}${p.loc ? ' · ' + p.loc : ''}<br>Floor ${p.builtTxt} · Site ${p.siteTxt}${p.est ? ' · estimated' : ''}</span>`;
+    tip.style.left = Math.min(e.clientX + 14, W - tip.offsetWidth - 10) + 'px'; tip.style.top = Math.min(e.clientY + 16, Hh - tip.offsetHeight - 10) + 'px'; tip.style.opacity = 1;
+  } else tip.style.opacity = 0;
+});
+addEventListener('click', e => { if (dragged) return; if (hover >= 0 && !e.target.closest('a,button,dialog,.panel,.box')) openProject(hover); });
+
+/* drag to move around (shift or right button to turn). The scroll tour stays in charge: drag sets an offset on
+   top of it (orbit, pan, zoom), and scrolling eases the offset back to zero. */
+const U = { az: 0, el: 0, px: 0, pz: 0, zm: 1 };
+let drag = null, dragged = false;
+const UI = 'a,button,input,textarea,select,dialog,.panel,.box,header,.sec,footer,.drag-hint';
+addEventListener('pointerdown', e => {
+  /* phones keep plain scrolling: a touch drag fought with the page scroll */
+  if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+  if (dlg.open || e.target.closest(UI) || (e.pointerType === 'mouse' && e.button !== 0 && e.button !== 2)) return;
+  drag = { id: e.pointerId, x: e.clientX, y: e.clientY, pan: !(e.button === 2 || e.shiftKey || e.metaKey || e.ctrlKey), moved: 0, touch: e.pointerType !== 'mouse' };
+  dragged = false;
+  if (e.pointerType === 'mouse') { e.preventDefault(); getSelection().removeAllRanges(); }
+});
+addEventListener('contextmenu', e => { if (!e.target.closest(UI)) e.preventDefault(); });
+addEventListener('pointermove', e => {
+  if (!drag || e.pointerId !== drag.id) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag.x = e.clientX; drag.y = e.clientY;
+  drag.moved += Math.abs(dx) + Math.abs(dy);
+  if (drag.moved < 5) return;
+  if (!dragged) { dragged = true; document.documentElement.classList.add('grabbing'); hint.classList.add('gone'); tip.style.opacity = 0; }
+  if (drag.pan) {
+    const az = st.az + U.az, k = st.d * U.zm * 1.6 / Hh;
+    U.px += (-Math.cos(az) * dx - Math.sin(az) * dy) * k;
+    U.pz += (Math.sin(az) * dx - Math.cos(az) * dy) * k;
+    const lim = Math.max(TW, TD) * .6; U.px = clamp(U.px, -lim, lim); U.pz = clamp(U.pz, -lim, lim);
+  } else {
+    U.az -= dx * .006;
+    if (!drag.touch) U.el = clamp(U.el + dy * .004, .22 - st.el, 1.4 - st.el);
+  }
+});
+const endDrag = e => { if (!drag || (e && e.pointerId !== drag.id)) return; drag = null; document.documentElement.classList.remove('grabbing'); setTimeout(() => dragged = false, 0); };
+addEventListener('pointerup', endDrag); addEventListener('pointercancel', endDrag);
+/* pinch on a trackpad (it arrives as ctrl + wheel) zooms the city instead of the page */
+addEventListener('wheel', e => {
+  if (!e.ctrlKey || dlg.open || e.target.closest(UI)) return;
+  e.preventDefault(); U.zm = clamp(U.zm * Math.exp(e.deltaY * .01), .35, 1.8); hint.classList.add('gone');
+}, { passive: false });
+let lastY = scrollY;
+addEventListener('scroll', () => {
+  const k = Math.exp(-Math.abs(scrollY - lastY) / 500); lastY = scrollY;
+  hint.classList.toggle('away', scrollY > innerHeight * .4);
+  /* on phones the intro card fills the screen, so the button waits for the districts, where the city is in view */
+  const away = chapters[chapters.length - 1].getBoundingClientRect().top < innerHeight * .6 || scrollY < chapters[0].offsetHeight * .55;
+  xb.classList.toggle('away', away);
+  if (away) hideTip(); else if (!tipDone) { tipDone = true; showTip(5500); }
+  if (drag) return;
+  U.az *= k; U.el *= k; U.px *= k; U.pz *= k; U.zm = 1 + (U.zm - 1) * k;
+}, { passive: true });
+const hint = document.createElement('div'); hint.className = 'drag-hint'; hint.setAttribute('aria-hidden', 'true');
+hint.textContent = 'Drag to move · Shift-drag or right-drag to turn · Pinch to zoom';
+const TOUCH = matchMedia('(hover: none)').matches;
+if (TOUCH) hint.hidden = true;
+
+/* phones: an Explore mode. Page scrolling pauses, the panels step aside, and
+   one finger moves across the city, two fingers turn, tilt and zoom. */
+const xb = document.createElement('button'); xb.type = 'button'; xb.className = 'xplore away'; xb.hidden = !TOUCH;
+xb.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 1.5v13M1.5 8h13M8 1.5L6 3.5M8 1.5l2 2M8 14.5l-2-2M8 14.5l2-2M1.5 8l2-2M1.5 8l2 2M14.5 8l-2-2M14.5 8l-2 2"/></svg><span>Explore</span>';
+const xl = document.createElement('div'); xl.className = 'xlayer'; xl.setAttribute('aria-hidden', 'true');
+const xh = document.createElement('div'); xh.className = 'xhint'; xh.setAttribute('aria-hidden', 'true');
+xh.textContent = 'One finger moves · Two fingers turn and zoom · Tap a building';
+document.body.append(xl, xh, xb);
+let exploring = false;
+function setExplore(on) {
+  exploring = on; document.documentElement.classList.toggle('exploring', on);
+  xb.querySelector('span').textContent = on ? 'Done' : 'Explore';
+  xb.setAttribute('aria-pressed', on);
+  xh.classList.toggle('on', on);
+}
+xb.onclick = () => { hideTip(); setExplore(!exploring); };
+xb.setAttribute('aria-describedby', 'xtip');
+const xt = document.createElement('div'); xt.className = 'xtip'; xt.id = 'xtip'; xt.setAttribute('role', 'tooltip');
+xt.textContent = 'Tap to explore the city yourself: one finger moves, two fingers turn and zoom.';
+document.body.appendChild(xt);
+let tipT = 0;
+function hideTip() { xt.classList.remove('on'); clearTimeout(tipT); }
+let showTip = function (ms) { if (!TOUCH || exploring) return; xt.classList.add('on'); clearTimeout(tipT); tipT = setTimeout(hideTip, ms); }
+/* show it once on arrival, then whenever the button is pressed and held */
+/* the first time the button shows up in a visit, it explains itself */
+let tipDone = false; try { tipDone = sessionStorage.getItem('tjbd-xtip') === '1'; } catch (_) {}
+const _show = showTip; showTip = ms => { _show(ms); try { sessionStorage.setItem('tjbd-xtip', '1'); } catch (_) {} };
+let holdT = 0;
+xb.addEventListener('pointerdown', () => { holdT = setTimeout(() => showTip(3500), 450); });
+['pointerup', 'pointercancel', 'pointerleave'].forEach(t => xb.addEventListener(t, () => clearTimeout(holdT)));
+xb.addEventListener('contextmenu', e => e.preventDefault());
+const tp = new Map(); let g0 = null, tapAt = null;
+const two = () => { const [a, b] = [...tp.values()]; return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, d: Math.hypot(a.x - b.x, a.y - b.y), a: Math.atan2(b.y - a.y, b.x - a.x) }; };
+xl.addEventListener('pointerdown', e => {
+  try { xl.setPointerCapture(e.pointerId); } catch (_) {}
+  tp.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  tapAt = tp.size === 1 ? { x: e.clientX, y: e.clientY, t: performance.now(), moved: 0 } : null;
+  g0 = tp.size === 2 ? two() : null;
+});
+xl.addEventListener('pointermove', e => {
+  const q = tp.get(e.pointerId); if (!q) return;
+  const dx = e.clientX - q.x, dy = e.clientY - q.y; q.x = e.clientX; q.y = e.clientY;
+  if (tapAt) tapAt.moved += Math.abs(dx) + Math.abs(dy);
+  if (tp.size === 1) {
+    const az = st.az + U.az, k = st.d * U.zm * 1.6 / Hh;
+    U.px += (-Math.cos(az) * dx - Math.sin(az) * dy) * k;
+    U.pz += (Math.sin(az) * dx - Math.cos(az) * dy) * k;
+    const lim = Math.max(TW, TD) * .6; U.px = clamp(U.px, -lim, lim); U.pz = clamp(U.pz, -lim, lim);
+  } else if (tp.size === 2 && g0) {
+    const g = two();
+    let da = g.a - g0.a; if (da > Math.PI) da -= 2 * Math.PI; if (da < -Math.PI) da += 2 * Math.PI;
+    U.az += da;
+    U.zm = clamp(U.zm * g0.d / Math.max(g.d, 1), .35, 1.8);
+    U.el = clamp(U.el + (g.y - g0.y) * .004, .22 - st.el, 1.4 - st.el);
+    g0 = g;
+  }
+});
+const xEnd = e => {
+  tp.delete(e.pointerId);
+  if (tapAt && e.type === 'pointerup' && tapAt.moved < 8 && performance.now() - tapAt.t < 400) {
+    pt.set(tapAt.x / W * 2 - 1, -tapAt.y / Hh * 2 + 1); ray.setFromCamera(pt, cam);
+    const hit = ray.intersectObjects(pickables, false)[0];
+    if (hit) openProject(hit.object.userData.i);
+  }
+  tapAt = null; g0 = tp.size === 2 ? two() : null;
+};
+xl.addEventListener('pointerup', xEnd); xl.addEventListener('pointercancel', xEnd);
+document.body.appendChild(hint);
+
+
+/* loop */
+const chapters = [$('#intro'), ...ZK.map(z => $('#d-' + z)), $('#films')];
+const sheets = [$('#intro .box'), ...ZK.map(z => $('#d-' + z + ' .panel'))]; let sheetOn = null;
+let last = performance.now(), t0 = 0;
+const v = new THREE.Vector3();
+function frame(t) {
+  const dt = Math.min(.1, (t - last) / 1000); last = t; t0 += dt;
+  smx = lerp(smx, mx, .05);
+  const mid = Hh * .5;
+  let idx = 0, f = 0;
+  for (let k = 0; k < chapters.length; k++) { const r = chapters[k].getBoundingClientRect(); if (r.top <= mid) { idx = k; f = clamp((mid - r.top) / r.height); } }
+  const visible = chapters[chapters.length - 1].getBoundingClientRect().top > 0;
+  /* phones: which bottom sheet is showing (the CSS only pins them on small screens) */
+  const sk = idx + (f > .7 ? 1 : 0), on = sk < sheets.length && chapters[chapters.length - 1].getBoundingClientRect().top > Hh * .9 ? sk : -1;
+  if (on !== sheetOn) { sheets.forEach((el, k) => el.classList.toggle('on', k === on)); sheetOn = on; }
+  if (visible) {
+    const a = keys[Math.min(idx, keys.length - 1)], b = keys[Math.min(idx + 1, keys.length - 1)];
+    const tt = smooth(clamp((f - .55) / .45));
+    const tgt = {}; for (const k in a) tgt[k] = lerp(a[k], b[k], tt);
+    if (idx === 0) tgt.az += RM ? 0 : Math.sin(t0 * .08) * .25;
+    const k = RM ? 1 : 1 - Math.pow(.003, dt);
+    for (const q in tgt) st[q] = lerp(st[q], tgt[q], k);
+    const az = st.az + smx * .15 + U.az, el = clamp(st.el + U.el, .22, 1.4), d = st.d * U.zm, cx = st.x + U.px, cz = st.z + U.pz;
+    cam.position.set(cx + Math.sin(az) * Math.cos(el) * d, st.y + Math.sin(el) * d, cz + Math.cos(az) * Math.cos(el) * d);
+    cam.lookAt(cx, st.y, cz);
+    const focusZ = idx >= 1 && idx <= 4 ? ZK[idx - 1] : null;
+    blocks.forEach(b => {
+      const on = b.i === hover || b.i === hot;
+      b.lift = lerp(b.lift, on ? .6 : 0, RM ? 1 : .2);
+      b.m.position.y = b.m.userData.y + b.lift;
+      b.roof.emissiveIntensity = on ? .6 : 0;
+      const dim = focusZ && b.z !== focusZ ? .55 : 1;
+      b.mats.forEach(m => { if (m !== white && m !== b.roof) m.color.setScalar(lerp(m.color.r, dim, .15)); });
+    });
+    labels.forEach(l => {
+      const c = centers[l.z]; v.set(c.x, 0, c.z - c.r * .55 - .6).project(cam);
+      const show = !focusZ || focusZ === l.z;
+      l.d.style.transform = `translate(${(v.x * .5 + .5) * W}px,${(-v.y * .5 + .5) * Hh}px) translate(-50%,-50%)`;
+      l.d.style.opacity = show && v.z < 1 && chapters[chapters.length - 1].getBoundingClientRect().top > Hh * .85 ? 1 : 0;
+    });
+    renderer.render(S, cam);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+}
+
+</script>
+<script type="module">
+/* The team section: the studio as a white card model (the sun study's house language: card stock, ink edges, soft shadows).
+   Desks line the walls. Scrolling walks the camera desk to desk; the desk you're at lights up and its person's card shows.
+   Placeholder room until the office sketch arrives: 12 × 8 m, two desks per wall. */
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js';
+const BASE = document.querySelector('meta[name="asset-base"]').content;
+const $ = s => document.querySelector(s);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const smooth = t => t * t * (3 - 2 * t);
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const PHONE = matchMedia('(max-width:760px)');
+const sec = $('#team'), stage = sec.querySelector('.ostage'), canvas = $('#ogl'), card = $('#ocard'), labelsEl = $('#olabels');
+const T = TEAM, N = T.length;
+const photo = k => `${BASE}img/${k}.jpg`;
+const first = n => n.split(' ')[0];
+
+let renderer = null;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true }); } catch (e) { }
+if (!renderer) sec.classList.add('flat');
+else {
+$('#osteps').innerHTML = Array.from({ length: N + 1 }, () => '<div class="ostep"></div>').join('');
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.setClearColor(0xE4E6E2);
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+const S = new THREE.Scene();
+const cam = new THREE.PerspectiveCamera(32, 1, .1, 200);
+S.add(new THREE.HemisphereLight(0xffffff, 0x9aa09e, 1.15));
+const sun = new THREE.DirectionalLight(0xffffff, 2.4);
+sun.position.set(-7, 14, 9); sun.castShadow = true;
+Object.assign(sun.shadow.camera, { left: -10, right: 10, top: 10, bottom: -10, near: 1, far: 40 });
+sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -.0005; sun.shadow.normalBias = .03; sun.shadow.radius = 3;
+S.add(sun);
+const lamp = new THREE.PointLight(0xffb25e, 0, 5, 1.6); S.add(lamp);
+
+const ACC = new THREE.Color(0xE07B39), WHITE = new THREE.Color(0xF5F5F2);
+const std = (c, o = {}) => new THREE.MeshStandardMaterial(Object.assign({ color: c, roughness: .92, metalness: 0 }, o));
+const M = { card: std(0xF5F5F2), card2: std(0xE6E6E1), base: std(0xD6D7D1), glass: std(0xA9BDC7, { roughness: .12, transparent: true, opacity: .4, depthWrite: false }), poche: std(0x2A2E33) };
+const LM = new THREE.LineBasicMaterial({ color: 0x1B1F24, transparent: true, opacity: .5 });
+function add(parent, geo, mat, x, y, z, edges = true) {
+  const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = m.receiveShadow = true;
+  if (edges) m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 20), LM));
+  parent.add(m); return m;
+}
+// box by its bottom face: w × h × d, base at y
+const box = (parent, w, h, d, x, y, z, mat = M.card, edges) => add(parent, new THREE.BoxGeometry(w, h, d), mat, x, y + h / 2, z, edges);
+
+/* ---- the room ---- */
+const room = new THREE.Group(); S.add(room);
+const RW = 12, RD = 8, WH = 2.7, WT = .2;
+box(room, RW + 3, .4, RD + 3, 0, -.6, 0, M.base);                              // plinth
+box(room, RW + 2 * WT, .2, RD + 2 * WT, 0, -.2, 0, M.card2);                   // floor slab
+// back wall with a window between the two directors' desks
+box(room, 5 + WT, WH, WT, -3.7 - WT / 2, 0, -RD / 2 - WT / 2);
+box(room, 5 + WT, WH, WT, 3.7 + WT / 2, 0, -RD / 2 - WT / 2);
+box(room, 2.4, .9, WT, 0, 0, -RD / 2 - WT / 2); box(room, 2.4, .4, WT, 0, WH - .4, -RD / 2 - WT / 2);
+box(room, 2.4, WH - 1.3, .04, 0, .9, -RD / 2 - WT / 2, M.glass, false);
+box(room, 2.2, .7, .45, 0, 0, -RD / 2 + .23, M.card2);                          // credenza under the window
+box(room, .5, .32, .4, -.6, .7, -RD / 2 + .23); box(room, .38, .2, .3, .45, .7, -RD / 2 + .23);   // study models on it
+// side walls, full height
+box(room, WT, WH, RD + 2 * WT, -RW / 2 - WT / 2, 0, 0);
+box(room, WT, WH, RD + 2 * WT, RW / 2 + WT / 2, 0, 0);
+// front wall cut low so the room reads like a plan, with the cut face inked; door gap on the right
+const fz = RD / 2 + WT / 2;
+box(room, 8.6, .9, WT, -1.7, 0, fz); box(room, 1.6, .9, WT, 5.2, 0, fz);
+box(room, 8.6, .02, WT, -1.7, .9, fz, M.poche, false); box(room, 1.6, .02, WT, 5.2, .9, fz, M.poche, false);
+// meeting table in the middle, with a house model on it
+const mt = new THREE.Group(); room.add(mt); mt.position.set(0, 0, .5);
+box(mt, 2.8, .05, 1.2, 0, .72, 0);
+[[-1.25, -.5], [1.25, -.5], [-1.25, .5], [1.25, .5]].forEach(([x, z]) => box(mt, .05, .72, .05, x, 0, z, M.card, false));
+[-.85, 0, .85].forEach(x => [-1, 1].forEach(sd => { box(mt, .44, .05, .42, x, .44, sd * .85, M.card2); box(mt, .42, .42, .05, x, .49, sd * 1.05, M.card2); }));
+box(mt, .6, .22, .4, -.2, .77, 0); box(mt, .3, .14, .4, .25, .77, .02, M.card2);
+// plants in two corners, same as the sun study's trees
+function plant(x, z) {
+  box(room, .4, .4, .4, x, 0, z, M.card2);
+  add(room, new THREE.IcosahedronGeometry(.42, 1), M.card, x, 1, z);
+}
+plant(-5.5, 3.5); plant(5.5, -3.5);
+
+/* ---- desks: two on each wall ---- */
+// [x, z, rotation]: local +z faces into the room, the wall is behind local -z. Order follows TEAM and walks the room in a loop
+const SPOTS = [[-2.6, -RD / 2 + .4, 0], [2.6, -RD / 2 + .4, 0], [RW / 2 - .4, -1.4, -Math.PI / 2], [RW / 2 - .4, 1.8, -Math.PI / 2], [-RW / 2 + .4, 1.8, Math.PI / 2], [-RW / 2 + .4, -1.4, Math.PI / 2]];
+const tl = new THREE.TextureLoader();
+const desks = T.map((t, i) => {
+  const [x, z, r] = SPOTS[i % SPOTS.length];
+  const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = r; room.add(g);
+  const top = M.card.clone(), body = M.card.clone();
+  box(g, 1.6, .04, .75, 0, .72, 0, top);
+  box(g, .04, .72, .7, -.76, 0, 0); box(g, .04, .72, .7, .76, 0, 0);
+  box(g, .62, .37, .03, 0, .92, -.22, M.card2); box(g, .06, .16, .06, 0, .76, -.24, M.card2, false);   // screen
+  box(g, .42, .02, .14, 0, .76, .1, M.card2, false);
+  box(g, .14, .3, .14, .6, .76, -.2, M.card2);                                    // a model on the desk
+  // chair
+  box(g, .48, .06, .46, 0, .44, .62, M.card2); box(g, .46, .48, .05, 0, .5, .86, M.card2);
+  box(g, .06, .44, .06, 0, 0, .62, M.card2, false);
+  // the person, model-shop style
+  const fig = new THREE.Group(); g.add(fig);
+  add(fig, new THREE.CapsuleGeometry(.16, .34, 4, 10), body, 0, .9, .64, false);
+  add(fig, new THREE.SphereGeometry(.11, 16, 12), body, 0, 1.37, .6, false);
+  box(fig, .32, .12, .4, 0, .5, .4, body, false);
+  // pin-up above the desk: their photo
+  box(g, 1.2, .72, .03, 0, 1.3, -.37, M.card2);
+  const tex = tl.load(photo(t[2])); tex.colorSpace = THREE.SRGBColorSpace;
+  add(g, new THREE.PlaneGeometry(.44, .55), new THREE.MeshStandardMaterial({ map: tex, roughness: .9 }), -.28, 1.66, -.35, false);
+  box(g, .4, .28, .01, .3, 1.5, -.35, M.card, true);                             // a sketch pinned next to it
+  // floor ring when lit
+  const ring = new THREE.Mesh(new THREE.RingGeometry(1.05, 1.13, 64), new THREE.MeshBasicMaterial({ color: ACC, transparent: true, opacity: 0 }));
+  ring.rotation.x = -Math.PI / 2; ring.position.set(0, .01, .35); g.add(ring);
+  g.traverse(o => o.userData.desk = i + 1);
+  return { g, top, body, ring, h: 0, n: new THREE.Vector3(Math.sin(r), 0, Math.cos(r)), p: new THREE.Vector3(x, 0, z) };
+});
+
+/* ---- camera shots: 0 is the whole room, then one per desk ---- */
+const shots = [];
+function buildShots() {
+  const ph = PHONE.matches;
+  shots.length = 0;
+  // phones look across the short side so the long room runs up the tall screen
+  shots.push(ph ? { p: new THREE.Vector3(16, 30, .01), l: new THREE.Vector3(-4.6, 0, 0) } : { p: new THREE.Vector3(0, 18, 18), l: new THREE.Vector3(0, 0, -2) });
+  desks.forEach(d => {
+    const side = new THREE.Vector3(d.n.z, 0, -d.n.x);   // along the wall
+    const back = ph ? 5.2 : 4.8, up = ph ? 3.4 : 3.1;
+    const p = d.p.clone().addScaledVector(d.n, back).addScaledVector(side, ph ? 1.2 : 1.6); p.y = up;
+    const l = d.p.clone().addScaledVector(d.n, .4); l.y = 1.05;
+    shots.push({ p, l });
+  });
+}
+buildShots();
+
+/* ---- labels over each desk ---- */
+labelsEl.innerHTML = T.map((t, i) => `<button type="button" data-i="${i + 1}" aria-label="Go to ${t[0]}'s desk">${first(t[0])}</button>`).join('');
+const labels = [...labelsEl.children];
+labelsEl.addEventListener('click', e => { const b = e.target.closest('button'); if (b) go(+b.dataset.i); });
+
+/* ---- the card ---- */
+let shown = -1;
+function cardHTML(i) {
+  const nav = `<nav><span class="k">${i ? String(i).padStart(2, '0') + ' / ' + String(N).padStart(2, '0') : 'Studio · Brisbane'}</span><div><button type="button" data-go="${i - 1}" aria-label="Previous desk" ${i ? '' : 'disabled'}>←</button><button type="button" data-go="${i + 1}" aria-label="Next desk" ${i < N ? '' : 'disabled'}>→</button></div></nav>`;
+  if (!i) return `<div class="sw8"><div class="k">The team</div><h3>Two directors, an associate and three graduates.</h3><p>One room in Brisbane. <span class="hv">Scroll</span><span class="tc">Swipe</span> to visit each desk, or pick someone.</p><div class="faces">${T.map((t, k) => `<button type="button" data-go="${k + 1}" aria-label="${t[0]}"><img src="${photo(t[2])}" alt=""><span>${first(t[0])}</span></button>`).join('')}</div>${nav}</div>`;
+  const t = T[i - 1];
+  return `<div class="sw8 person"><div class="ph"><img src="${photo(t[2])}" alt="${t[0]}"></div><div class="tx"><div class="k">${t[1]}</div><h3>${t[0]}</h3><p>${t[3]}</p></div></div><div class="sw8">${nav}</div>`;
+}
+function setCard(i) {
+  if (i === shown) return;
+  const firstTime = shown < 0; shown = i;
+  sec.classList.toggle('at', i > 0);
+  labels.forEach((l, k) => l.classList.toggle('on', k + 1 === i));
+  if (firstTime || RM) { card.innerHTML = cardHTML(i); return; }
+  card.classList.add('fade');
+  clearTimeout(setCard.t);
+  setCard.t = setTimeout(() => { card.innerHTML = cardHTML(shown); requestAnimationFrame(() => card.classList.remove('fade')); }, 180);
+}
+card.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b && !b.disabled) go(+b.dataset.go); });
+T.forEach(t => { const im = new Image(); im.src = photo(t[2]); });   // warm the cache so cards swap without a blank
+
+/* ---- scroll position <-> desk ---- */
+const stepH = () => sec.querySelector('.ostep').offsetHeight || innerHeight;
+const secTop = () => sec.getBoundingClientRect().top + scrollY;
+function go(i) { scrollTo({ top: secTop() + clamp(i, 0, N) * stepH(), behavior: RM ? 'auto' : 'smooth' }); }
+const target = () => clamp(-sec.getBoundingClientRect().top / stepH(), 0, N);
+
+/* tap a desk in the model */
+const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
+let down = null;
+canvas.addEventListener('pointerdown', e => { down = [e.clientX, e.clientY]; });
+canvas.addEventListener('click', e => {
+  if (down && Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 8) return;
+  const r = canvas.getBoundingClientRect();
+  ptr.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1);
+  ray.setFromCamera(ptr, cam);
+  const hit = ray.intersectObjects(desks.map(d => d.g), true).find(h => h.object.userData.desk);
+  if (hit) go(hit.object.userData.desk);
+});
+canvas.addEventListener('pointermove', e => {
+  if (e.pointerType !== 'mouse') return;
+  const r = canvas.getBoundingClientRect();
+  ptr.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1);
+  ray.setFromCamera(ptr, cam);
+  canvas.style.cursor = ray.intersectObjects(desks.map(d => d.g), true).some(h => h.object.userData.desk) ? 'pointer' : 'default';
+});
+
+/* ---- size + framing ---- */
+let W = 0, H = 0;
+function resize() {
+  W = stage.clientWidth; H = stage.clientHeight;
+  renderer.setPixelRatio(Math.min(devicePixelRatio, PHONE.matches ? 1.5 : 2));
+  renderer.setSize(W, H, false);
+  cam.aspect = W / H; cam.fov = PHONE.matches ? 44 : 32;
+  // keep the model clear of the card: shifted left of it on desktop, above the sheet on phones
+  if (PHONE.matches) cam.setViewOffset(W, H, 0, H * .2, W, H); else cam.setViewOffset(W, H, W * .14, 0, W, H);
+  cam.updateProjectionMatrix();
+  buildShots();
+}
+addEventListener('resize', resize); PHONE.addEventListener('change', resize); resize();
+
+let live = false;
+new IntersectionObserver(es => { live = es[0].isIntersecting; }, { rootMargin: '100px' }).observe(sec);
+
+const pos = new THREE.Vector3(), look = new THREE.Vector3(), v = new THREE.Vector3();
+let cur = 0, last = performance.now();
+setCard(0);
+function frame(now) {
+  requestAnimationFrame(frame);
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  if (!live) return;
+  const tg = target();
+  cur = RM ? tg : cur + (tg - cur) * Math.min(1, dt * 5);
+  setCard(Math.round(tg));
+  // hold at each desk, move in between
+  const a = Math.min(N - 1, Math.floor(cur)), f = cur - a, e = smooth(clamp((f - .1) / .8));
+  const A = shots[a], B = shots[a + 1];
+  pos.lerpVectors(A.p, B.p, e); look.lerpVectors(A.l, B.l, e);
+  if (a > 0) pos.y += Math.sin(e * Math.PI) * 1.4;   // lift over the room between desks
+  if (!RM && cur < .02) pos.x += Math.sin(now * .00025) * .6;
+  cam.position.copy(pos); cam.lookAt(look);
+  const act = Math.round(cur);
+  desks.forEach((d, k) => {
+    const on = k + 1 === act ? 1 : 0;
+    d.h += (on - d.h) * (RM ? 1 : Math.min(1, dt * 6));
+    d.top.color.copy(WHITE).lerp(ACC, d.h); d.body.color.copy(WHITE).lerp(ACC, d.h * .9);
+    d.ring.material.opacity = d.h;
+  });
+  if (act > 0) { const d = desks[act - 1]; lamp.position.copy(d.p).addScaledVector(d.n, .4); lamp.position.y = 2.1; }
+  lamp.intensity = act > 0 ? 1.6 * desks[act - 1].h : 0;
+  labels.forEach((l, k) => {
+    const d = desks[k];
+    v.copy(d.p).addScaledVector(d.n, .2); v.y = 2.25; v.project(cam);
+    const x = (v.x * .5 + .5) * W, y = (-v.y * .5 + .5) * H;   // the projection already includes the view offset
+    l.style.transform = `translate(${x}px,${y}px) translate(-50%,-100%)`;
+    l.style.opacity = v.z < 1 && v.z > -1 && y > (PHONE.matches ? 70 : 80) ? 1 : 0;
+    l.style.pointerEvents = l.style.opacity === '1' ? '' : 'none';
+  });
+  renderer.render(S, cam);
+}
+requestAnimationFrame(frame);
+}
+</script>
+

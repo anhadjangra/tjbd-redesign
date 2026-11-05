@@ -1,0 +1,591 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TJBD Project Deck</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Tarun Jangra Building Designers. 27 residential, commercial and industrial projects across South East Queensland.">
+<meta name="asset-base" content="../">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Familjen+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: photos first. A 3D drum of every project photo opens the page; a scroll-driven deck deals the 27 projects
+   one by one with their specs beside them; everything else is short and below. Dark ground so the photography carries it. */
+:root{
+  --ground:#0E0F11;     /* graphite */
+  --raised:#17191C;
+  --ink:#EEECE7;
+  --mute:#9A9C9F;
+  --rule:rgba(238,236,231,.13);
+  --mark:#FF4F8B;       /* survey-marker pink: the one accent */
+  --display:"Bricolage Grotesque","Arial Narrow",Arial,sans-serif;
+  --body:"Familjen Grotesk","Helvetica Neue",Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --gut:max(16px, env(safe-area-inset-left, 0px));
+  --gut-r:max(16px, env(safe-area-inset-right, 0px));
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:clip}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--mark);outline-offset:3px}
+h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.03em;line-height:.95;margin:0;text-wrap:balance;font-variation-settings:"wdth" 80}
+p{margin:0;max-width:62ch}
+.k{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.wrap{padding-left:var(--gut);padding-right:var(--gut-r)}
+.inner{max-width:1360px;margin:0 auto}
+.pill{display:inline-flex;align-items:center;gap:.5em;padding:.7em 1.15em;border-radius:999px;background:var(--mark);color:#1a0610;text-decoration:none;font-weight:600;font-size:.92rem;border:0;white-space:nowrap}
+.line{display:inline-flex;align-items:center;gap:.5em;padding:.7em 1.15em;border-radius:999px;border:1px solid var(--rule);background:transparent;text-decoration:none;font-weight:500;font-size:.92rem;white-space:nowrap}
+.line:hover{border-color:var(--ink)}
+
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;background:var(--ground)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--ground)}
+.bar{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px var(--gut-r) 14px var(--gut);
+  background:linear-gradient(rgba(14,15,17,.9),rgba(14,15,17,0));}
+.bar .logo{height:24px;width:auto;display:block;filter:invert(1)}
+.bar nav{display:flex;gap:22px}
+.bar nav a{text-decoration:none;font-size:.9rem;opacity:.75}
+.bar nav a:hover{opacity:1}
+@media (max-width:860px){.bar nav{display:none}.bar .logo{height:19px}.bar .pill{padding:.55em .9em;font-size:.8rem}}
+main{position:relative;z-index:1}
+
+/* ---- hero: drum of photos ---- */
+#hero{height:190vh;position:relative}
+#hero .stick{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:calc(28px + env(safe-area-inset-bottom,0px));pointer-events:none}
+#hero .stick > *{pointer-events:auto}
+#hero .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,15,17,0) 28%,rgba(14,15,17,.6) 55%,rgba(14,15,17,.94) 86%);pointer-events:none}
+#hero .copy{position:relative;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px 48px;align-items:end;opacity:calc(1 - var(--q,0) * 1.8)}
+#hero h1{font-size:clamp(2.6rem,7.6vw,7.4rem)}
+#hero h1 em{font-style:normal;color:var(--mark)}
+#hero .side{display:flex;flex-direction:column;gap:18px}
+#hero .side p{color:#cfcdc8}
+#hero .row{display:flex;gap:10px;flex-wrap:wrap}
+.counts{display:flex;gap:0;border-top:1px solid var(--rule);margin-top:22px;flex-wrap:wrap;position:relative;opacity:calc(1 - var(--q,0) * 1.8)}
+.counts button{all:unset;cursor:pointer;flex:1 1 0;min-width:120px;padding:12px 14px 4px 0;display:flex;flex-direction:column;gap:2px}
+.counts button:focus-visible{outline:2px solid var(--mark)}
+.counts b{font-family:var(--display);font-size:2rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums;font-variation-settings:"wdth" 80}
+.counts button:hover b{color:var(--mark)}
+.tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--ground);padding:.4em .7em;font-size:.8rem;font-weight:600;border-radius:4px;opacity:0;transition:opacity .15s;white-space:nowrap}
+.tip span{font-family:var(--mono);font-size:.68rem;font-weight:400;opacity:.7;margin-left:.5em}
+@media (max-width:760px){#hero .copy{grid-template-columns:1fr}#hero .side p{display:none}#hero h1{font-size:2.5rem}.counts{flex-wrap:nowrap;margin-top:14px}.counts button{min-width:0;padding-right:6px}.counts b{font-size:1.35rem}.counts .k{font-size:.56rem;letter-spacing:.02em}}
+
+/* ---- deck ---- */
+#deck{position:relative}
+#deck .stick{position:sticky;top:0;height:100vh;display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr) minmax(0,190px);gap:24px;padding:calc(76px + env(safe-area-inset-top,0px)) var(--gut-r) 24px var(--gut);pointer-events:none}
+#deck .stick > *{pointer-events:auto}
+.card{display:flex;flex-direction:column;gap:14px;align-self:end;background:rgba(23,25,28,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--rule);padding:22px;max-height:100%;overflow:auto}
+.card .num{font-family:var(--display);font-size:4.6rem;line-height:.8;font-weight:800;color:var(--mark);font-variant-numeric:tabular-nums;font-variation-settings:"wdth" 75;display:flex;align-items:baseline;gap:8px}
+.card .num small{font-size:.95rem;color:var(--mute);font-family:var(--mono);font-weight:400;letter-spacing:0}
+.card h2{font-size:clamp(1.8rem,3vw,2.7rem)}
+.card .tags{display:flex;gap:6px;flex-wrap:wrap}
+.card .tags span{border:1px solid var(--rule);border-radius:999px;padding:.2em .7em;font-size:.78rem}
+.card .tags span.st{border-color:var(--mark);color:var(--mark)}
+.card dl{margin:0;display:grid;border-top:1px solid var(--rule)}
+.card dl div{display:grid;grid-template-columns:100px 1fr;gap:10px;padding:7px 0;border-bottom:1px solid var(--rule);font-size:.9rem}
+.card dt{font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);padding-top:3px}
+.card dd{margin:0;font-variant-numeric:tabular-nums;min-width:0;overflow-wrap:anywhere}
+.card .desc{font-size:.88rem;color:#cfcdc8;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.card .thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.card .thumbs button{padding:0;border:0;background:none;position:relative;aspect-ratio:4/3;overflow:hidden}
+.card .thumbs img{width:100%;height:100%;object-fit:cover;display:block;opacity:.6;transition:opacity .2s}
+.card .thumbs button[aria-current="true"] img,.card .thumbs button:hover img{opacity:1}
+.card .thumbs button[aria-current="true"]::after{content:"";position:absolute;inset:auto 0 0 0;height:3px;background:var(--mark)}
+.card .acts{display:flex;gap:8px;flex-wrap:wrap}
+.index{align-self:stretch;overflow:auto;display:flex;flex-direction:column;gap:14px;padding-right:4px;scrollbar-width:thin}
+.index h4{margin:0;font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:400}
+.index ol{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-direction:column}
+.index a{display:flex;gap:8px;text-decoration:none;font-size:.84rem;padding:3px 0;color:var(--mute);transition:color .2s}
+.index a i{font-style:normal;font-family:var(--mono);font-size:.66rem;width:18px;padding-top:2px;font-variant-numeric:tabular-nums}
+.index a:hover{color:var(--ink)}
+.index a.on{color:var(--ink)}
+.index a.on i{color:var(--mark)}
+.deck-head{position:absolute;top:calc(76px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);text-align:center;pointer-events:none}
+.deck-head .bar2{width:min(380px,50vw);height:2px;background:var(--rule);margin-top:8px;position:relative}
+.deck-head .bar2 i{position:absolute;inset:0 auto 0 0;background:var(--mark);width:calc(var(--dq,0) * 100%)}
+@media (max-width:1000px){#deck .stick{grid-template-columns:minmax(0,340px) minmax(0,1fr)}.index{display:none}}
+@media (max-width:760px){
+  #deck .stick{grid-template-columns:1fr;grid-template-rows:1fr auto;padding-top:calc(64px + env(safe-area-inset-top,0px))}
+  .card{grid-row:2;padding:14px;gap:9px;max-height:56vh}
+  .card .num{font-size:2.8rem}.card .desc{display:none}.card dl div{padding:5px 0;font-size:.82rem}
+  .card .thumbs{grid-template-columns:repeat(4,1fr)}
+  .deck-head{display:none}
+}
+
+/* ---- light-weight sections below ---- */
+.sec{padding-block:clamp(72px,10vw,140px);background:var(--ground);position:relative}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:clamp(24px,4vw,48px)}
+.sec-head h2{font-size:clamp(2.2rem,5vw,4.4rem);max-width:16ch}
+.sec-head p{color:var(--mute)}
+.films{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:auto auto;gap:14px;perspective:1600px}
+.films figure{margin:0;position:relative;overflow:hidden;background:#000;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.films figure:first-child{grid-row:span 2}
+.films video{width:100%;height:100%;object-fit:cover;display:block;aspect-ratio:16/10}
+.films figure:first-child video{aspect-ratio:auto;min-height:100%}
+.films figcaption{position:absolute;inset:auto 0 0 0;padding:16px 18px;background:linear-gradient(transparent,rgba(0,0,0,.78));display:flex;justify-content:space-between;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.films figcaption b{font-family:var(--display);font-size:1.5rem;font-variation-settings:"wdth" 80;display:block;line-height:1}
+.films .spec{display:flex;gap:18px}
+.films .spec b{font-size:1.4rem;font-variant-numeric:tabular-nums}
+@media (max-width:760px){.films{grid-template-columns:1fr}.films figure:first-child{grid-row:auto}.films figure:first-child video{aspect-ratio:4/5}}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,80px)}
+.stages{list-style:none;margin:0;padding:0;counter-reset:s;display:grid;border-top:1px solid var(--rule)}
+.stages li{display:grid;grid-template-columns:44px 1fr auto;gap:12px;padding:14px 0;border-bottom:1px solid var(--rule);counter-increment:s;align-items:baseline}
+.stages li::before{content:counter(s,decimal-leading-zero);font-family:var(--mono);font-size:.75rem;color:var(--mark)}
+.stages b{font-weight:600}
+.stages p{grid-column:2/4;color:var(--mute);font-size:.9rem}
+.stages span{font-family:var(--mono);font-size:.7rem;color:var(--mute)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:20px 0 0;padding:0}
+.chips li{border:1px solid var(--rule);border-radius:999px;padding:.35em .85em;font-size:.88rem}
+.about p+p{margin-top:14px}
+.about p{color:#cfcdc8}
+.about .lead{font-family:var(--display);font-size:clamp(1.5rem,2.6vw,2.2rem);line-height:1.08;color:var(--ink);font-variation-settings:"wdth" 85;font-weight:600;letter-spacing:-.02em}
+@media (max-width:760px){.split{grid-template-columns:1fr}}
+.ndis{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ndis article{position:relative;overflow:hidden}
+.ndis img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block}
+.ndis div{padding:14px 0}
+.ndis h3{font-size:1.5rem;font-variation-settings:"wdth" 85;margin-top:6px}
+@media (max-width:760px){.ndis{grid-template-columns:1fr}}
+.team{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;perspective:1200px}
+.team article{display:flex;flex-direction:column;gap:8px;transition:transform .4s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d}
+.team img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;filter:grayscale(1) contrast(1.05);transition:filter .3s}
+.team article:hover img{filter:none}
+.team b{font-weight:600;line-height:1.2}
+.team p{font-size:.8rem;color:var(--mute);line-height:1.4}
+@media (max-width:1000px){.team{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:560px){.team{grid-template-columns:repeat(2,minmax(0,1fr))}.team p{display:none}}
+#contact .big{font-family:var(--display);font-size:clamp(3rem,10vw,9rem);font-weight:800;line-height:.88;letter-spacing:-.04em;font-variation-settings:"wdth" 75}
+#contact .big em{font-style:normal;color:var(--mark)}
+.lines{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;margin-top:40px;border-top:1px solid var(--rule);padding-top:20px}
+.lines div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.lines a,.lines span{text-decoration:none;font-size:1.05rem;overflow-wrap:anywhere}
+.copy{align-self:flex-start;background:transparent;border:1px solid var(--rule);border-radius:999px;padding:.2em .7em;font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;text-transform:uppercase}
+@media (max-width:860px){.lines{grid-template-columns:1fr 1fr}}
+@media (max-width:480px){.lines{grid-template-columns:1fr}}
+footer{background:var(--ground);color:var(--mute);font-size:.8rem;padding-block:24px calc(24px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--rule);position:relative;z-index:1}
+footer .inner{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer .social{display:flex;gap:16px}
+footer a{text-decoration:none}
+
+/* ---- project sheet ---- */
+dialog#pd{border:0;padding:0;width:min(1200px,100vw);max-width:100vw;max-height:100dvh;height:min(860px,100dvh);background:var(--raised);color:var(--ink)}
+dialog#pd::backdrop{background:rgba(0,0,0,.78);backdrop-filter:blur(6px)}
+.pd{display:grid;grid-template-columns:1.55fr 1fr;height:100%}
+.pd .pics{background:#000;display:grid;grid-template-rows:1fr auto;min-height:0}
+.pd .main{width:100%;height:100%;object-fit:contain;min-height:0;display:block}
+.pd .strip{display:flex;gap:6px;padding:8px;overflow-x:auto}
+.pd .strip button{border:2px solid transparent;padding:0;background:none;flex:none}
+.pd .strip button[aria-current="true"]{border-color:var(--mark)}
+.pd .strip img{width:84px;height:63px;object-fit:cover;display:block}
+.pd .info{padding:26px;display:flex;flex-direction:column;gap:14px;overflow:auto;min-width:0}
+.pd h2{font-size:clamp(1.9rem,3vw,2.8rem)}
+.pd .desc{font-size:.95rem;color:#cfcdc8}
+.pd dl{margin:0;display:grid;border-top:1px solid var(--rule)}
+.pd dl div{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:8px 0;border-bottom:1px solid var(--rule)}
+.pd dt{font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);padding-top:3px}
+.pd dd{margin:0}
+.pd .nav{display:flex;justify-content:space-between;gap:10px;margin-top:auto;padding-top:8px}
+#pd .x{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:calc(12px + env(safe-area-inset-right,0px));z-index:2;background:var(--raised);border:1px solid var(--rule);border-radius:999px;padding:.45em .9em;font-family:var(--mono);font-size:.68rem;text-transform:uppercase}
+@media (max-width:860px){.pd{grid-template-columns:1fr;grid-template-rows:auto 1fr}.pd .main{aspect-ratio:4/3;height:auto}.pd .info{padding:18px}}
+
+body.nogl #hero{height:auto}body.nogl #hero .stick{position:relative;height:auto;padding-top:120px}
+body.nogl #deck{display:none}
+@media (prefers-reduced-motion: reduce){#hero .copy,.counts{opacity:1!important}}
+</style>
+
+<header class="bar">
+  <a href="#top" aria-label="Tarun Jangra Building Designers, back to top"><img class="logo" data-src="media/logo-black.png" src="../media/logo-black.png" alt="Tarun Jangra Building Designers" width="705" height="129"></a>
+  <nav aria-label="Sections"><a href="#deck">Projects</a><a href="#films">Films</a><a href="#studio">Studio</a><a href="#ndis">NDIS</a><a href="#team">Team</a><a href="#contact">Contact</a></nav>
+  <a class="pill" href="#contact">Start a project</a>
+</header>
+
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="tip" id="tip"></div>
+
+<main id="top">
+  <section id="hero" aria-label="Introduction">
+    <div class="stick wrap">
+      <div class="shade"></div>
+      <div class="inner" style="width:100%;position:relative">
+        <div class="copy">
+          <h1>Creating spaces that innovate <em>&amp;</em> inspire.</h1>
+          <div class="side">
+            <p>Tarun Jangra Building Designers. Homes, offices, showrooms and warehouses across South East Queensland, from first sketch to finished building. Every photo here is our work: hover to see which project, click to open it.</p>
+            <div class="row"><a class="pill" href="#deck">Flip through 27 projects</a><a class="line" href="#contact">Talk to Tarun</a></div>
+          </div>
+        </div>
+        <div class="counts" id="counts"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="deck" aria-label="Projects">
+    <div class="stick">
+      <article class="card" id="card" aria-live="polite">
+        <div class="num" id="cnum">01<small>/ 27</small></div>
+        <div><h2 id="cname">Tesla Burleigh Heads</h2></div>
+        <div class="tags" id="ctags"></div>
+        <dl id="cspecs"></dl>
+        <p class="desc" id="cdesc"></p>
+        <div class="thumbs" id="cthumbs"></div>
+        <div class="acts"><button class="pill" type="button" id="copen">Open project</button><button class="line" type="button" id="cnext">Next ↓</button></div>
+      </article>
+      <div></div>
+      <nav class="index" id="index" aria-label="Project index"></nav>
+    </div>
+    <div class="deck-head" id="deckhead" aria-hidden="true"><div class="k" id="dhk">Residential</div><div class="bar2"><i></i></div></div>
+  </section>
+
+  <section id="films" class="sec wrap" aria-label="Films">
+    <div class="inner">
+      <div class="sec-head"><div><div class="k">Films</div><h2>Fly over, walk around, sketch to render.</h2></div></div>
+      <div class="films">
+        <figure data-tilt><video muted loop playsinline preload="none" data-poster="media/tesla-poster.jpg" data-src="media/tesla-drone.mp4" data-src-m="media/tesla-drone-m.mp4" aria-label="Drone film of Tesla Burleigh Heads"></video>
+          <figcaption><div><span class="k">Drone film · Completed</span><b>Tesla Burleigh Heads</b></div><div class="spec"><div><b>12,212</b><div class="k">Site m²</div></div><div><b>4,913</b><div class="k">Floor m²</div></div><div><b>50.6</b><div class="k">Cover %</div></div></div></figcaption></figure>
+        <figure data-tilt><video muted loop playsinline preload="none" data-poster="media/grassdale-poster.jpg" data-src="media/grassdale.mp4" data-src-m="media/grassdale-m.mp4" aria-label="Walk-around of the Grassdale Residence"></video>
+          <figcaption><div><span class="k">Walk-around · Gumdale</span><b>Grassdale Residence</b></div><button class="line" type="button" data-open="562-grassdale-road-gumdale">Open</button></figcaption></figure>
+        <figure data-tilt><video muted loop playsinline preload="none" data-poster="media/grout-poster.jpg" data-src="media/grout-reel.mp4" data-src-m="media/grout-reel-p.mp4" aria-label="Grout Street Offices, sketch to render"></video>
+          <figcaption><div><span class="k">Sketch to render · MacGregor</span><b>Grout Street Offices</b></div><button class="line" type="button" data-open="grout-street-macgregor">Open</button></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="studio" class="sec wrap" aria-label="Studio and process">
+    <div class="inner split">
+      <div class="about">
+        <div class="k">Studio · Est. 1999 · Brisbane since 2006</div>
+        <p class="lead" style="margin-top:14px">We go beyond the mere construction of structures. We craft experiences.</p>
+        <p style="margin-top:20px">Led by principal Tarun Jangra, TJBD is a team of passionate building designers who specialise in residential, commercial and industrial projects. We prioritise collaboration and communication to exceed client expectations.</p>
+        <p>Each design is thought through to resonate with the people who use it. Whether it shapes a quiet moment inside a home or a landmark on a busy street, the aim is the same: places that inspire and enrich lives.</p>
+        <ul class="chips" id="caps"></ul>
+      </div>
+      <div><div class="k" style="margin-bottom:12px">How a project gets built · six stages, one team</div><ol class="stages" id="stages"></ol></div>
+    </div>
+  </section>
+
+  <section id="ndis" class="sec wrap" aria-label="NDIS compliant homes" style="padding-top:0">
+    <div class="inner">
+      <div class="sec-head"><div><div class="k">Special mention</div><h2>NDIS compliant homes</h2></div><p>Specialist Disability Accommodation designed to NDIS requirements, built to feel like home.</p></div>
+      <div class="ndis">
+        <article><img data-src="img/ndis-mcgregor.jpg" alt="Robust category SDA residence, McGregor Street, Kippa Ring" loading="lazy"><div><span class="k">SDA · Robust category</span><h3>McGregor Street, Kippa Ring</h3></div></article>
+        <article><img data-src="img/ndis-oxley.jpg" alt="High physical support SDA residence, Oxley Avenue, Redcliffe" loading="lazy"><div><span class="k">SDA · High physical support</span><h3>Oxley Avenue, Redcliffe</h3></div></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="team" class="sec wrap" aria-label="Team" style="padding-top:0">
+    <div class="inner">
+      <div class="sec-head"><div><div class="k">People</div><h2>Directors, associate &amp; graduates</h2></div></div>
+      <div class="team" id="teamgrid"></div>
+    </div>
+  </section>
+
+  <section id="contact" class="sec wrap" aria-label="Contact">
+    <div class="inner">
+      <div class="k">Get in touch</div>
+      <div class="big" style="margin-top:12px">Let's draw<br>it <em>up.</em></div>
+      <div class="lines">
+        <div><span class="k">Call</span><a href="tel:+61431287724">0431 287 724</a><button class="copy" type="button" data-copy="0431 287 724">Copy</button></div>
+        <div><span class="k">Call</span><a href="tel:+61481861415">0481 861 415</a><button class="copy" type="button" data-copy="0481 861 415">Copy</button></div>
+        <div><span class="k">Email</span><a href="mailto:tarun@tjbuildingdesigners.com.au">tarun@tjbuildingdesigners.com.au</a><button class="copy" type="button" data-copy="tarun@tjbuildingdesigners.com.au">Copy</button></div>
+        <div><span class="k">Visit</span><span>71 Kempsie Rd, Upper Mt Gravatt QLD 4122</span></div>
+      </div>
+      <div style="margin-top:36px"><a class="pill" href="https://tjbuildingdesigners.com.au/contact-us" target="_blank" rel="noopener">Start your project</a></div>
+    </div>
+  </section>
+</main>
+<footer class="wrap"><div class="inner"><span>© 2026 Tarun Jangra Building Designers · Brisbane, the Gold Coast, the Sunshine Coast, Moreton Bay and the Lockyer Valley</span><span class="social"><a href="https://www.instagram.com/tjbuildingdesigners" target="_blank" rel="noopener">Instagram ↗</a><a href="https://www.facebook.com/tjbuildingdesigners" target="_blank" rel="noopener">Facebook ↗</a><a href="https://www.linkedin.com/company/tj-building-designers" target="_blank" rel="noopener">LinkedIn ↗</a></span></div></footer>
+
+<dialog id="pd" aria-labelledby="pdname">
+  <button class="x" type="button" id="pdx">Close ✕</button>
+  <div class="pd">
+    <div class="pics"><img class="main" id="pdimg" alt=""><div class="strip" id="pdstrip"></div></div>
+    <div class="info"><div class="k" id="pdmeta"></div><h2 id="pdname"></h2><p class="desc" id="pddesc"></p><dl id="pdspecs"></dl>
+      <div class="nav"><button class="line" type="button" id="pdprev">← Previous</button><button class="pill" type="button" id="pdnext">Next project →</button></div></div>
+  </div>
+</dialog>
+
+<script>
+const PROJECTS=[{"slug": "tesla-ern-harley-drive", "name": "Tesla Burleigh Heads", "loc": "Burleigh Heads", "cat": "ind", "status": "Completed", "desc": "The Tesla showroom located at 6 Ern Harley Drive, Burleigh Heads is a newly delivered automotive retail facility with a total gross floor area of 4,912.92 m². The development has been designed in accordance with Tesla’s global showroom standards, ensuring consistency with the brand’s international identity and customer experience. The facility integrates vehicle display, customer service, and delivery functions within a cohesive layout. Architecturally, the building presents a contemporary form that reflects Tesla’s core values of innovation, precision, and forward-thinking design, creating a refined and high-performance retail environment aligned with the brand’s vision.", "specs": [["Site area", "12,212 m²"], ["Site cover", "50.6 %"], ["Status", "Completed"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["tesla-ern-harley-drive-1.jpg", 1600, 1066], ["tesla-ern-harley-drive-2.jpg", 1600, 1067], ["tesla-ern-harley-drive-3.jpg", 1600, 1066], ["tesla-ern-harley-drive-4.jpg", 1600, 1280]]}, {"slug": "562-grassdale-road-gumdale", "name": "Grassdale Residence", "loc": "Gumdale", "cat": "res", "status": "Design Phase", "desc": "This elegant two storey home influenced by french provincial design with a grand entrance framed by columns and a decorative pediment. The symmetrical layout creates balance and uniformity, with arched windows and detailed trim work giving the home its classical character. Wrought iron balcony handrails add a touch of sophistication to the upper level facade treatment. The home is organised with a central living area and two side wings that house the family room, study and guest bedroom. The layout provides clear separation between entertaining spaces and private family areas. The design works well on a large block, with covered verandahs at the rear extending the living space outdoors.", "specs": [["Built-up area", "897.8 m²"], ["Status", "Design Phase"]], "imgs": [["562-grassdale-road-gumdale-1.jpg", 1600, 1143], ["562-grassdale-road-gumdale-2.jpg", 1600, 1143], ["562-grassdale-road-gumdale-3.jpg", 1600, 1067]]}, {"slug": "grout-street-macgregor", "name": "Grout Street Offices", "loc": "MacGregor", "cat": "com", "status": "Design Stage", "desc": "The radically contemporary offices located on Grout Street offer a unique alternative to the established style of office. The bold formatic approach with the smooth rounded corner makes for a welcoming building, combined with the abundant use of natural materials such as timber and stone throughout the entirety of the building. The unique form combined with the other facades allows for privacy for the occupants from the surrounding site, but still allows for natural daylighting to occur deep within the floorplate. The organisation of the program allows for both ample parking space, with a safe and interesting pedestrian entry that can be easily identified from both the street and within the carpark. This also allows for a large amount of space dedicated to greenery on the lower floors, activating the ground floor.", "specs": [["Site area", "612.6 m²"], ["Built-up area", "369.5 m²"], ["Status", "Design Stage"]], "imgs": [["grout-street-macgregor-1.jpg", 1600, 1131], ["grout-street-macgregor-2.jpg", 1600, 1067], ["grout-street-macgregor-3.jpg", 1600, 1131], ["grout-street-macgregor-4.jpg", 1600, 1067]]}, {"slug": "378-380-redbank-plains", "name": "Redbank Plains Townhouses", "loc": "Redbank Plains", "cat": "th", "status": "DA Stage", "desc": "Discover modern living at its finest in Redbank Plains, Queensland. TJ Building Designers present a luxuriously designed residential community across 7169m² with light-filled homes throughout without compromising on density which also brings vertical rhythm and streetscape presence to the composition. This carefully designed Community Living ensures each residence benefits from adequate building setbacks, ventilation, and natural surroundings. Beyond your front door, ample space for communal area awaits to unwind, connect with neighbours, and enjoy the lifestyle you deserve. This is more than a development; it’s a place to belong. A rare collection of architecturally designed townhouses in Redbank Plains, crafted for those who are seeking luxurious lifestyle, connection with nature and community.", "specs": [["Site area", "7169 m²"], ["Status", "DA Stage"], ["Builder", "Signature Homes"]], "imgs": [["378-380-redbank-plains-1.jpg", 1600, 1131], ["378-380-redbank-plains-2.jpg", 1600, 800]]}, {"slug": "tesla-flinders-lane", "name": "Tesla Maroochydore", "loc": "Maroochydore", "cat": "ind", "status": "Construction Phase", "desc": "The Tesla Showroom at Lot 409, Flinders Lane in Maroochydore is a purpose-built automotive retail and service facility, encompassing a total gross floor area of 3,010.4 m² with a site coverage of approximately 49.6%. Its architectural simplicity is intentionally designed to contrast with the advanced technology it represents. A generous glazed façade creates a strong visual connection between the street and the interior. Inside, the spatial layout carefully guides visitors through a curated and immersive brand experience. From the sequence of arrival to the selection of materials and finishes, every element reflects Tesla’s commitment to technology infused with luxury and defined by simplicity..", "specs": [["Built-up area", "3,010.4 m²"], ["Status", "Construction Phase"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["tesla-flinders-lane-1.jpg", 1600, 686], ["tesla-flinders-lane-2.jpg", 1600, 592], ["tesla-flinders-lane-3.jpg", 1600, 694], ["tesla-flinders-lane-4.jpg", 1600, 547]]}, {"slug": "jasper-street", "name": "Jasper Street", "loc": "", "cat": "res", "status": "Design Stage", "desc": "An innovative contemporary form of differing volumes with a calculated use of materials, this residence is the culmination of local site context mixed with a high degree of luxury. Opting to use a significant amount of glass on the facade means that the home is well lit with an abundance of natural light, complimented by beautiful views of the whites hill reserve from the front balcony and living room. The interior finishes reinforce luxury living in the home, with a strong selection of soft natural materials that compliment the natural light being filtered through to the interior spaces. A large double height space opens up the open plan kitchen/living/dining room, creating a living central node for the home.", "specs": [["Site area", "728 m²"], ["Built-up area", "755 m²"], ["Status", "Design Stage"], ["Engineer", "SECS Engineering"]], "imgs": [["jasper-street-1.jpg", 1600, 1200], ["jasper-street-2.jpg", 1600, 1200], ["jasper-street-3.jpg", 1600, 1200], ["jasper-street-4.jpg", 1600, 1200]]}, {"slug": "chandler-house", "name": "Chandler House", "loc": "", "cat": "res", "status": "Completed", "desc": "A renovation to an existing home, the client approached with the need for much larger living spaces for a growing family and a facelift to the existing dwelling. Utilising the existing modern forms from the previous dwelling, the extension carefully extends into the generous landscape while retaining the essence of the home. The exterior material choices accentuate and modernise the existing building, and allow the building to respond to the surrrounding site context. The updated interiors are bold and contemporary, finished with a luxurious touch. The material choices and updated design create an environment of opulence, with succint bold accents and generous space within each room combined with multiple double height spaces to allow for ample natural light and ventilation, as well as creating intimate moments of delight throughout.", "specs": [["Site area", "10,889.3 m² / 2.69 Acres"], ["Built-up area", "1085.5 m²"], ["Status", "Completed"], ["Engineer", "M&J Consulting Engineers"]], "imgs": [["chandler-house-1.jpg", 1600, 1200], ["chandler-house-2.jpg", 1600, 1200], ["chandler-house-3.jpg", 1600, 1200], ["chandler-house-4.jpg", 1600, 1200]]}, {"slug": "huet-street", "name": "Huet Street", "loc": "", "cat": "res", "status": "Completed", "desc": "A deliberate and bold use of the contemporary form juxtaposes this house within its context, choosing to stand out over blending in. The modern exterior form is characterised by its use of stark material contrast, using a combination of aluminium cladding with white render and tile framed in black to create distinction and identity to each element of the facade. This carries down throughout the design, highlighting each individual element on the facade as it continues through. The spaces are concieved on three different levels, with both a covered and uncovered front balcony area capturing distant city views from kitchen and living areas on top level. An abundance of natural light and air flows into the dining and living areas on both floors utilising an open plan configuration, optimising energy passivity and environmental comfort in the home.", "specs": [["Site area", "568.8 m²"], ["Built-up area", "291.3 m²"], ["Status", "Completed"], ["Engineer", "M&J Consulting Engineers"]], "imgs": [["huet-street-1.jpg", 1600, 1200], ["huet-street-2.jpg", 1600, 1200], ["huet-street-3.jpg", 1600, 1200], ["huet-street-4.jpg", 1600, 1200]]}, {"slug": "janda-street", "name": "Janda Street", "loc": "", "cat": "res", "status": "Completed", "desc": "Built as an addition to an original dwelling, the extension pulls away dramatically from the original building’s form and style, cementing itself as a new visual identity for the dwelling. On approach from the street, the extension is largely hidden behind the existing home, only to be revealed by walking through into the new space. The extension is characterised by a new contemporary selection of both form and material, with brick and black trimdek cladding as the main facade materials. Additionally the main aspect of the extension looks back into the backyard and bush, away from the street-face which in turn provides opportunity for more intimate, private living spaces. Multiple void spaces deep in the floorplate punch through the upper floor and are fed light from exterior skylights, bringing abundant natural light into all spaces of the renovation to create visual comfort for the occupants. Additionally, the interior spaces are grand, with large spaces in combination with a strong visual consistency with its material selection that complements the new exterior material language.", "specs": [["Site area", "1694 m²"], ["Built-up area", "873.3 m²"], ["Status", "Completed"]], "imgs": [["janda-street-1.jpg", 1600, 1200], ["janda-street-2.jpg", 1600, 1200], ["janda-street-3.jpg", 1600, 1200], ["janda-street-4.jpg", 1600, 1200]]}, {"slug": "gatton-residence", "name": "Gatton Residence", "loc": "", "cat": "res", "status": "Design Stage", "desc": "Being afforded the luxury of acreage in the town of Gatton, this Residence extends through a series of axis’ along the site. The dramatic symmetry of the central living area defines both the architectural style, as well as an informal meeting point within the series of forms. The two wings that offshoot from the central node house both bedrooms and other practical spaces, each having a defined program however formally are all stitched together to the node through glazed hallways that define the physical connection. The dwelling rises from the earth, complimenting the existing movement of the topography instead of defining a new movement, while the materials continue the respect to the local context. This is primarily through the use of locally sourced and available materials, which are recycled timber and steel. In further respect to both local climate and context, there is a signficant amount of expansive outdoor areas that allow for living to not solely be contained to the interior of the dwelling.", "specs": [["Site area", "283.5 Hectares"], ["Built-up area", "1601.1 m²"], ["Status", "Design Stage"], ["Engineer", "Paterdis Structural Engineering"], ["Builder", "Proudlock Pty Ltd"]], "imgs": [["gatton-residence-1.jpg", 1600, 1200], ["gatton-residence-2.jpg", 1600, 1200], ["gatton-residence-3.jpg", 1600, 1200], ["gatton-residence-4.jpg", 1600, 1200]]}, {"slug": "ellington-street", "name": "Ellington Street", "loc": "", "cat": "res", "status": "Design Stage", "desc": "An 800sqm lot with a steep slope at the back has been subdivided into two separate residences on small lots respectively, and as such the architectural form and decisions made purposefully define each dwelling as its on separate entity from the other. This is achieved from differing forms, and alternating materials with 51 Ellington Street having a unique visual identity with its use of arches, softer formatic approach and material selection while 53 Ellington takes a more rigid approach with a darker selection of materials. However the consistent choice of the same brick elements bring the buildings in together, completing the ying and yang like conditions. The interior approach is identical, with both interior details complimenting each respective exterior conditions but in stark contrast to the other. In this specific instance however the material selections, although different, are both strongly based in natural materials or with a subtle tone to make the most of the small room sizes defined by the lot size. However there is no hinderance to the amount of natural light and ventilation each recieve, as well as the ability for each dwellings living room to expand out into the backyard to make use of the climatic conditions.", "specs": [["Site area", "51 – 404 m² / 53 – 404.6 m²"], ["Built-up area", "51 – 288.8 m² / 53 – 285.7 m²"], ["Status", "Design Stage"], ["Engineer", "M&J Consulting Engineers"], ["Builder", "Proudlock Pty Ltd"]], "imgs": [["ellington-street-1.jpg", 1457, 1093], ["ellington-street-2.jpg", 1600, 1200], ["ellington-street-3.jpg", 1600, 1200], ["ellington-street-4.jpg", 1600, 1200]]}, {"slug": "moncrief-street", "name": "Moncrief Street", "loc": "", "cat": "res", "status": "Construction", "desc": "A simple and elegent contemporary architectural form, this residence sits within its context with a strong visual identity and use of contrasting materials. The simplistic facade has been delicately ornamented with a repetition of dark aluminium slats, to provide interest as well as opportunity for privacy and shading. Furthermore, the large massed form of the entrance sits heavily over which defines the entrance as a space of compression to allow for a greater moment of expansion once travelled through to the living room. The open plan living/kitchen/dining space is emboldended by the large double height space, spilling natural light into the space in combination with the exterior glazing which carefully bridges the gap between interior and exterior space. This creates an opportunity for the occupants to expand their living space and let it spill out into the outdoor living/pool area. Additionally, the open plan and natural material choices allow them to benefit from visual and thermal comfort conditions that the site and architecture provides them with.", "specs": [["Site area", "614.7 m²"], ["Built-up area", "504 m²"], ["Status", "Construction"], ["Engineer", "GDS Consulting Engineers"], ["Builder", "Bright Black Developments"]], "imgs": [["moncrief-street-1.jpg", 1600, 1200], ["moncrief-street-2.jpg", 1600, 1200], ["moncrief-street-3.jpg", 1600, 1200]]}, {"slug": "servius-street", "name": "Servius Street", "loc": "", "cat": "res", "status": "Construction", "desc": "The strong contemporary form of this dwelling is articulated with confident straight lines that clearly define the prominent, symmetrical masses of the building. These large spaces are further defined by the bold use of timber and stone which provide the building with an earthy, natural tone to immediately dictate a comfortable environment for the users of the space. The building responds to the existing site conditions with consistent views towards the city from the inside and out provided by ample exterior balcony spaces along the side of the building. The interiors are filled with an abundance of natural light and ventilation and complimented by multiple double height spaces that regularly punctuate the upper floor plan. This brings the light downward, and fills the space. The interior finish complements the exterior elements with soft, light finishes and an open-plan style living/kitchen/dining.", "specs": [["Site area", "717.3 m²"], ["Built-up area", "361.3 m²"], ["Status", "Construction"]], "imgs": [["servius-street-1.jpg", 1600, 1200], ["servius-street-2.jpg", 1440, 1080], ["servius-street-3.jpg", 1600, 1200], ["servius-street-4.jpg", 1600, 1200]]}, {"slug": "boston-road-residence", "name": "Boston Road Residence", "loc": "", "cat": "res", "status": "Design Stage", "desc": "The Boston Road Residence is a grand celebration of classical architecture, situated on vast acreage in Belmont. In a decision to return to the classical, a series of symmetrical grand gestures are made on the front facade and centred on the seven metre high entry into the home adorned with ornamentation. On approach from the road entry, the visually theatrical water fountain sits aligned with the axis of the building, reinforcing the grandeur of the residence. The opulent and spacious interiors of the home are a continuation of the themes present from the interior, and are finished with rigorous ornate details and luxurious materials. The home is divided into two different designated zones, the entry and bedrooms divided with the open plan kitchen /living /dining being joined by a small walkway, defining public and private spaces clearly.", "specs": [["Site area", "10,113.6 m² / 2.5 Acres"], ["Built-up area", "805 m²"], ["Status", "Design Stage"]], "imgs": [["boston-road-residence-1.jpg", 1600, 1200], ["boston-road-residence-2.jpg", 1600, 1200], ["boston-road-residence-3.jpg", 1600, 1200], ["boston-road-residence-4.jpg", 1600, 1200]]}, {"slug": "st-leonards-road", "name": "St Leonards Road", "loc": "", "cat": "res", "status": "", "desc": "Built as an addition to an original dwelling, the extension pulls away dramatically from the original building’s form and style, cementing itself as a new visual identity for the dwelling. On approach from the street, the extension is largely hidden behind the existing home, only to be revealed by walking through into the new space. The extension is characterised by a new contemporary selection of both form and material, with brick and black trimdek cladding as the main facade materials. Additionally the main aspect of the extension looks back into the backyard and bush, away from the street-face which in turn provides opportunity for more intimate, private living spaces. Multiple void spaces deep in the floorplate punch through the upper floor and are fed light from exterior skylights, bringing abundant natural light into all spaces of the renovation to create visual comfort for the occupants. Additionally, the interior spaces are grand, with large spaces in combination with a strong visual consistency with its material selection that complements the new exterior material language.", "specs": [], "imgs": [["st-leonards-road-1.jpg", 1600, 1200], ["st-leonards-road-2.jpg", 1600, 1200], ["st-leonards-road-3.jpg", 1600, 1200]]}, {"slug": "watford-street", "name": "Watford Street", "loc": "", "cat": "res", "status": "Completed", "desc": "A modern queensland home with a minimalistic form defined by clean lines, for a small family on a small lot. Its repetitive use of natural finishes inside and out, along with its strong connection to the gardens surrounding the building this home creates a safe and tranquil experience for its occupants in a environment that reflects contemporary ideals around nature and architecture. Once entered, a gracious and welcoming double height entry foyer leads to an open plan kitchen/living/dining space, providing glimpses to Mt Gravatt hills throughout. These spaces are finished with light and natural materials that enhance the spatial qualities of each room in the home, supporting a safe and family orientated environment.", "specs": [["Site area", "434 m²"], ["Built-up area", "184.2 m²"], ["Status", "Completed"], ["Engineer", "M&J Consulting Engineers"]], "imgs": [["watford-street-1.jpg", 1600, 1200], ["watford-street-2.jpg", 1600, 1200], ["watford-street-3.jpg", 1600, 1200], ["watford-street-4.jpg", 1600, 1200]]}, {"slug": "childcare-centre", "name": "Childcare Centre", "loc": "", "cat": "com", "status": "DA Approved", "desc": "An irregular roof-edge line defines the new centre with a strong and unique architectural identity, which identifies each classroom subtly through its contemporary form. The consistent use of timber and other earthy tones re-inforces physical and visual connection to nature as an important tenent for education centres, while the subtle and soft nature of the materials contributes to a safe and engaging environment for the childcare centre. The interior design is designed with the intention to be flexible, and allow educators to dictate the interior condition to the methods or subject of teaching required.Additionally the expansive green space connects all of the classrooms together, creating an informal meeting space between the classrooms as well as providing varied modes of play for the children. It also strengthens the visual connection to the outdoors.", "specs": [["Site area", "11,665 m² / 2.8 Acres"], ["Built-up area", "1291.8 m²"], ["Status", "DA Approved"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["childcare-centre-1.jpg", 1600, 1200], ["childcare-centre-2.jpg", 1600, 1200], ["childcare-centre-3.jpg", 1600, 1200]]}, {"slug": "village-complex", "name": "Village Complex", "loc": "", "cat": "com", "status": "DA Approved", "desc": "Proposed mixed-use complex comprising of a specialised medical centre, fitness centre, furniture store and generalised shops to serve as a new node for Crestmead. The complex is comprised of two large forms separated by a large parking lot, providing a clear distinction between the programs that are situated within the separate buildings. The material choices are unique in their selection between the two buildings, with the form of each stitching them together across the parking lot.The medical centre, acting as the central node for the lot, situates itself with its materiality and practical application of plan to provide users with the feeling of comfort, and safety with a strong use of natural materials and use of greenery surrounding. Conversely, the retail dwellings use a bolder and more exciting form of material selection to provide interest and intrigue, promoting the businesses they house.", "specs": [["Site area", "15,968 m² / 3.94 Acres"], ["Built-up area", "6973.5 m² / 1.7 Acres"], ["Status", "DA Approved"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["village-complex-1.jpg", 1600, 1200], ["village-complex-2.jpg", 1544, 1158], ["village-complex-3.jpg", 1600, 1200]]}, {"slug": "emporio-shopping", "name": "Emporio Shopping", "loc": "", "cat": "com", "status": "Completed", "desc": "Renovation of an existing building to create a new identity for the shopping precinct in Underwood. The renovation took the design language in a new direction, opting to modernise an aging and forgotten precinct and updating it to become a vibrant and diverse centre. The contemporary style of commercial building introduces a simplistic form with purposeful repetition of elements to create interest and a new visual identity. Additionally, the use of an new aluminium louvres ties together the exterior cladding across the expanded entry massing, providing cohesion in the highlighted elements. The new shopping precinct has the ability to house a diverse range of clientel, and adds value to the current site context with its new visual identity, as well as opportunities for small businesses to establish themselves in the local area.", "specs": [["Site area", "3626.3 m²"], ["Built-up area", "983.7 m²"], ["Status", "Completed"], ["Engineer", "SECS Engineering"]], "imgs": [["emporio-shopping-1.jpg", 1600, 1200], ["emporio-shopping-2.jpg", 1600, 1200], ["emporio-shopping-3.jpg", 1600, 1200], ["emporio-shopping-4.jpg", 1600, 1200]]}, {"slug": "equestrian-centre", "name": "Equestrian Centre", "loc": "", "cat": "com", "status": "Design Stage", "desc": "Defined by its unique open-air approach to equestrian stadium design, the proposed multi-purpose arena situates itself within the existing Boonah Showgrounds Precinct, drastically adding more alternative sports and events to the Showgrounds venue. The expansive pitched roof provides cover from the weather elements while being an impressive architectural element that is achieved through a series of hidden trusses. As the stadium sits down within the site context, it appears as if the building conforms to the landscape around it along with the open air nature of the facade to provide passive cooling and ventilation for the stadium.", "specs": [["Site area", "88,005 m² / 8.8 Hectares"], ["Built-up area", "5468.9 m² / 1.35 Acres"], ["Status", "Design Stage"], ["Engineer", "SECS Engineering"]], "imgs": [["equestrian-centre-1.jpg", 1600, 1200], ["equestrian-centre-2.jpg", 1600, 1200], ["equestrian-centre-3.jpg", 1600, 1200]]}, {"slug": "tesla", "name": "Tesla Delivery Centre", "loc": "", "cat": "ind", "status": "Completed", "desc": "Designed in combination with a strong company design language and rigorous functionality requirements, the Tesla Delivery Centre delivers a bold architectural statement consistent with the company vision and values that embody Tesla. The simplistic and contemporary facility exterior designates a desired sense of luxury and efficiency, and allows for the signage and entry to become the focal points. The design language as a whole takes on an innovative, futuristic identity which is consistent through to the interior space. Inside the warehouse the rigorously-efficient plan is the antithesis of the company’s existing practices, as everything has been organised with a high level of functionality and efficiency for its intended purpose. Architecturally the interior elements support this high degree of functionality, providing a well illuminated space with high ceilings in the main warehouse space alongside a resolved material palette that complements the company’s futuristic aesthetic which is carried through into the office spaces and entry.", "specs": [["Site area", "14,908 m² / 3.6 Acres"], ["Built-up area", "11,154.8 m² / 2.75 Acres"], ["Status", "Completed"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["tesla-1.jpg", 1600, 1200], ["tesla-2.jpg", 1600, 1200], ["tesla-3.jpg", 1600, 1200], ["tesla-4.jpg", 1600, 1200]]}, {"slug": "meakin-road", "name": "Meakin Road", "loc": "", "cat": "ind", "status": "Completed", "desc": "Designed in combination with a strong company design language and rigorous functionality requirements, the Tesla Delivery Centre delivers a bold architectural statement consistent with the company vision and values that embody Tesla. The simplistic and contemporary facility exterior designates a desired sense of luxury and efficiency, and allows for the signage and entry to become the focal points. The design language as a whole takes on an innovative, futuristic identity which is consistent through to the interior space. Inside the warehouse the rigorously-efficient plan is the antithesis of the company’s existing practices, as everything has been organised with a high level of functionality and efficiency for its intended purpose. Architecturally the interior elements support this high degree of functionality, providing a well illuminated space with high ceilings in the main warehouse space alongside a resolved material palette that complements the company’s futuristic aesthetic which is carried through into the office spaces and entry.", "specs": [["Site area", "3422.2 m²"], ["Built-up area", "2483.4 m²"], ["Status", "Completed"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["meakin-road-1.jpg", 1600, 1200], ["meakin-road-2.jpg", 1600, 1200], ["meakin-road-3.jpg", 1600, 1200], ["meakin-road-4.jpg", 1600, 1200]]}, {"slug": "queens-road", "name": "Queens Road", "loc": "", "cat": "ind", "status": "Completed", "desc": "A series of warehouses located on Queens Road, the simplistic and contemporary forms create a refined architectural palette reflect the functionality requirements of the warehouse precinct, opting to stand out with the colours chosen over the architectural form. The dark grey concrete masses are subtly divided by the designated office locations, defined by the alternative colorbond finish and strong horizontal lines created by the exterior glazing which brings a sufficient amount of daylighting deep into the floorplate. In the larger warehouse spaces, a large floorplan dominates the space which has been allocated for potential occupants of these spaces to complete their specific industrial use, as well as access to vital amenities such large double-height spaces and roller doors. The pre-cast concrete panel construction additionally allows for fast and efficient construction and demolition if need be.", "specs": [["Site area", "3904.4 m²"], ["Built-up area", "2598.9 m²"], ["Status", "Completed"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["queens-road-1.jpg", 1600, 1200], ["queens-road-2.jpg", 1600, 1200], ["queens-road-3.jpg", 1600, 1200], ["queens-road-4.jpg", 1600, 1200]]}, {"slug": "lot-3031", "name": "Lot 30 + 31", "loc": "", "cat": "ind", "status": "Construction", "desc": "An office and production precinct located within Crestmead, the buildings provide beneficial industry and service to the local area. The architectural form of the proposal articulates a strong difference between the human-centred office locations and the industrial production program of the precinct. It is articulated through the complexity of the area, where the offices are visual markers for the potential clients through the use of colour, repetitive elements and changes within the massing and form. Additionally, these areas provide passive shading to the interior spaces without taking away from the interior light quality. In the larger production spaces, ample space has been allocated for potential occupants of these spaces for their specific industrial use, and access to vital amenities has been provided within the architecture, such as large double-height spaces and roller doors. The pre-cast concrete panel construction additionally allows for fast and efficient construction and demolition if need be.", "specs": [["Site area", "30 – 3495.9 m² / 31 – 3496 m²"], ["Built-up area", "30 – 2804 m² / 31 – 2539 m²"], ["Status", "Construction"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["lot-3031-1.jpg", 1600, 1200], ["lot-3031-2.jpg", 1600, 1200], ["lot-3031-3.jpg", 1600, 1200], ["lot-3031-4.jpg", 1600, 1201]]}, {"slug": "lot-29", "name": "Lot 29", "loc": "", "cat": "ind", "status": "Construction", "desc": "A dual warehouse development located within Crestmead, the bold modern forms of the office spaces protrude from the established mass effectively defining the differing uses of space from the warehouse space. Primarily, these forms are abundant with strong horizontal lines and exterior glazing, effectively daylighting the offices spaces inside. The concept of natural daylighting continues through to the warehouse spaces too, with a series of repetitious windows breaking up the large exterior form. Additionally, the contemporary colour palette creates interest and visual amenity for the offices, promoting the businesses from the road and carpark as well as establishing itself as a node for the human-centred spaces. In the larger warehouse areas, a significant amount of space has been allocated for the occupants of these spaces to complete their specific industrial use, and access to vital amenities has been provided within the architecture such as large double-height spaces and roller doors. The pre-cast concrete panel construction additionally allows for fast and efficient construction and demolition if need be, and can be easily repainted.", "specs": [["Site area", "8078.3 m² / 1.9 Acres"], ["Built-up area", "6301.1 m² / 1.5 Acres"], ["Status", "Construction"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["lot-29-1.jpg", 1600, 1200], ["lot-29-2.jpg", 1600, 1200], ["lot-29-3.jpg", 1600, 1200]]}, {"slug": "bartlett-street", "name": "Bartlett Street", "loc": "", "cat": "th", "status": "DA Approved", "desc": "A sophisticated collection of modern townhouses situated in the suburb of Morningside, designed with a strong emphasis on community living and lifestyle. The series of townhouses are emboldened by the contemporary approach to both form and materiality, offering a natural selection of materials that complements the surrounding context and creating a strong visual coordination with the strong forms seen in each townhouse. The interior design choices for each individual townhouses are uniquely bold and contemporary, finished with a combination of a strong sense of warmth, quality of design and precision to stand the test of time. The spaces also offer large expanses for outdoor living and connection to the surrounding context through both the priority of open plan living and a strong focus on natural daylight and visual connection.", "specs": [["Site area", "607.4 m²"], ["Built-up area", "538.4 m²"], ["Status", "DA Approved"], ["Engineer", "M&J Consulting Engineers"]], "imgs": [["bartlett-street-1.jpg", 1600, 1200], ["bartlett-street-2.jpg", 1600, 1200], ["bartlett-street-3.jpg", 1600, 1200]]}, {"slug": "gallagher-street", "name": "Gallagher Street", "loc": "", "cat": "th", "status": "Design Stage", "desc": "A boutique and beautifully crafted collection of modern townhouses situated in Kedron, designed with a strong emphasis on community living and lifestyle. The series of townhouses are emboldened by the simplistic but contemporary approach to both form and materiality, offering a soft and natural selection of materials that complements the surrounding context. The unique entrance to the site offers a strong visual threshold, establishing a new and unique indentity for the dwellings. The interior design choices for each individual townhouses are uniquely bold and contemporary, finished with a combination of a strong sense of warmth, quality of design and precision to stand the test of time. All townhouses boast an impressive open plan living/kitchen/dining space which is complimented by the large double height space, spilling natural light into the space in combination with the exterior glazing which carefully bridges the gap between interior and exterior space.", "specs": [["Site area", "634.8 m²"], ["Built-up area", "936.99 m²"], ["Status", "Design Stage"], ["Engineer", "SECS Engineering"], ["Builder", "Sustainable Homes"]], "imgs": [["gallagher-street-1.jpg", 1600, 1200], ["gallagher-street-2.jpg", 1600, 1171], ["gallagher-street-3.jpg", 1600, 1199], ["gallagher-street-4.jpg", 1600, 1170]]}];
+const CAPS=['New residential','Alterations & additions','Industrial','Commercial','Multi-residential','Heritage design','Hospitality & retail'];
+const CATS={all:'All',res:'Residential',com:'Commercial',ind:'Industrial',th:'Townhouse / Apartment'};
+const STAGES=[
+ ['Concept / schematic design','1:200','We listen, visit the site and sketch options until the big moves feel right.'],
+ ['Design development','1:100','Plans, elevations and materials get resolved and tested against budget and council rules.'],
+ ['Interior design','1:50','Layouts, joinery and finishes so the inside works as hard as the outside.'],
+ ['Construction documentation','1:20','The full drawing set and details your builder and certifier need to price and build.'],
+ ['Tendering','—','We help you get comparable quotes from builders and choose with confidence.'],
+ ['Contract administration','—','We stay on through construction to keep the build true to the drawings.'],
+];
+const TEAM=[
+ ['Tarun Jangra','Director','tarun','B.Arch, University of Kerala (1997). Founded The Design Grid in Chandigarh in 1999, then moved to Brisbane in 2006 and became a registered Building Designer.'],
+ ['Sonika Jangra','Director','sonika','B.Arch, Chandigarh College of Architecture (1996). Residences, interiors, commercial and industrial work in Chandigarh and Brisbane.'],
+ ['Khushbu “K” Bansal','Associate','khushbu','M.Arch, Deakin University (2021). Drawn to vernacular architecture.'],
+ ['Luke Vellacott','Graduate of Architecture','luke','Hons B.Design, QUT (2022). Technical detailing and compliance documentation.'],
+ ['Nora Ip','Graduate of Architecture','nora','Graduate of QUT.'],
+ ['Franz San Jose','Graduate of Architecture','franz','Graduate of QUT, majoring in architecture.'],
+];
+window.PROJECTS=PROJECTS;
+</script>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js';
+const BASE = document.querySelector('meta[name="asset-base"]').content;
+const $ = s => document.querySelector(s);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SMALL = () => innerWidth <= 760;
+const CATN = { res: 'Residential', th: 'Townhouse / Apartment', com: 'Commercial', ind: 'Industrial' };
+const CAT_ORDER = ['res', 'th', 'com', 'ind'];
+// deck order: grouped by category, original order inside each group
+const ORDER = CAT_ORDER.flatMap(c => PROJECTS.map((p, i) => i).filter(i => PROJECTS[i].cat === c));
+const P = PROJECTS, N = ORDER.length;
+const pad = n => String(n).padStart(2, '0');
+
+/* ---------- static content ---------- */
+document.querySelectorAll('img[data-src]').forEach(el => el.src = BASE + el.dataset.src);
+document.querySelectorAll('[data-poster]').forEach(el => el.poster = BASE + el.dataset.poster);
+$('#caps').innerHTML = CAPS.map(c => `<li>${c}</li>`).join('');
+$('#stages').innerHTML = STAGES.map(s => `<li><b>${s[0]}</b><span>${s[1] === '—' ? '' : s[1]}</span><p>${s[2]}</p></li>`).join('');
+$('#teamgrid').innerHTML = TEAM.map(t => `<article data-tilt><img src="${BASE}img/${t[2]}.jpg" alt="${t[0]}" loading="lazy"><div><b>${t[0]}</b><div class="k">${t[1]}</div></div><p>${t[3]}</p></article>`).join('');
+const counts = { all: N }; P.forEach(p => counts[p.cat] = (counts[p.cat] || 0) + 1);
+$('#counts').innerHTML = `<button type="button" data-k="0"><b>${N}</b><span class="k">Projects</span></button>` +
+  CAT_ORDER.map(c => `<button type="button" data-k="${ORDER.findIndex(i => P[i].cat === c)}"><b>${pad(counts[c])}</b><span class="k">${CATN[c]}</span></button>`).join('');
+$('#counts').querySelectorAll('button').forEach(b => b.onclick = () => goTo(+b.dataset.k));
+// index
+$('#index').innerHTML = CAT_ORDER.map(c => `<div><h4>${CATN[c]}</h4><ol>${ORDER.map((i, k) => P[i].cat === c ? `<li><a href="#deck" data-k="${k}"><i>${pad(k + 1)}</i><span>${P[i].name}</span></a></li>` : '').join('')}</ol></div>`).join('');
+const idxLinks = [...$('#index').querySelectorAll('a')];
+idxLinks.forEach(a => a.onclick = e => { e.preventDefault(); goTo(+a.dataset.k); });
+
+/* ---------- copy, videos, tilt ---------- */
+document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', () => {
+  const done = () => { b.textContent = 'Copied'; setTimeout(() => b.textContent = 'Copy', 1600); };
+  const fallback = () => { const r = document.createRange(); r.selectNodeContents(b.previousElementSibling); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+  try { navigator.clipboard.writeText(b.dataset.copy).then(done, fallback); } catch { fallback(); }
+}));
+const vio = new IntersectionObserver(es => es.forEach(e => {
+  const v = e.target;
+  if (e.isIntersecting) { if (!v.src) v.src = BASE + (SMALL() && v.dataset.srcM ? v.dataset.srcM : v.dataset.src); if (!RM) v.play().catch(() => {}); }
+  else v.pause();
+}), { rootMargin: '200px' });
+document.querySelectorAll('video[data-src]').forEach(v => vio.observe(v));
+if (!RM) document.querySelectorAll('[data-tilt]').forEach(el => {
+  el.addEventListener('pointermove', e => { const r = el.getBoundingClientRect(); const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5; el.style.transform = `rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateZ(10px)`; });
+  el.addEventListener('pointerleave', () => el.style.transform = '');
+});
+
+/* ---------- project sheet ---------- */
+const dlg = $('#pd'); let cur = 0;
+function openProject(i, img = 0) {
+  cur = i; const p = P[i];
+  $('#pdname').textContent = p.name;
+  $('#pdmeta').textContent = [pad(ORDER.indexOf(i) + 1) + ' / ' + N, CATN[p.cat], p.loc, p.status].filter(Boolean).join(' · ');
+  $('#pddesc').textContent = p.desc;
+  $('#pdspecs').innerHTML = p.specs.filter(s => s[0] !== 'Status').map(s => `<div><dt>${s[0]}</dt><dd>${s[1]}</dd></div>`).join('');
+  $('#pdstrip').innerHTML = p.imgs.map((im, k) => `<button type="button" aria-label="Image ${k + 1}"><img src="${BASE}img/t/${im[0]}" alt=""></button>`).join('');
+  const show = k => { $('#pdimg').src = BASE + 'img/m/' + p.imgs[k][0]; $('#pdimg').alt = `${p.name}, image ${k + 1} of ${p.imgs.length}`; $('#pdstrip').querySelectorAll('button').forEach((b, j) => b.setAttribute('aria-current', j === k)); };
+  $('#pdstrip').querySelectorAll('button').forEach((b, k) => b.onclick = () => show(k));
+  show(Math.min(img, p.imgs.length - 1));
+  if (!dlg.open) dlg.showModal();
+}
+const stepP = d => openProject(ORDER[(ORDER.indexOf(cur) + d + N) % N]);
+$('#pdx').onclick = () => dlg.close();
+$('#pdprev').onclick = () => stepP(-1);
+$('#pdnext').onclick = () => stepP(1);
+dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+document.querySelectorAll('[data-open]').forEach(b => b.onclick = () => openProject(P.findIndex(p => p.slug === b.dataset.open)));
+
+/* ---------- deck sizing + navigation ---------- */
+const deck = $('#deck'), hero = $('#hero');
+const PER = () => SMALL() ? 70 : 60;           // vh of scroll per project
+function sizeDeck() { deck.style.height = ((N - 1) * PER() + 100) + 'vh'; }
+sizeDeck();
+function goTo(k) {
+  const top = deck.getBoundingClientRect().top + scrollY;
+  scrollTo({ top: top + (k / (N - 1)) * (deck.offsetHeight - innerHeight) + 2, behavior: RM ? 'auto' : 'smooth' });
+}
+
+/* ---------- deck card (DOM) ---------- */
+let active = -1, imgIdx = 0, holdUntil = 0;
+const cardEls = { num: $('#cnum'), name: $('#cname'), tags: $('#ctags'), specs: $('#cspecs'), desc: $('#cdesc'), thumbs: $('#cthumbs') };
+function setActive(k) {
+  if (k === active) return;
+  active = k; imgIdx = 0; const i = ORDER[k], p = P[i];
+  cardEls.num.innerHTML = `${pad(k + 1)}<small>/ ${N}</small>`;
+  cardEls.name.textContent = p.name;
+  cardEls.tags.innerHTML = [CATN[p.cat], p.loc].filter(Boolean).map(t => `<span>${t}</span>`).join('') + (p.status ? `<span class="st">${p.status}</span>` : '');
+  cardEls.specs.innerHTML = p.specs.filter(s => s[0] !== 'Status').map(s => `<div><dt>${s[0]}</dt><dd>${s[1]}</dd></div>`).join('');
+  cardEls.desc.textContent = p.desc;
+  cardEls.thumbs.innerHTML = p.imgs.map((im, j) => `<button type="button" aria-label="Show image ${j + 1}" aria-current="${j === 0}"><img src="${BASE}img/t/${im[0]}" alt=""></button>`).join('');
+  cardEls.thumbs.querySelectorAll('button').forEach((b, j) => b.onclick = () => { showImg(j); holdUntil = performance.now() + 7000; });
+  idxLinks.forEach((a, j) => a.classList.toggle('on', j === k));
+  const on = idxLinks[k]; if (on && !SMALL()) { const box = $('#index'); const r = on.getBoundingClientRect(), br = box.getBoundingClientRect(); if (r.top < br.top + 40 || r.bottom > br.bottom - 40) box.scrollTop += r.top - br.top - br.height / 2; }
+  $('#dhk').textContent = `${CATN[p.cat]} · ${pad(k + 1)} of ${N}`;
+}
+function showImg(j) {
+  imgIdx = j;
+  cardEls.thumbs.querySelectorAll('button').forEach((b, x) => b.setAttribute('aria-current', x === j));
+  if (window.__setDeckImage) window.__setDeckImage(active, j);
+}
+$('#copen').onclick = () => openProject(ORDER[active], imgIdx);
+$('#cnext').onclick = () => goTo(Math.min(N - 1, active + 1));
+setActive(0);
+
+/* ---------- WebGL ---------- */
+const canvas = $('#gl');
+let renderer = null;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true }); } catch (e) { document.body.classList.add('nogl'); }
+
+if (renderer) {
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+const loader = new THREE.TextureLoader();
+const texCache = new Map();
+function tex(url, cb) {
+  if (texCache.has(url)) { const t = texCache.get(url); if (t.image) cb(t); else t.__cbs.push(cb); return; }
+  const t = loader.load(url, () => { t.__cbs.forEach(f => f(t)); t.__cbs = []; });
+  t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; t.__cbs = [cb]; texCache.set(url, t);
+}
+const GROUND = new THREE.Color(0x0E0F11);
+
+/* === Hero: a drum of every project photo === */
+const H = new THREE.Scene(); H.background = GROUND; H.fog = new THREE.Fog(0x0E0F11, 16, 34);
+const camH = new THREE.PerspectiveCamera(40, 1, .1, 200);
+const drum = new THREE.Group(); H.add(drum);
+const ALL = []; ORDER.forEach(i => P[i].imgs.forEach((im, j) => ALL.push([i, j, im[0]])));
+const COLS = 25, ROWS = 5, TW = 2.3, TH = TW * .75, STEP = Math.PI * 2 / COLS, R = COLS * (TW + .18) / (Math.PI * 2);
+const tileGeo = new THREE.PlaneGeometry(TW, TH);
+const tiles = [];
+for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+  const n = r * COLS + c, src = ALL[(n * 7 + r * 3) % ALL.length];  // spread projects around the drum
+  const mat = new THREE.MeshBasicMaterial({ color: 0x1b1d20 });
+  tex(BASE + 'img/t/' + src[2], t => { mat.map = t; mat.color.set(0xc4c4c4); mat.needsUpdate = true; });
+  const m = new THREE.Mesh(tileGeo, mat);
+  const a = c * STEP + (r % 2) * STEP / 2;
+  m.position.set(Math.sin(a) * R, (r - (ROWS - 1) / 2) * (TH + .2), Math.cos(a) * R);
+  m.rotation.y = a; m.userData = { i: src[0], j: src[1] };
+  drum.add(m); tiles.push(m);
+}
+
+/* === Deck: the 27 projects as a stack of prints === */
+const D = new THREE.Scene(); D.background = GROUND; D.fog = new THREE.Fog(0x0E0F11, 14, 30);
+const camD = new THREE.PerspectiveCamera(34, 1, .1, 200);
+camD.position.set(0, 1.4, 16); camD.lookAt(0, .8, 0);
+const deckG = new THREE.Group(); D.add(deckG);
+const cards = ORDER.map((i, k) => {
+  const p = P[i], g = new THREE.Group();
+  const mat = new THREE.MeshBasicMaterial({ color: 0x1b1d20 });
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(1, .75), mat);
+  const back = new THREE.Mesh(new THREE.PlaneGeometry(1.03, .79), new THREE.MeshBasicMaterial({ color: 0x24272b }));
+  back.position.z = -.004;
+  const edge = new THREE.Mesh(new THREE.PlaneGeometry(1.03, .012), new THREE.MeshBasicMaterial({ color: 0xFF4F8B }));
+  edge.position.set(0, -.401, .001);
+  g.add(back, m, edge); deckG.add(g);
+  const c = { g, m, mat, edge, i, k, hi: false, img: 0 };
+  tex(BASE + 'img/t/' + p.imgs[0][0], t => { if (!c.hi) { mat.map = t; mat.color.set(0xffffff); mat.needsUpdate = true; } });
+  return c;
+});
+function hiRes(c, j) {
+  const url = BASE + 'img/m/' + P[c.i].imgs[j][0];
+  c.img = j;
+  tex(url, t => { if (c.img !== j) return; c.hi = true; c.mat.map = t; c.mat.color.set(0xffffff); c.mat.needsUpdate = true; });
+}
+window.__setDeckImage = (k, j) => hiRes(cards[k], j);
+
+/* === sizing === */
+let W = 1, Hh = 1, CW = 8;
+function resize() {
+  W = innerWidth; Hh = innerHeight;
+  renderer.setSize(W, Hh, false);
+  camH.aspect = camD.aspect = W / Hh;
+  camH.fov = W / Hh < .8 ? 52 : 40;
+  camH.setViewOffset(W, Hh, 0, Hh * (SMALL() ? .2 : .1), W, Hh);
+  // deck sits in the middle column on desktop, in the top half on phones
+  let ox = 0, oy = 0;
+  if (SMALL()) { oy = Hh * .5 - Hh * .27; CW = 6.4; }
+  else { const left = 16 + 360 + 24, right = W > 1000 ? W - 16 - 190 - 24 : W - 16; ox = W / 2 - (left + right) / 2; CW = clamp((right - left) / W * 13, 5, 9); }
+  camD.setViewOffset(W, Hh, ox, oy, W, Hh);
+  cards.forEach(c => c.g.scale.setScalar(CW));
+  camH.updateProjectionMatrix(); camD.updateProjectionMatrix();
+  sizeDeck();
+}
+addEventListener('resize', resize); resize();
+
+/* === pointer: hover tooltip + click on hero tiles === */
+const ray = new THREE.Raycaster(), pt = new THREE.Vector2(), tip = $('#tip');
+let mx = 0, my = 0, smx = 0, smy = 0, inHero = false;
+addEventListener('pointermove', e => {
+  mx = e.clientX / W - .5; my = e.clientY / Hh - .5;
+  if (!inHero || e.target.closest('a,button,.copy,.side,h1')) { tip.style.opacity = 0; hero.style.cursor = ''; return; }
+  pt.set(e.clientX / W * 2 - 1, -e.clientY / Hh * 2 + 1); ray.setFromCamera(pt, camH);
+  const hit = ray.intersectObjects(tiles)[0];
+  if (hit && hit.face && hit.face.normal) {
+    const p = P[hit.object.userData.i];
+    tip.innerHTML = `${p.name}<span>${CATN[p.cat]}</span>`;
+    tip.style.left = Math.min(e.clientX + 14, W - tip.offsetWidth - 10) + 'px'; tip.style.top = (e.clientY + 16) + 'px'; tip.style.opacity = 1;
+    hero.style.cursor = 'pointer'; hero.__hit = hit.object.userData;
+  } else { tip.style.opacity = 0; hero.style.cursor = ''; hero.__hit = null; }
+});
+hero.addEventListener('click', e => { if (e.target.closest('a,button')) return; if (hero.__hit) openProject(hero.__hit.i, hero.__hit.j); });
+// clicking the top card of the deck opens it
+deck.addEventListener('click', e => {
+  if (e.target.closest('a,button,.card,.index')) return;
+  pt.set(e.clientX / W * 2 - 1, -e.clientY / Hh * 2 + 1); ray.setFromCamera(pt, camD);
+  const hit = ray.intersectObject(cards[active].m)[0];
+  if (hit) openProject(ORDER[active], imgIdx);
+});
+
+/* === loop === */
+let last = performance.now(), cS = 0, lastCycle = performance.now(), rot = 0;
+const dq = $('#deckhead');
+function frame(t) {
+  const dt = Math.min(.1, (t - last) / 1000); last = t;
+  smx = lerp(smx, mx, .06); smy = lerp(smy, my, .06);
+  const rh = hero.getBoundingClientRect(), rd = deck.getBoundingClientRect();
+  inHero = rh.bottom > Hh * .5;
+  if (rh.bottom > 0 && inHero) {
+    const q = clamp(-rh.top / (rh.height - Hh));
+    hero.style.setProperty('--q', q.toFixed(3));
+    rot += RM ? 0 : dt * .045;
+    drum.rotation.y = rot + q * 1.6 + smx * .25;
+    drum.rotation.x = .1 - q * .1 + smy * .08;
+    const dist = (W / Hh < .8 ? 21 : 13.5) - q * (W / Hh < .8 ? 9 : 6);
+    camH.position.set(0, .4 - q * .4, R + dist);
+    camH.lookAt(0, 0, 0);
+    renderer.render(H, camH);
+  } else if (rd.top < Hh && rd.bottom > 0) {
+    tip.style.opacity = 0;
+    const q = clamp(-rd.top / (rd.height - Hh)), c = q * (N - 1);
+    cS = RM ? c : lerp(cS, c, 1 - Math.pow(.0008, dt));
+    const k = clamp(Math.round(c), 0, N - 1);
+    setActive(k);
+    dq.style.setProperty('--dq', (k / (N - 1)).toFixed(3));
+    // the active print cycles through its photos
+    if (t - lastCycle > (RM ? 5200 : 2800) && t > holdUntil) { lastCycle = t; const n = P[ORDER[active]].imgs.length; showImg((imgIdx + 1) % n); }
+    cards.forEach(cd => {
+      const d = cd.k - cS;
+      const g = cd.g;
+      if (d >= -.001) {
+        g.visible = d < 7;
+        g.position.set(d * .32, d * .34 - .2, -d * 1.6);
+        g.rotation.set(0, -.06 * d, 0);
+        const b = 1 - Math.min(d, 6) * .11; cd.mat.color.setScalar(cd.mat.map ? b : .1);
+        cd.edge.visible = d < .5;
+        if (d < 2.5 && !cd.hi) hiRes(cd, cd.k === active ? imgIdx : 0);
+      } else {
+        const s = -d; g.visible = s < 1.2;
+        g.position.set(-s * 4.5, -s * 6, s * 4);
+        g.rotation.set(-s * .9, .2 * s, s * .45);
+        cd.mat.color.setScalar(1); cd.edge.visible = false;
+      }
+    });
+    deckG.rotation.y = smx * .12; deckG.rotation.x = smy * .06;
+    renderer.render(D, camD);
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+}
+
+</script>
