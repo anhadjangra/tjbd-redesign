@@ -112,11 +112,12 @@ main{transition:opacity .3s}
 .panel .ar small{display:block;font-family:var(--mono);font-size:.6rem;color:var(--mute);text-transform:uppercase}
 @media (max-width:760px){
   /* phones: the panels become bottom sheets and the top half of the screen is the city */
-  /* one district per screen, and the page settles on each one, so a sheet is never left half way up */
-  html{scroll-snap-type:y proximity}
-  #intro,.district,#films{scroll-snap-align:start}
-  .district{height:100svh;scroll-snap-stop:always}
+  /* one sheet pinned to the bottom of the screen: scrolling flies the camera and the
+     sheet swaps its content in place, so it never travels up the screen half way */
+  .district{height:120svh}
   .district .stick{height:100svh;align-items:flex-end;padding:0}
+  #intro .box,.district .panel{position:fixed;left:0;right:0;bottom:0;z-index:4;opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity .3s,transform .3s}
+  #intro .box.on,.district .panel.on{opacity:1;transform:none;pointer-events:auto}
   .panel{width:100%;max-height:min(50svh,460px);border-radius:16px 16px 0 0;border-width:1px 0 0;box-shadow:0 -20px 40px -24px rgba(27,31,35,.4)}
   .panel header{padding:12px 16px 10px;gap:4px}
   .panel h2{font-size:1.7rem}
@@ -823,6 +824,7 @@ document.body.appendChild(hint);
 
 /* loop */
 const chapters = [$('#intro'), ...ZK.map(z => $('#d-' + z)), $('#films')];
+const sheets = [$('#intro .box'), ...ZK.map(z => $('#d-' + z + ' .panel'))]; let sheetOn = null;
 let last = performance.now(), t0 = 0;
 const v = new THREE.Vector3();
 function frame(t) {
@@ -832,6 +834,9 @@ function frame(t) {
   let idx = 0, f = 0;
   for (let k = 0; k < chapters.length; k++) { const r = chapters[k].getBoundingClientRect(); if (r.top <= mid) { idx = k; f = clamp((mid - r.top) / r.height); } }
   const visible = chapters[chapters.length - 1].getBoundingClientRect().top > 0;
+  /* phones: which bottom sheet is showing (the CSS only pins them on small screens) */
+  const sk = idx + (f > .7 ? 1 : 0), on = sk < sheets.length && chapters[chapters.length - 1].getBoundingClientRect().top > Hh * .9 ? sk : -1;
+  if (on !== sheetOn) { sheets.forEach((el, k) => el.classList.toggle('on', k === on)); sheetOn = on; }
   if (visible) {
     const a = keys[Math.min(idx, keys.length - 1)], b = keys[Math.min(idx + 1, keys.length - 1)];
     const tt = smooth(clamp((f - .55) / .45));
