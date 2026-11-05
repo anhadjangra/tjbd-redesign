@@ -202,16 +202,23 @@ dialog#pd[open]{animation:pdIn .35s cubic-bezier(.2,.7,.2,1)}
   .pd-peek{grid-template-columns:repeat(2,minmax(0,1fr));height:90px}
   .pd-peek button:nth-child(3){display:none}
 }
-.pd-end{background:var(--ink);color:#FBFBFA;padding:56px clamp(16px,3vw,40px) calc(64px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
-.pd-end .meter{width:min(320px,70vw);height:4px;border-radius:2px;background:rgba(251,251,250,.18);overflow:hidden}
-.pd-end .meter i{display:block;height:100%;width:calc(var(--pp,0) * 100%);background:var(--zc,#FBFBFA)}
-.pd-end svg{transform:translateY(calc(var(--pp,0) * 10px));transition:transform .1s}
+.pd-end{padding:clamp(56px,9vh,96px) 16px calc(clamp(72px,12vh,120px) + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;background:var(--ink);color:#FBFBFA}
+.pd-end .orb{position:relative;width:76px;height:76px;display:grid;place-items:center;transform:scale(calc(1 + var(--pp,0) * .35))}
+.pd-end .orb svg.ring{position:absolute;inset:0;transform:rotate(-90deg)}
+.pd-end .orb svg.ring circle{fill:none;stroke-width:2}
+.pd-end .orb .bg{stroke:rgba(251,251,250,.18)}
+.pd-end .orb .fg{stroke:var(--zc,#FBFBFA);stroke-dasharray:226.2;stroke-dashoffset:calc(226.2 - var(--pp,0) * 226.2);stroke-linecap:round}
+.pd-end .orb .ar{transform:translateY(calc(var(--pp,0) * 6px))}
 .pd-end b{font-size:1.05rem}
 .pd-end .k{color:#A8AFB4}
-#pd .pd-scroll > *{transform:translateY(calc(var(--pp,0) * -48px))}
-#pd.leaving{animation:pdOut .38s cubic-bezier(.4,0,.2,1) forwards}
-@keyframes pdOut{to{opacity:0;transform:translateY(-6%) scale(.97)}}
-@media (prefers-reduced-motion: reduce){#pd .pd-scroll > *{transform:none}#pd.leaving{animation:none;opacity:0}}
+#pd .pd-scroll > *{transform:translateY(calc(var(--pp,0) * -36px))}
+/* the portal: a hole that opens from the centre and shows the city underneath */
+#pd.pressing{-webkit-mask:radial-gradient(circle at 50% 50%,transparent var(--hr,0px),#000 calc(var(--hr,0px) + .5px));mask:radial-gradient(circle at 50% 50%,transparent var(--hr,0px),#000 calc(var(--hr,0px) + .5px))}
+#pd.pressing::backdrop{background:transparent}
+.pd-portal{position:fixed;left:50%;top:50%;width:calc(var(--hr,0px) * 2 + 8px);height:calc(var(--hr,0px) * 2 + 8px);transform:translate(-50%,-50%);border-radius:50%;border:4px solid var(--zc,#FBFBFA);pointer-events:none;opacity:0;z-index:5}
+#pd.pressing .pd-portal{opacity:1}
+#pd.leaving{transition:opacity .25s;opacity:0}
+@media (prefers-reduced-motion: reduce){#pd .pd-scroll > *,.pd-end .orb,.pd-end .orb .ar{transform:none}#pd.leaving{transition:none}}
 @media (prefers-reduced-motion: reduce){dialog#pd[open]{animation:none}}
 body.nogl .district .stick{position:relative;height:auto;justify-content:center}body.nogl .district{height:auto;padding-block:40px}
 </style>
@@ -317,9 +324,10 @@ body.nogl .district .stick{position:relative;height:auto;justify-content:center}
         <div class="pd-gal" id="pdgal"></div>
       </div>
       <button class="pd-next" type="button" id="pdnextbig"><img id="pdnextimg" alt=""><span class="c"><span class="k" id="pdnextk"></span><b id="pdnextname"></b></span></button>
-      <div class="pd-end" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2v11M3.5 8.5L8 13l4.5-4.5"/></svg><b>Keep scrolling to return to the city</b><div class="meter"><i></i></div><span class="k">Or press Esc</span></div>
+      <div class="pd-end" aria-hidden="true"><div class="orb"><svg class="ring" width="76" height="76" viewBox="0 0 76 76"><circle class="bg" cx="38" cy="38" r="36"/><circle class="fg" cx="38" cy="38" r="36"/></svg><svg class="ar" width="22" height="22" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2v11M3.5 8.5L8 13l4.5-4.5"/></svg></div><b>Keep scrolling to return to the city</b><span class="k">Or press Esc</span></div>
     </div>
   </div>
+<div class="pd-portal" aria-hidden="true"></div>
 </dialog>
 
 <script>
@@ -420,13 +428,17 @@ document.querySelectorAll('video[data-src]').forEach(v => vio.observe(v));
 const ORDER = ZK.flatMap(z => byZ[z]);
 const dlg = $('#pd'); let cur = 0;
 const zcVar = p => `var(${Z[p.cat].css})`;
+/* story photos come from the original files: 1200 px and 2400 px WebP */
+const wp = n => n.replace(/\.jpg$/, '.webp');
+const big = (n, sizes) => `src="${BASE}img/l/${wp(n)}" srcset="${BASE}img/l/${wp(n)} 1200w, ${BASE}img/xl/${wp(n)} 2400w" sizes="${sizes}"`;
+const setBig = (el, n, sizes) => { el.removeAttribute('srcset'); el.sizes = sizes; el.src = BASE + 'img/l/' + wp(n); el.srcset = `${BASE}img/l/${wp(n)} 1200w, ${BASE}img/xl/${wp(n)} 2400w`; };
 function openProject(i) {
   cur = i; const p = P[i], list = byZ[p.cat], k = list.indexOf(i);
   dlg.style.setProperty('--zc', zcVar(p));
   $('#pdchip').innerHTML = `<span class="sw" style="background:${zcVar(p)}"></span><span class="k">${Z[p.cat].name} · ${k + 1} of ${list.length}</span>`;
   $('#pdmeta').textContent = [p.loc, p.status].filter(Boolean).join(' · ') || Z[p.cat].name;
   $('#pdname').textContent = p.name;
-  $('#pdimg').src = BASE + 'img/m/' + p.imgs[0][0]; $('#pdimg').alt = p.name;
+  setBig($('#pdimg'), p.imgs[0][0], '100vw'); $('#pdimg').alt = p.name;
   const sp = Object.fromEntries(p.specs);
   const nums = [];
   if (sp['Site area']) nums.push([p.siteTxt.replace(' m²', ''), 'Site m²']);
@@ -440,11 +452,11 @@ function openProject(i) {
   $('#pdrankk').textContent = `Floor area in the ${Z[p.cat].name.toLowerCase()} district`;
   const max = Math.max(...list.map(j => P[j].built));
   $('#pdrank').innerHTML = list.map(j => { const q = P[j]; return `<span${j === i ? ' class="me"' : ''}>${q.name}</span><span${j === i ? ' class="me"' : ''}><i style="width:${(q.built / max * 100).toFixed(1)}%"></i></span><span${j === i ? ' class="me"' : ''}>${q.builtTxt === '—' ? 'est.' : fmt(q.built)}</span>`; }).join('');
-  $('#pdgal').innerHTML = p.imgs.map((im, j) => `<img src="${BASE}img/m/${im[0]}" alt="${p.name}, photo ${j + 1} of ${p.imgs.length}" loading="lazy"${j === 0 && p.imgs.length % 2 === 1 ? ' class="wide"' : ''}>`).join('');
+  $('#pdgal').innerHTML = p.imgs.map((im, j) => `<img ${big(im[0], j === 0 && p.imgs.length % 2 === 1 ? '(max-width: 760px) 100vw, 1300px' : '(max-width: 760px) 100vw, 650px')} alt="${p.name}, photo ${j + 1} of ${p.imgs.length}" loading="lazy"${j === 0 && p.imgs.length % 2 === 1 ? ' class="wide"' : ''}>`).join('');
   const n = list[(k + 1) % list.length], np = P[n];
   $('#pdnextk').textContent = `Next in ${Z[p.cat].name} · ${(k + 2 > list.length ? 1 : k + 2)} of ${list.length}`;
   $('#pdnextname').textContent = np.name + ' →';
-  $('#pdnextimg').src = BASE + 'img/m/' + np.imgs[0][0];
+  setBig($('#pdnextimg'), np.imgs[0][0], '100vw');
   $('#pdnextbig').onclick = () => openProject(n);
   $('#pdscroll').scrollTop = 0;
   if (!dlg.open) dlg.showModal();
@@ -462,12 +474,27 @@ const _show = dlg.showModal.bind(dlg); dlg.showModal = () => { document.document
 const pdScroll = $('#pdscroll');
 let pp = 0, lastPush = 0, ty0 = null, leaving = false;
 const atEnd = () => pdScroll.scrollTop + pdScroll.clientHeight >= pdScroll.scrollHeight - 2;
-function setPP(v) { pp = clamp(v, 0, 1); dlg.style.setProperty('--pp', pp.toFixed(3)); if (pp >= 1) leave(); }
+function setPP(v) {
+  pp = clamp(v, 0, 1); dlg.style.setProperty('--pp', pp.toFixed(3));
+  /* the hole only starts once the push is clearly on purpose, then eases out to cover the screen */
+  const o = RM ? 0 : clamp((pp - .12) / .88, 0, 1);
+  dlg.classList.toggle('pressing', o > 0 || leaving);
+  if (!leaving) dlg.style.setProperty('--hr', (Math.pow(o, 1.5) * Math.hypot(innerWidth, innerHeight) * .32).toFixed(1) + 'px');
+  if (pp >= 1) leave();
+}
 function push(v) { lastPush = performance.now(); setPP(pp + v); }
 function leave() {
   if (leaving) return; leaving = true;
-  dlg.classList.add('leaving');
-  setTimeout(() => { dlg.close(); dlg.classList.remove('leaving'); leaving = false; setPP(0); }, RM ? 0 : 380);
+  if (RM) { dlg.close(); leaving = false; setPP(0); return; }
+  /* finish the circle on its own, then let the city have the screen */
+  const r0 = parseFloat(dlg.style.getPropertyValue('--hr')) || 0, r1 = Math.hypot(innerWidth, innerHeight) / 2 + 8, t0 = performance.now();
+  dlg.classList.add('pressing');
+  (function grow(t) {
+    const k = clamp((t - t0) / 420, 0, 1), e = 1 - Math.pow(1 - k, 3);
+    dlg.style.setProperty('--hr', (r0 + (r1 - r0) * e).toFixed(1) + 'px');
+    if (k < 1) requestAnimationFrame(grow);
+    else { dlg.classList.add('leaving'); setTimeout(() => { dlg.close(); dlg.classList.remove('leaving', 'pressing'); leaving = false; setPP(0); }, 250); }
+  })(t0);
 }
 pdScroll.addEventListener('wheel', e => {
   const dy = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? 800 : 1);
