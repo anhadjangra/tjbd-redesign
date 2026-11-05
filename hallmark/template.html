@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tarun Jangra Building Designers, Brisbane</title>
+<meta name="description" content="Homes, offices, showrooms and warehouses across South East Queensland, designed by Tarun Jangra Building Designers in Upper Mt Gravatt.">
+<link rel="icon" href="../media/icon-black.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="banner">
+  <div class="container">
+    <a href="#work" data-open="1">On the boards: Grassdale Residence</a>
+    <span class="where">71 Kempsie Rd, Upper Mt Gravatt</span>
+  </div>
+</div>
+
+<header class="bar" id="bar">
+  <div class="container">
+    <a class="brand" href="#main" aria-label="Tarun Jangra Building Designers, home"><img src="../media/logo-black.png" width="726" height="128" alt=""></a>
+    <nav aria-label="Main">
+      <ul class="links">
+        <li><a href="#work">Work</a></li>
+        <li class="opt hide-s"><a href="#draw">What we draw</a></li>
+        <li class="hide-s"><a href="#studio">Studio</a></li>
+        <li class="opt hide-s"><a href="#ndis">NDIS</a></li>
+        <li class="hide-s"><a href="#contact">Contact</a></li>
+        <li><a class="call" href="tel:+61431287724">Call Tarun</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="hero" aria-labelledby="hero-h">
+  <div class="container">
+    <div class="col">
+      <h1 id="hero-h">Creating spaces that innovate &amp; inspire</h1>
+      <p class="lead">Homes, offices, showrooms and warehouses across South East Queensland.</p>
+      <div class="acts">
+        <a class="btn btn--ink" href="#work">See the work</a>
+        <a class="btn" href="tel:+61431287724">Call 0431&nbsp;287&nbsp;724</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="work" id="work" aria-labelledby="work-h">
+  <div class="container">
+    <div class="work-head">
+      <h2 id="work-h">{{COUNT}} projects on our boards</h2>
+      <fieldset class="filters" id="filters">
+        <legend>Show projects by type</legend>
+        {{FILTERS}}
+      </fieldset>
+    </div>
+    <ul class="cat is-short" id="cat">
+{{CARDS}}
+    </ul>
+    <div class="cat-foot"><button class="btn" type="button" id="more" aria-controls="cat" aria-expanded="false">Show all {{COUNT}} projects</button></div>
+  </div>
+</section>
+
+<section class="draw" id="draw" aria-labelledby="draw-h">
+  <div class="container">
+    <div class="draw-head">
+      <h2 id="draw-h">What we draw</h2>
+      <p class="lead">Six stages, one team, from concept sketch to contract administration.</p>
+    </div>
+    <ul class="cells">
+      <li class="lead-cell"><span class="w">New residential</span></li>
+      <li class="s6"><span class="w">Alterations &amp; additions</span></li>
+      <li class="s4 ink"><span class="w">Industrial</span></li>
+      <li class="s4"><span class="w">Commercial</span></li>
+      <li class="s4"><span class="w">Multi-residential</span></li>
+      <li class="s4"><span class="w">Heritage design</span></li>
+      <li class="s6"><span class="w">Hospitality &amp; retail</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="case on-ink" id="tesla" aria-labelledby="tesla-h">
+  <div class="container">
+    <div class="case-grid">
+      <div class="case-text">
+        <h2 id="tesla-h">Tesla Burleigh Heads</h2>
+        <p class="place">6 Ern Harley Drive, Burleigh Heads</p>
+        <p>A showroom delivered to Tesla’s global standards, with display, service and delivery under one roof.</p>
+        <div><button class="btn" type="button" data-open="0" aria-haspopup="dialog">Open the project</button></div>
+      </div>
+      <figure class="film" data-loop>
+        <video muted loop playsinline preload="none" poster="../media/tesla-poster.jpg" width="1280" height="720" aria-label="Drone flight over the finished Tesla showroom at Burleigh Heads">
+          <source src="../media/tesla-drone-m.mp4" type="video/mp4" media="(max-width: 40rem)">
+          <source src="../media/tesla-drone.mp4" type="video/mp4">
+        </video>
+        <button class="btn pause" type="button" data-loop-toggle>Pause</button>
+      </figure>
+    </div>
+    <dl class="specs">
+      <div><dt>Site area</dt><dd>12,212 <small>m²</small></dd></div>
+      <div><dt>Gross floor area</dt><dd>4,913 <small>m²</small></dd></div>
+      <div><dt>Site cover</dt><dd>50.6 <small>%</small></dd></div>
+      <div><dt>Status</dt><dd>Completed</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="studio" id="studio" aria-labelledby="studio-h">
+  <div class="container">
+    <div class="statement">
+      <h2 id="studio-h">We go beyond the mere construction of structures. We craft experiences.</h2>
+      <p>Practising since 1999, in Brisbane since 2006, led by principal Tarun Jangra.</p>
+    </div>
+    <table class="people">
+      <caption>The people at the desks</caption>
+      <thead><tr><th scope="col">Name</th><th scope="col">Role</th><th scope="col">Training</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Tarun Jangra</th><td class="role">Director</td><td class="ed">B.Arch, University of Kerala, 1997</td></tr>
+        <tr><th scope="row">Sonika Jangra</th><td class="role">Director</td><td class="ed">B.Arch, Chandigarh College of Architecture, 1996</td></tr>
+        <tr><th scope="row">Khushbu Bansal</th><td class="role">Associate</td><td class="ed">M.Arch, Deakin University, 2021</td></tr>
+        <tr><th scope="row">Luke Vellacott</th><td class="role">Graduate of Architecture</td><td class="ed">Hons B.Design, QUT, 2022</td></tr>
+        <tr><th scope="row">Nora Ip</th><td class="role">Graduate of Architecture</td><td class="ed">QUT</td></tr>
+        <tr><th scope="row">Franz San Jose</th><td class="role">Graduate of Architecture</td><td class="ed">QUT, architecture major</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="ndis" id="ndis" aria-labelledby="ndis-h">
+  <div class="container">
+    <div class="ndis-grid">
+      <div class="ndis-text">
+        <h2 id="ndis-h">NDIS homes</h2>
+        <p class="lead">Specialist Disability Accommodation, designed to NDIS requirements and built to feel like home.</p>
+      </div>
+      <ul class="ndis-list">
+        <li><figure>
+          <span class="shot" data-slot="ndis-mcgregor" data-alt="Front elevation, McGregor Street residence"><img src="../img/ndis-mcgregor.jpg" width="1020" height="388" alt="Front elevation drawing of the McGregor Street residence" loading="lazy" decoding="async"></span>
+          <figcaption><b>McGregor Street residence</b><span>Kippa Ring, SDA resilient-build category</span><span class="cat-tag">SDA</span></figcaption>
+        </figure></li>
+        <li><figure>
+          <span class="shot" data-slot="ndis-oxley" data-alt="Front elevation, Oxley Avenue residence"><img src="../img/ndis-oxley.jpg" width="1020" height="388" alt="Front elevation drawing of the Oxley Avenue residence" loading="lazy" decoding="async"></span>
+          <figcaption><b>Oxley Avenue residence</b><span>Redcliffe, SDA high physical support category</span><span class="cat-tag">SDA</span></figcaption>
+        </figure></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact" aria-labelledby="contact-h">
+  <div class="container">
+    <h2 id="contact-h">Talk to Tarun</h2>
+    <dl class="reach">
+      <div class="c-call"><dt>Call</dt><dd><a class="big" href="tel:+61431287724">0431&nbsp;287&nbsp;724</a><a class="big" href="tel:+61481861415">0481&nbsp;861&nbsp;415</a></dd></div>
+      <div class="c-mail"><dt>Email</dt><dd><a class="big" href="mailto:tarun@tjbuildingdesigners.com.au">tarun@tjbuildingdesigners.com.au</a></dd></div>
+      <div class="c-visit"><dt>Visit</dt><dd><span class="big">71 Kempsie Rd, Upper Mt Gravatt QLD&nbsp;4122</span></dd></div>
+      <div class="c-follow"><dt>Follow</dt><dd class="soc"><a href="https://www.instagram.com/tjbuildingdesigners">Instagram</a><a href="https://www.facebook.com/tjbuildingdesigners">Facebook</a><a href="https://www.linkedin.com/company/tj-building-designers">LinkedIn</a></dd></div>
+    </dl>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="container">
+    <div class="sign">
+      <p>Projects across Brisbane, the Gold Coast, the Sunshine Coast, Moreton Bay and the Lockyer Valley.</p>
+      <div class="by"><span class="name">Tarun Jangra</span><span>Director, Upper Mt Gravatt</span></div>
+    </div>
+    <div class="legal"><span>© 2026 Tarun Jangra Building Designers</span><a href="../">The earlier concept</a></div>
+  </div>
+</footer>
+
+<dialog class="sheet" id="sheet" aria-labelledby="s-title">
+  <div class="sheet-in">
+    <div class="sheet-top">
+      <button type="button" id="s-close">Close</button>
+      <div class="nav-btns"><span class="count" id="s-count"></span><button type="button" id="s-prev">Previous</button><button type="button" id="s-next">Next</button></div>
+    </div>
+    <div class="sheet-body">
+      <div class="gallery" id="s-gallery"></div>
+      <div class="sheet-text">
+        <h2 id="s-title"></h2>
+        <p class="kind" id="s-kind"></p>
+        <p id="s-desc"></p>
+        <dl id="s-specs"></dl>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>window.hallmarkSlots = (m) => { for (const [k, v] of Object.entries(m)) { const s = document.querySelector(`[data-slot="${k}"]`); if (!s) continue; const im = new Image(); im.src = typeof v === 'string' ? v : v.src; im.alt = (typeof v === 'object' && v.alt) || s.dataset.alt || ''; s.querySelectorAll(':scope > img').forEach((o) => o.remove()); s.prepend(im); } };
+document.querySelectorAll('[data-slot] img').forEach((i) => { if (i.complete && !i.naturalWidth) i.remove(); else i.addEventListener('error', () => i.remove(), { once: true }); });</script>
+<script>
+(() => {
+  const P = {{DATA}};
+  const $ = (s) => document.querySelector(s);
+  const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* catalogue: filter and show all */
+  const cat = $('#cat'), more = $('#more'), items = [...cat.children];
+  let open = false;
+  const apply = (k) => {
+    items.forEach((li) => { li.hidden = !(k === 'all' || li.dataset.cat === k); });
+    cat.classList.toggle('is-short', k === 'all' && !open);
+    more.parentElement.hidden = k !== 'all' || open;
+  };
+  $('#filters').addEventListener('change', (e) => apply(e.target.value));
+  more.addEventListener('click', () => { open = true; more.setAttribute('aria-expanded', 'true'); apply('all'); items[9]?.querySelector('button').focus({ preventScroll: true }); });
+
+  /* the opened project */
+  const sheet = $('#sheet'); let cur = 0, back = null;
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const show = (i) => {
+    cur = (i + P.length) % P.length; const p = P[cur];
+    $('#s-title').textContent = p.n; $('#s-kind').textContent = p.k; $('#s-desc').textContent = p.d;
+    $('#s-count').textContent = `${cur + 1} of ${P.length}`;
+    $('#s-specs').innerHTML = p.s.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('');
+    const film = p.f ? `<video controls muted loop playsinline preload="metadata" poster="../media/${p.f[1]}" aria-label="${esc(p.n)}, film"><source src="../media/${p.f[2]}.mp4" type="video/mp4" media="(max-width: 40rem)"><source src="../media/${p.f[0]}.mp4" type="video/mp4"></video>` : '';
+    $('#s-gallery').innerHTML = film + p.i.map(([f, w, h], k) => `<img src="../img/m/${f}" srcset="../img/m/${f} 900w, ../img/${f} 1600w" sizes="(max-width: 60rem) 100vw, 640px" width="${w}" height="${h}" alt="${esc(p.n)}, image ${k + 1} of ${p.i.length}" loading="${k ? 'lazy' : 'eager'}" decoding="async">`).join('');
+    sheet.querySelector('.sheet-body').scrollTop = 0;
+  };
+  const openSheet = (i) => { back = document.activeElement; show(i); sheet.showModal(); document.body.classList.add('is-locked'); $('#s-close').focus(); };
+  document.addEventListener('click', (e) => { const t = e.target.closest('[data-open]'); if (!t) return; e.preventDefault(); openSheet(+t.dataset.open); });
+  $('#s-close').addEventListener('click', () => sheet.close());
+  $('#s-prev').addEventListener('click', () => show(cur - 1));
+  $('#s-next').addEventListener('click', () => show(cur + 1));
+  sheet.addEventListener('close', () => { document.body.classList.remove('is-locked'); sheet.querySelectorAll('video').forEach((v) => v.pause()); back?.focus({ preventScroll: true }); });
+  sheet.addEventListener('click', (e) => { if (e.target === sheet) sheet.close(); });
+  sheet.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') show(cur + 1); if (e.key === 'ArrowLeft') show(cur - 1); });
+
+  /* the film: a loop that can pause */
+  document.querySelectorAll('[data-loop]').forEach((el) => {
+    const btn = el.querySelector('[data-loop-toggle]'), v = el.querySelector('video');
+    const s = { seen: false, held: RM };
+    const sync = () => { const run = s.seen && !s.held; run ? v.play().catch(() => {}) : v.pause(); btn.textContent = run || (!s.held) ? 'Pause' : 'Play'; };
+    btn.addEventListener('click', () => { s.held = !s.held; sync(); });
+    new IntersectionObserver(([e]) => { s.seen = e.isIntersecting; if (s.seen && v.preload === 'none') v.preload = 'auto'; sync(); }).observe(el);
+  });
+
+  /* the bar retracts on the way down, returns on the way up */
+  if (!RM) {
+    const bar = $('#bar'); let y = scrollY, ticking = false;
+    addEventListener('scroll', () => { if (ticking) return; ticking = true; requestAnimationFrame(() => { const ny = scrollY; bar.classList.toggle('is-away', ny > y && ny > 400); y = ny; ticking = false; }); }, { passive: true });
+    bar.addEventListener('focusin', () => bar.classList.remove('is-away'));
+  }
+})();
+</script>
+</body>
+</html>
