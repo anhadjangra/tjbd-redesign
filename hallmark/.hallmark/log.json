@@ -1,0 +1,31 @@
+[
+ {
+  "shape": "Catalogue",
+  "theme": "brutal",
+  "axes": "light/grotesk-heavy/chromatic-yellow",
+  "hero": "Corridor",
+  "nav": "banner over a retracting bar",
+  "footer": "letter close",
+  "imagery": "photographs, the studio own renders and films, duotone ink",
+  "photos": [],
+  "entry": "build",
+  "fingerprint": "catalogue-corridor-brutal",
+  "sections": [
+   "hero",
+   "catalogue",
+   "bento word cells",
+   "case on ink band",
+   "statement and table",
+   "split NDIS",
+   "contact cells"
+  ],
+  "signature": "the 27 projects printed hard in ink, each opening in full colour",
+  "waived": [
+   "83",
+   "39b"
+  ],
+  "prompt": "Brisbane building design studio portfolio; visitors hire the studio",
+  "date": "2026-11-05",
+  "mode": "build"
+ }
+]
