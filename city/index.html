@@ -52,6 +52,12 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .bar nav a:hover{background:var(--map)}
 @media (max-width:900px){.bar nav{display:none}.bar .logo{height:19px}.bar .btn{padding:.55em .9em;font-size:.8rem}}
 main{position:relative;z-index:3}
+html{touch-action:pan-y pinch-zoom}
+html:not(.grabbing) body{cursor:grab}
+html.grabbing,html.grabbing *{cursor:grabbing!important;user-select:none}
+.panel,.box,.sec,footer,header{cursor:auto}
+.drag-hint{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:2;pointer-events:none;font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);background:rgba(251,251,250,.9);padding:.5em .8em;border-radius:6px;white-space:nowrap;transition:opacity .4s}
+.drag-hint.gone,.drag-hint.away{opacity:0}
 .lbl{position:fixed;left:0;top:0;z-index:1;pointer-events:none;font-family:var(--mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);background:rgba(251,251,250,.9);padding:.2em .5em;border-radius:3px;white-space:nowrap;display:flex;gap:6px;align-items:center;will-change:transform}
 .tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--sheet);padding:.5em .75em;border-radius:6px;font-size:.82rem;opacity:0;transition:opacity .12s;max-width:260px}
 .tip b{display:block;font-size:.95rem}
@@ -237,7 +243,7 @@ body.nogl .district .stick{position:relative;height:auto;justify-content:center}
     <div class="box">
       <div class="k">Tarun Jangra Building Designers · Brisbane</div>
       <h1>27 projects. One city.</h1>
-      <p>Every building here is one of our projects. Each sits on a lot sized from its real site area and grows taller with its floor area. Hover a building to see which it is, click to open it, or scroll to tour the districts.</p>
+      <p>Every building here is one of our projects. Each sits on a lot sized from its real site area and grows taller with its floor area. Hover a building to see which it is, click to open it, drag to look around, or scroll to tour the districts.</p>
       <div class="legend" id="legend"></div>
       <div class="row"><a class="btn" href="#d-res">Start the tour</a><a class="btn o" href="#contact">Talk to Tarun</a></div>
       <p class="note">Sizes are indicative and drawn to one scale from each project's published site and floor areas. Where a figure isn't published, the block is estimated and marked as such.</p>
@@ -643,6 +649,7 @@ let hover = -1, mx = 0, smx = 0;
 const pickables = blocks.map(b => b.m);
 addEventListener('pointermove', e => {
   mx = e.clientX / W - .5;
+  if (dragged) return;
   if (e.target.closest('.panel,.box,header,dialog,.sec,footer')) { hover = -1; tip.style.opacity = 0; document.body.style.cursor = ''; return; }
   pt.set(e.clientX / W * 2 - 1, -e.clientY / Hh * 2 + 1); ray.setFromCamera(pt, cam);
   const hit = ray.intersectObjects(pickables, false)[0];
@@ -654,7 +661,54 @@ addEventListener('pointermove', e => {
     tip.style.left = Math.min(e.clientX + 14, W - tip.offsetWidth - 10) + 'px'; tip.style.top = Math.min(e.clientY + 16, Hh - tip.offsetHeight - 10) + 'px'; tip.style.opacity = 1;
   } else tip.style.opacity = 0;
 });
-addEventListener('click', e => { if (hover >= 0 && !e.target.closest('a,button,dialog,.panel,.box')) openProject(hover); });
+addEventListener('click', e => { if (dragged) return; if (hover >= 0 && !e.target.closest('a,button,dialog,.panel,.box')) openProject(hover); });
+
+/* drag to look around. The scroll tour stays in charge: drag sets an offset on
+   top of it (orbit, pan, zoom), and scrolling eases the offset back to zero. */
+const U = { az: 0, el: 0, px: 0, pz: 0, zm: 1 };
+let drag = null, dragged = false;
+const UI = 'a,button,input,textarea,select,dialog,.panel,.box,header,.sec,footer,.drag-hint';
+addEventListener('pointerdown', e => {
+  if (dlg.open || e.target.closest(UI) || (e.pointerType === 'mouse' && e.button !== 0 && e.button !== 2)) return;
+  drag = { id: e.pointerId, x: e.clientX, y: e.clientY, pan: e.button === 2 || e.shiftKey || e.metaKey || e.ctrlKey, moved: 0, touch: e.pointerType !== 'mouse' };
+  dragged = false;
+  if (e.pointerType === 'mouse') { e.preventDefault(); getSelection().removeAllRanges(); }
+});
+addEventListener('contextmenu', e => { if (!e.target.closest(UI)) e.preventDefault(); });
+addEventListener('pointermove', e => {
+  if (!drag || e.pointerId !== drag.id) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag.x = e.clientX; drag.y = e.clientY;
+  drag.moved += Math.abs(dx) + Math.abs(dy);
+  if (drag.moved < 5) return;
+  if (!dragged) { dragged = true; document.documentElement.classList.add('grabbing'); hint.classList.add('gone'); tip.style.opacity = 0; }
+  if (drag.pan) {
+    const az = st.az + U.az, k = st.d * U.zm * 1.6 / Hh;
+    U.px += (-Math.cos(az) * dx - Math.sin(az) * dy) * k;
+    U.pz += (Math.sin(az) * dx - Math.cos(az) * dy) * k;
+    const lim = Math.max(TW, TD) * .6; U.px = clamp(U.px, -lim, lim); U.pz = clamp(U.pz, -lim, lim);
+  } else {
+    U.az -= dx * .006;
+    if (!drag.touch) U.el = clamp(U.el + dy * .004, .22 - st.el, 1.4 - st.el);
+  }
+});
+const endDrag = e => { if (!drag || (e && e.pointerId !== drag.id)) return; drag = null; document.documentElement.classList.remove('grabbing'); setTimeout(() => dragged = false, 0); };
+addEventListener('pointerup', endDrag); addEventListener('pointercancel', endDrag);
+/* pinch on a trackpad (it arrives as ctrl + wheel) zooms the city instead of the page */
+addEventListener('wheel', e => {
+  if (!e.ctrlKey || dlg.open || e.target.closest(UI)) return;
+  e.preventDefault(); U.zm = clamp(U.zm * Math.exp(e.deltaY * .01), .35, 1.8); hint.classList.add('gone');
+}, { passive: false });
+let lastY = scrollY;
+addEventListener('scroll', () => {
+  const k = Math.exp(-Math.abs(scrollY - lastY) / 500); lastY = scrollY;
+  hint.classList.toggle('away', scrollY > innerHeight * .4);
+  if (drag) return;
+  U.az *= k; U.el *= k; U.px *= k; U.pz *= k; U.zm = 1 + (U.zm - 1) * k;
+}, { passive: true });
+const hint = document.createElement('div'); hint.className = 'drag-hint'; hint.setAttribute('aria-hidden', 'true');
+hint.innerHTML = matchMedia('(pointer: coarse)').matches ? 'Swipe sideways to turn the city' : 'Drag to turn · Shift-drag or right-drag to move · Pinch to zoom';
+document.body.appendChild(hint);
+
 
 /* loop */
 const chapters = [$('#intro'), ...ZK.map(z => $('#d-' + z)), $('#films')];
@@ -674,9 +728,9 @@ function frame(t) {
     if (idx === 0) tgt.az += RM ? 0 : Math.sin(t0 * .08) * .25;
     const k = RM ? 1 : 1 - Math.pow(.003, dt);
     for (const q in tgt) st[q] = lerp(st[q], tgt[q], k);
-    const az = st.az + smx * .15;
-    cam.position.set(st.x + Math.sin(az) * Math.cos(st.el) * st.d, Math.sin(st.el) * st.d, st.z + Math.cos(az) * Math.cos(st.el) * st.d);
-    cam.lookAt(st.x, 0, st.z);
+    const az = st.az + smx * .15 + U.az, el = clamp(st.el + U.el, .22, 1.4), d = st.d * U.zm, cx = st.x + U.px, cz = st.z + U.pz;
+    cam.position.set(cx + Math.sin(az) * Math.cos(el) * d, Math.sin(el) * d, cz + Math.cos(az) * Math.cos(el) * d);
+    cam.lookAt(cx, 0, cz);
     const focusZ = idx >= 1 && idx <= 4 ? ZK[idx - 1] : null;
     blocks.forEach(b => {
       const on = b.i === hover || b.i === hot;
