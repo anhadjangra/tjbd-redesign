@@ -483,7 +483,7 @@ const maxR = () => Math.hypot(innerWidth / 2, innerHeight) + 8;
 function resetPull() { armed = false; arrivedAt = 0; ty0 = null; setPP(0); }
 function setPP(v) {
   pp = clamp(v, 0, 1); dlg.style.setProperty('--pp', pp.toFixed(3));
-  const o = RM ? 0 : clamp((pp - .18) / .82, 0, 1);
+  const o = RM ? 0 : clamp((pp - .12) / .88, 0, 1);
   dlg.classList.toggle('pressing', o > 0 || leaving);
   if (!leaving) dlg.style.setProperty('--hr', (Math.pow(o, 1.35) * maxR() * .55).toFixed(1) + 'px');
   if (pp >= 1) leave();
@@ -514,7 +514,7 @@ pdScroll.addEventListener('wheel', e => {
   if (!arrivedAt) arrivedAt = now;
   /* a new gesture: the wheel went quiet for a moment after reaching the end */
   if (!armed && gap > 220 && now - arrivedAt > 250) armed = true;
-  if (armed) push(dy / 1100);
+  if (armed) push(dy / 480);
 }, { passive: true });
 pdScroll.addEventListener('touchstart', e => { ty0 = atEnd() && arrivedAt && performance.now() - arrivedAt > 250 ? e.touches[0].clientY : null; }, { passive: true });
 pdScroll.addEventListener('touchmove', e => {
