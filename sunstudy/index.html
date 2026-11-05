@@ -1,0 +1,964 @@
+<meta charset="utf-8">
+<title>TJBD Sun Study</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Tarun Jangra Building Designers. Residential, commercial and industrial building design across South East Queensland since 2006.">
+<meta name="asset-base" content="../">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a fixed WebGL model of a house sits behind the page. Scroll drives a sun study and the six design stages;
+   text sits on small title-block cards. Dark chapters (film, work, contact) are night; light chapters are day. */
+:root{
+  --paper:#ECEEEC;      /* model-shop daylight */
+  --card:#F9FAF8;       /* card stock */
+  --ink:#15181B;        /* drafting ink */
+  --mute:#5B6268;
+  --line:rgba(21,24,27,.16);
+  --night:#101316;      /* after dark */
+  --night-2:#1A1E22;
+  --night-ink:#E9ECEA;
+  --night-mute:#9AA2A8;
+  --sun:#F08A24;        /* the sun and lit windows: the only accent */
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --body:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --mono:"DM Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --gut:max(16px, env(safe-area-inset-left, 0px));
+  --gut-r:max(16px, env(safe-area-inset-right, 0px));
+  --fs-hero:clamp(2.6rem, 7.2vw, 6.4rem);
+  --fs-h2:clamp(1.9rem, 4.2vw, 3.6rem);
+  --fs-h3:clamp(1.25rem, 2vw, 1.6rem);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:clip}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--sun);outline-offset:3px}
+h1,h2,h3{font-family:var(--display);font-variation-settings:"wdth" 118;font-weight:700;letter-spacing:-.025em;line-height:.98;margin:0;text-wrap:balance}
+p{margin:0;max-width:62ch}
+.mono{font-family:var(--mono);font-size:.72rem;letter-spacing:.09em;text-transform:uppercase}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--mute);display:flex;gap:.6em;flex-wrap:wrap;align-items:center}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--sun);display:inline-block}
+
+/* ---------- canvas + header ---------- */
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;background:var(--paper)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--hdr-bg)}
+:root{--hdr-bg:rgba(236,238,236,.78);--hdr-ink:var(--ink)}
+body.tone-dark{--hdr-bg:rgba(16,19,22,.72);--hdr-ink:var(--night-ink)}
+.bar{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:12px var(--gut-r) 12px var(--gut);background:var(--hdr-bg);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px);color:var(--hdr-ink);transition:background .4s,color .4s;border-bottom:1px solid color-mix(in srgb,var(--hdr-ink) 10%,transparent)}
+.bar .logo{display:block;height:26px;width:auto;transition:filter .4s}
+body.tone-dark .bar .logo{filter:invert(1)}
+.bar nav{display:flex;gap:22px}
+.bar nav a{text-decoration:none;font-family:var(--mono);font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;opacity:.75}
+.bar nav a:hover{opacity:1}
+.cta{display:inline-flex;align-items:center;gap:.5em;padding:.7em 1.1em;border-radius:999px;background:var(--sun);color:#1b1206;text-decoration:none;font-weight:600;font-size:.9rem;border:0;white-space:nowrap}
+.cta:hover{filter:brightness(1.06)}
+.ghost{display:inline-flex;align-items:center;gap:.5em;padding:.7em 1.1em;border-radius:999px;border:1px solid currentColor;text-decoration:none;font-weight:600;font-size:.9rem;background:transparent;white-space:nowrap}
+@media (max-width:860px){.bar nav{display:none}.bar .logo{height:20px}.bar .cta{padding:.55em .9em;font-size:.8rem}}
+
+main{position:relative;z-index:1}
+
+/* ---------- HUD ---------- */
+.hud{position:fixed;left:var(--gut);bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:5;display:flex;align-items:center;gap:12px;pointer-events:none;
+  font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--hud-ink,var(--ink));transition:opacity .35s,color .4s}
+.hud svg{width:40px;height:40px;flex:none}
+.hud .k{opacity:.6}
+.hud.off{opacity:0}
+.rail{position:fixed;right:var(--gut-r);top:50%;transform:translateY(-50%);z-index:5;display:flex;flex-direction:column;gap:10px;transition:opacity .35s}
+.rail.off{opacity:0;pointer-events:none}
+.rail a{display:flex;align-items:center;justify-content:flex-end;gap:8px;text-decoration:none;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;color:var(--hud-ink,var(--ink))}
+.rail a span{opacity:0;transform:translateX(4px);transition:.25s}
+.rail a i{width:8px;height:8px;border:1px solid currentColor;border-radius:50%;display:block;transition:.25s}
+.rail a.on i{background:var(--sun);border-color:var(--sun);transform:scale(1.35)}
+.rail a.on span,.rail a:hover span{opacity:.9;transform:none}
+@media (max-width:760px){.rail{display:none}}
+
+/* ---------- story (model chapters) ---------- */
+#story .panel{min-height:120vh;display:flex;align-items:center;padding:96px var(--gut-r) 96px var(--gut)}
+#story .panel.r{justify-content:flex-end}
+#story .panel.hero{min-height:100vh;align-items:flex-end;padding-bottom:max(84px,12vh)}
+.sheet{position:relative;background:color-mix(in srgb,var(--card) 90%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--line);padding:28px 28px 22px;max-width:520px;width:100%;display:flex;flex-direction:column;gap:16px;box-shadow:0 30px 60px -40px rgba(21,24,27,.35)}
+.sheet h2{font-size:var(--fs-h2)}
+.sheet .tb{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);margin:4px -28px -22px;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase}
+.sheet .tb div{padding:9px 12px 10px 28px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:2px}
+.sheet .tb div+div{padding-left:12px}
+.sheet .tb div:last-child{border-right:0}
+.sheet .tb b{font-weight:500;color:var(--mute)}
+.hero .intro{max-width:880px;display:flex;flex-direction:column;gap:22px}
+.hero h1{font-size:var(--fs-hero);font-variation-settings:"wdth" 122;font-weight:800}
+.hero h1 em{font-style:normal;color:var(--sun)}
+.hero .lede{font-size:clamp(1.02rem,1.4vw,1.2rem);max-width:46ch;color:#2a2f33}
+.hero .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.scrollcue{font-family:var(--mono);font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;color:var(--mute);display:flex;align-items:center;gap:10px}
+.scrollcue i{width:1px;height:28px;background:currentColor;display:block;animation:cue 2.2s ease-in-out infinite;transform-origin:top}
+@keyframes cue{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;border-top:1px solid var(--line);padding-top:16px}
+.stats b{display:block;font-family:var(--display);font-variation-settings:"wdth" 125;font-weight:800;font-size:2.2rem;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stats span{font-size:.8rem;color:var(--mute)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0;padding:0}
+.chips li{border:1px solid var(--line);border-radius:999px;padding:.32em .8em;font-size:.82rem}
+.stage-n{font-family:var(--display);font-variation-settings:"wdth" 125;font-weight:800;font-size:4.4rem;line-height:.8;color:var(--sun);letter-spacing:-.04em}
+figure{margin:0}
+.studio-photo{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;filter:grayscale(.2)}
+.studio-photo+figcaption{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-top:6px}
+.lbl{position:fixed;left:0;top:0;z-index:4;pointer-events:none;font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);white-space:nowrap;
+  display:flex;align-items:center;gap:6px;opacity:0;will-change:transform}
+.lbl::before{content:"";width:18px;height:1px;background:currentColor}
+.lbl.dim{color:var(--sun);font-weight:500}
+.lbl.dim::before{display:none}
+
+@media (max-width:760px){
+  #story .panel{align-items:flex-end;min-height:130vh;padding-bottom:84px}
+  #story .panel.r{justify-content:flex-start}
+  .sheet{padding:20px 20px 16px}
+  .sheet .tb{margin:2px -20px -16px}
+  .sheet .tb div{padding-left:20px}
+  .stage-n{font-size:3rem}
+  .hud{left:auto;right:var(--gut-r);bottom:auto;top:calc(62px + env(safe-area-inset-top,0px))}
+  .hud svg{width:30px;height:30px}
+}
+
+/* ---------- dark chapters ---------- */
+.dark{background:var(--night);color:var(--night-ink)}
+.dark .eyebrow,.dark .mute{color:var(--night-mute)}
+.wrap{padding-left:var(--gut);padding-right:var(--gut-r)}
+.inner{max-width:1280px;margin:0 auto}
+
+/* Tesla film: the film lies flat like a drawing on the table, then stands up to full screen */
+#tesla{height:260vh;position:relative}
+#tesla .stick{position:sticky;top:0;height:100vh;overflow:hidden;display:grid;place-items:center;perspective:1500px}
+#tesla .frame{position:relative;width:min(92vw,1400px);aspect-ratio:16/9;max-height:84vh;
+  transform:rotateX(calc((1 - var(--q,1)) * 62deg)) translateY(calc((1 - var(--q,1)) * 12vh)) scale(calc(.58 + var(--q,1) * .42));transform-origin:50% 70%;
+  box-shadow:0 60px 120px -40px rgba(0,0,0,.8);border-radius:calc((1 - var(--q,1)) * 14px);overflow:hidden;background:#000}
+#tesla video{width:100%;height:100%;object-fit:cover;display:block}
+#tesla .cap{position:absolute;inset:auto 0 0 0;padding:clamp(16px,3vw,36px);display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;
+  background:linear-gradient(transparent,rgba(0,0,0,.72));opacity:calc(var(--q,1) * 1.6 - .6)}
+#tesla .cap h2{font-size:clamp(1.8rem,4.4vw,4rem);color:#fff}
+#tesla .cap p{color:#d6dadc;max-width:52ch;margin-top:10px;font-size:.95rem}
+#tesla .spec{display:flex;gap:28px;color:#fff}
+#tesla .spec b{display:block;font-family:var(--display);font-variation-settings:"wdth" 125;font-weight:800;font-size:clamp(1.5rem,2.8vw,2.4rem);line-height:1;font-variant-numeric:tabular-nums}
+#tesla .spec span{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:#bfc5c8}
+#tesla .pre{position:absolute;top:calc(84px + env(safe-area-inset-top,0px));left:var(--gut);right:var(--gut-r);display:flex;justify-content:space-between;gap:12px;opacity:calc(1 - var(--q,1) * 1.4)}
+#tesla .pre h2{font-size:var(--fs-h2);max-width:14ch}
+@media (max-width:760px){#tesla .frame{aspect-ratio:4/5;width:92vw}#tesla .cap .spec{gap:16px}#tesla .cap p{display:none}}
+
+/* Work: fly through the portfolio */
+#work{position:relative;background:transparent}
+#work.list{background:var(--night)}
+#work .stick{position:sticky;top:0;height:100vh;overflow:hidden;cursor:grab}
+#work .stick.hover{cursor:pointer}
+#work .top{position:absolute;top:calc(74px + env(safe-area-inset-top,0px));left:var(--gut);right:var(--gut-r);display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+#work .top h2{font-size:var(--fs-h2)}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filters button{background:transparent;border:1px solid rgba(233,236,234,.28);border-radius:999px;padding:.4em .9em;font-size:.82rem}
+.filters button[aria-pressed="true"]{background:var(--night-ink);color:var(--night);border-color:var(--night-ink)}
+.filters button span{font-family:var(--mono);font-size:.7em;opacity:.6;margin-left:.4em}
+#work .now{position:absolute;left:var(--gut);right:var(--gut-r);bottom:calc(22px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;pointer-events:none}
+#work .now > *{pointer-events:auto}
+#work .now .idx{font-family:var(--display);font-variation-settings:"wdth" 125;font-weight:800;font-size:clamp(3rem,8vw,7rem);line-height:.8;letter-spacing:-.04em;font-variant-numeric:tabular-nums;color:var(--sun)}
+#work .now .idx small{font-size:.3em;color:var(--night-mute);letter-spacing:0}
+#work .now h3{font-size:clamp(1.5rem,3.2vw,2.6rem);margin-top:6px}
+#work .now .meta{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--night-mute);margin-top:8px}
+#work .now .acts{display:flex;gap:10px;flex-wrap:wrap}
+#work .grid{display:none}
+#work.list .stick{display:none}
+#work.list{height:auto!important}
+#work.list .grid{display:block;padding-block:110px 80px}
+.grid .head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+.grid .head h2{font-size:var(--fs-h2)}
+.grid ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px 16px}
+.grid li button{all:unset;cursor:pointer;display:flex;flex-direction:column;gap:8px;width:100%}
+.grid li button:focus-visible{outline:2px solid var(--sun);outline-offset:4px}
+.grid img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;transition:transform .4s}
+.grid li button:hover img{transform:scale(1.02)}
+.grid .n{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--night-mute)}
+.grid b{font-family:var(--display);font-variation-settings:"wdth" 112;font-size:1.15rem;line-height:1.1}
+@media (max-width:760px){#work .now .idx{font-size:3.2rem}#work .top{top:calc(64px + env(safe-area-inset-top,0px))}}
+
+/* Light chapters */
+.light{background:var(--paper);color:var(--ink)}
+.sec{padding-block:clamp(80px,12vw,160px)}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:clamp(28px,4vw,56px)}
+.sec-head h2{font-size:var(--fs-h2);max-width:18ch}
+.sec-head p{color:var(--mute)}
+
+/* NDIS: two homes on tilted plates */
+.ndis{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,3vw,40px);perspective:1600px}
+.ndis article{transform:rotateY(calc((1 - var(--q,1)) * var(--dir) * 22deg)) translateZ(calc((1 - var(--q,1)) * -120px));transform-style:preserve-3d;transition:transform .1s linear;display:flex;flex-direction:column;gap:12px}
+.ndis article:nth-child(1){--dir:1;transform-origin:100% 50%}
+.ndis article:nth-child(2){--dir:-1;transform-origin:0 50%}
+.ndis img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;box-shadow:0 40px 70px -40px rgba(21,24,27,.5)}
+.ndis h3{font-size:var(--fs-h3)}
+.ndis .tag{display:inline-block;font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:.35em .6em}
+@media (max-width:760px){.ndis{grid-template-columns:1fr}.ndis article{--dir:0!important}}
+
+/* On the boards: two films that open like a folded set */
+.boards{display:grid;grid-template-columns:1.25fr 1fr;gap:0;perspective:1800px}
+.boards .leaf{background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column}
+.boards .leaf:nth-child(1){transform-origin:100% 50%;transform:rotateY(calc((1 - var(--q,1)) * 70deg))}
+.boards .leaf:nth-child(2){transform-origin:0 50%;transform:rotateY(calc((1 - var(--q,1)) * -70deg))}
+.boards video{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;background:#222}
+.boards .txt{padding:22px 24px 26px;display:flex;flex-direction:column;gap:10px}
+.boards h3{font-size:var(--fs-h3)}
+.boards p{color:#2f3438;font-size:.95rem}
+@media (max-width:760px){.boards{grid-template-columns:1fr;gap:16px}.boards .leaf{transform:none!important}}
+
+/* Team: a drum of portraits that turns as you scroll */
+#team{height:300vh;position:relative}
+#team .stick{position:sticky;top:0;height:100vh;overflow:hidden;display:grid;grid-template-rows:auto 1fr;padding-top:calc(96px + env(safe-area-inset-top,0px))}
+.drum{position:relative;perspective:1700px;display:grid;place-items:center}
+.ring{position:relative;width:var(--cw);height:calc(var(--cw) * 1.62);transform-style:preserve-3d;transform:translateZ(calc(var(--r) * -1)) rotateY(calc(var(--q,0) * -300deg))}
+:root{--cw:240px;--r:420px}
+@media (max-width:760px){:root{--cw:168px;--r:250px}}
+.ring article{position:absolute;inset:0;transform:rotateY(calc(var(--i) * 60deg)) translateZ(var(--r));backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column}
+.ring img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block}
+.ring .who{padding:10px 12px;display:flex;flex-direction:column;gap:3px}
+.ring b{font-family:var(--display);font-variation-settings:"wdth" 110;font-size:1rem;line-height:1.1}
+.ring span{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.ring p{font-size:.74rem;line-height:1.35;color:#3a4045}
+@media (max-width:760px){.ring p{display:none}}
+.team-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* Contact: night over the finished model */
+#contact{min-height:150vh;display:flex;align-items:center;padding-block:120px}
+#contact .sheet{background:color-mix(in srgb,var(--night-2) 82%,transparent);border-color:rgba(233,236,234,.14);color:var(--night-ink);max-width:620px}
+#contact .sheet h2{font-size:clamp(2.6rem,6vw,5.2rem);font-variation-settings:"wdth" 122;font-weight:800}
+#contact .sheet h2 em{font-style:normal;color:var(--sun)}
+.lines{display:grid;gap:0;margin:0;border-top:1px solid rgba(233,236,234,.14)}
+.lines > div{display:grid;grid-template-columns:76px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(233,236,234,.14)}
+.lines dt{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--night-mute)}
+.lines dd{margin:0;min-width:0;overflow-wrap:anywhere;font-size:1.02rem}
+.lines dd a{text-decoration:none}
+.copy{background:transparent;border:1px solid rgba(233,236,234,.25);border-radius:999px;padding:.25em .7em;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase}
+.social{display:flex;gap:16px;flex-wrap:wrap}
+.social a{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;opacity:.8}
+footer{position:relative;z-index:1;background:var(--night);color:var(--night-mute);font-size:.8rem;padding-block:28px calc(28px + env(safe-area-inset-bottom,0px))}
+footer .inner{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+/* Project sheet */
+dialog#pd{border:0;padding:0;width:min(1180px,100vw);max-width:100vw;max-height:100dvh;height:min(860px,100dvh);background:var(--card);color:var(--ink)}
+dialog#pd::backdrop{background:rgba(10,12,14,.72);backdrop-filter:blur(6px)}
+.pd{display:grid;grid-template-columns:1.5fr 1fr;height:100%}
+.pd .pics{background:#0f1113;display:grid;grid-template-rows:1fr auto;min-height:0}
+.pd .pics .main{width:100%;height:100%;object-fit:contain;min-height:0;display:block}
+.pd .thumbs{display:flex;gap:6px;padding:8px;overflow-x:auto}
+.pd .thumbs button{border:2px solid transparent;padding:0;background:none;flex:none}
+.pd .thumbs button[aria-current="true"]{border-color:var(--sun)}
+.pd .thumbs img{width:84px;height:63px;object-fit:cover;display:block}
+.pd .info{padding:28px;display:flex;flex-direction:column;gap:16px;overflow:auto;min-width:0}
+.pd h2{font-size:clamp(1.8rem,3vw,2.6rem)}
+.pd .desc{font-size:.95rem;color:#2f3438}
+.pd dl{margin:0;display:grid;border-top:1px solid var(--line)}
+.pd dl div{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+.pd dt{font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);padding-top:3px}
+.pd dd{margin:0;font-variant-numeric:tabular-nums}
+.pd .nav{display:flex;justify-content:space-between;gap:10px;margin-top:auto;padding-top:10px}
+.pd .x{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:calc(12px + env(safe-area-inset-right,0px));background:var(--card);border:1px solid var(--line);border-radius:999px;padding:.45em .9em;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;z-index:2}
+@media (max-width:860px){.pd{grid-template-columns:1fr;grid-template-rows:auto 1fr}.pd .pics .main{aspect-ratio:4/3;height:auto}.pd .info{padding:20px}}
+
+/* Fallback when WebGL is unavailable */
+body.nogl #gl{background:var(--paper) center/cover no-repeat}
+body.nogl .hud,body.nogl .rail{display:none}
+
+@media (prefers-reduced-motion: reduce){
+  .scrollcue i{animation:none}
+  #tesla .frame,.ndis article,.boards .leaf{transform:none!important}
+  #tesla .cap{opacity:1}#tesla .pre{opacity:0}
+}
+</style>
+
+<header class="bar">
+  <a href="#top" aria-label="Tarun Jangra Building Designers, back to top"><img class="logo" src="../media/logo-black.png" data-src="media/logo-black.png" alt="Tarun Jangra Building Designers" width="705" height="129"></a>
+  <nav aria-label="Sections">
+    <a href="#studio">Studio</a><a href="#process">Process</a><a href="#work">Work</a><a href="#ndis-sec">NDIS</a><a href="#team">Team</a><a href="#contact">Contact</a>
+  </nav>
+  <a class="cta" href="#contact">Start a project</a>
+</header>
+
+<canvas id="gl" aria-hidden="true"></canvas>
+
+<div class="hud" id="hud" aria-hidden="true">
+  <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="none" stroke="currentColor" stroke-opacity=".35"/><path d="M20 3v4M20 33v4M3 20h4M33 20h4" stroke="currentColor" stroke-opacity=".5"/><text x="20" y="13" font-size="6" text-anchor="middle" fill="currentColor" font-family="DM Mono, monospace">N</text><circle id="sundot" cx="20" cy="6" r="3.2" fill="#F08A24"/></svg>
+  <div><div><span class="k">Sun study</span> · 21 Dec · <span id="clock">09:00</span></div><div><span class="k">Brisbane</span> 27.5°S · <span id="hudstage">Model 1:100</span></div></div>
+</div>
+<nav class="rail" id="rail" aria-label="Story position"></nav>
+
+<main id="top">
+  <section id="story" aria-label="Studio and process">
+    <div class="panel hero">
+      <div class="intro">
+        <div class="eyebrow"><span class="dot"></span>Tarun Jangra Building Designers · Upper Mt Gravatt, Brisbane</div>
+        <h1>Creating spaces that innovate <em>&amp;</em> inspire.</h1>
+        <p class="lede">From inception to physical manifestation, we design and plan for the built environment. Homes, offices, showrooms and warehouses across South East Queensland.</p>
+        <div class="row">
+          <a class="cta" href="#work">See the work</a>
+          <a class="ghost" href="#contact">Talk to Tarun</a>
+          <span class="scrollcue"><i></i>Scroll to walk the model</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="studio" data-rail="Studio">
+      <article class="sheet">
+        <div class="eyebrow">Studio · Est. 1999 · Brisbane since 2006</div>
+        <h2>We go beyond the mere construction of structures. We craft experiences.</h2>
+        <p>Led by principal Tarun Jangra, TJBD is a team of passionate building designers who specialise in residential, commercial and industrial projects. We prioritise collaboration and communication to exceed client expectations.</p>
+        <div class="stats">
+          <div><b>1999</b><span>First practice founded</span></div>
+          <div><b>27</b><span>Featured projects</span></div>
+          <div><b>3</b><span>Tesla facilities</span></div>
+        </div>
+        <div class="tb"><div><b>Drawing</b>Studio</div><div><b>Scale</b>1:100</div><div><b>Sheet</b>A-100</div></div>
+      </article>
+    </div>
+
+    <div class="panel r" data-rail="Sun">
+      <article class="sheet">
+        <div class="eyebrow">What we design</div>
+        <h2>Each design is thought through to resonate with the people who use it.</h2>
+        <p>Whether it shapes a quiet moment inside a home or a landmark on a busy street, the aim is the same: places that inspire and enrich lives. Our work runs on teamwork, precision and client welfare.</p>
+        <ul class="chips" id="caps"></ul>
+        <figure><img class="studio-photo" src="../img/team.jpg" data-src="img/team.jpg" alt="The TJBD team at the studio in Upper Mt Gravatt" loading="lazy" width="1600" height="1067"><figcaption>The studio, Upper Mt Gravatt</figcaption></figure>
+      </article>
+    </div>
+    <!-- process stages are injected here -->
+    <div class="panel r" id="after-process" data-rail="Work">
+      <article class="sheet">
+        <div class="eyebrow">Selected work</div>
+        <h2>27 projects, from a Gumdale home to three Tesla facilities.</h2>
+        <p>Projects across Brisbane, the Gold Coast, the Sunshine Coast, Moreton Bay and the Lockyer Valley.</p>
+        <div class="row" style="display:flex;gap:10px;flex-wrap:wrap"><a class="cta" href="#work">Fly through the work</a></div>
+      </article>
+    </div>
+  </section>
+
+  <section id="tesla" class="dark" data-tone="dark" aria-label="Featured project: Tesla Burleigh Heads">
+    <div class="stick">
+      <div class="pre"><h2>A showroom built to Tesla's global standards.</h2><div class="eyebrow">Featured · Drone film</div></div>
+      <div class="frame">
+        <video id="teslavid" muted loop playsinline preload="metadata" poster="../media/tesla-poster.jpg" data-poster="media/tesla-poster.jpg" data-src="media/tesla-drone.mp4" data-src-m="media/tesla-drone-m.mp4" aria-label="Drone film of Tesla Burleigh Heads"></video>
+        <div class="cap">
+          <div>
+            <div class="eyebrow">6 Ern Harley Drive, Burleigh Heads · Completed</div>
+            <h2>Tesla Burleigh Heads</h2>
+            <p>A newly delivered showroom designed to Tesla's global standards. Vehicle display, customer service and delivery sit in one clear, contemporary building that reflects the brand's focus on innovation and precision.</p>
+          </div>
+          <div class="spec">
+            <div><b data-count="12212">12,212</b><span>Site area m²</span></div>
+            <div><b data-count="4913">4,913</b><span>Floor area m²</span></div>
+            <div><b>50.6</b><span>Site cover %</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="work" class="dark" data-tone="dark" aria-label="Portfolio">
+    <div class="stick" id="workstick">
+      <div class="top">
+        <div><div class="eyebrow">Portfolio · scroll to walk through</div><h2>The work</h2></div>
+        <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-end">
+          <div class="filters" id="filters" role="group" aria-label="Filter projects"></div>
+          <button class="ghost" id="tolist" type="button" style="padding:.4em .9em;font-size:.8rem">View as a list</button>
+        </div>
+      </div>
+      <div class="now" id="now" aria-live="polite">
+        <div>
+          <div class="idx" id="nowidx">01<small> / 27</small></div>
+          <h3 id="nowname">Tesla Burleigh Heads</h3>
+          <div class="meta" id="nowmeta">Industrial · Completed</div>
+        </div>
+        <div class="acts"><button class="cta" id="nowopen" type="button">Open project</button></div>
+      </div>
+    </div>
+    <div class="grid wrap" id="grid">
+      <div class="inner">
+        <div class="head"><div><div class="eyebrow">Portfolio</div><h2>All projects</h2></div><button class="ghost" id="to3d" type="button">Back to the 3D walk-through</button></div>
+        <ul id="gridlist"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="ndis-sec" class="light sec wrap" data-tone="light" aria-label="NDIS compliant homes">
+    <div class="inner">
+      <div class="sec-head">
+        <div><div class="eyebrow"><span class="dot"></span>Special mention</div><h2>NDIS compliant residence designs</h2></div>
+        <p>Specialist Disability Accommodation designed to NDIS requirements, built to feel like home. Two recent residences in Moreton Bay.</p>
+      </div>
+      <div class="ndis" data-q="enter">
+        <article><img src="../img/ndis-mcgregor.jpg" data-src="img/ndis-mcgregor.jpg" alt="Robust category SDA residence on McGregor Street, Kippa Ring" loading="lazy"><span class="tag">SDA · Robust category</span><h3>Robust category residence</h3><p class="mute">McGregor Street, Kippa Ring QLD</p></article>
+        <article><img src="../img/ndis-oxley.jpg" data-src="img/ndis-oxley.jpg" alt="High physical support SDA residence on Oxley Avenue, Redcliffe" loading="lazy"><span class="tag">SDA · High physical support</span><h3>High physical support residence</h3><p class="mute">Oxley Avenue, Redcliffe QLD</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="light sec wrap" data-tone="light" aria-label="On the boards" style="padding-top:0">
+    <div class="inner">
+      <div class="sec-head"><div><div class="eyebrow">On the boards</div><h2>Sketch, render, walk through.</h2></div></div>
+      <div class="boards" data-q="enter">
+        <article class="leaf">
+          <video muted loop playsinline preload="none" poster="../media/grassdale-poster.jpg" data-poster="media/grassdale-poster.jpg" data-src="media/grassdale.mp4" data-src-m="media/grassdale-m.mp4" aria-label="Walk-around film of the Grassdale Residence"></video>
+          <div class="txt"><div class="eyebrow">Gumdale · Design phase</div><h3>Grassdale Residence</h3><p>A two storey home influenced by French provincial design. A grand entrance framed by columns, arched windows and wrought iron balconies, with two side wings around a central living area.</p><div><button class="ghost" type="button" data-open="562-grassdale-road-gumdale">See the renders</button></div></div>
+        </article>
+        <article class="leaf">
+          <video muted loop playsinline preload="none" poster="../media/grout-poster.jpg" data-poster="media/grout-poster.jpg" data-src="media/grout-reel.mp4" data-src-m="media/grout-reel-p.mp4" aria-label="Grout Street Offices, from sketch to render"></video>
+          <div class="txt"><div class="eyebrow">MacGregor · Design stage</div><h3>Grout Street Offices</h3><p>From sketch to street. The same building, from the first pencil lines to the finished render.</p><div><button class="ghost" type="button" data-open="grout-street-macgregor">Open the project</button></div></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="team" class="light" data-tone="light" aria-label="Team">
+    <div class="stick">
+      <div class="wrap"><div class="inner sec-head" style="margin-bottom:0"><div><div class="eyebrow">People</div><h2>Directors, associate &amp; graduates</h2></div><p>Six people at one drawing board in Upper Mt Gravatt.</p></div></div>
+      <div class="drum"><div class="ring" id="ring"></div></div>
+    </div>
+  </section>
+
+  <section id="contact" class="wrap" data-tone="dark" aria-label="Contact">
+    <article class="sheet">
+      <div class="eyebrow"><span class="dot"></span>Get in touch</div>
+      <h2>Let's draw it <em>up.</em></h2>
+      <dl class="lines">
+        <div><dt>Call</dt><dd><a href="tel:+61431287724">0431 287 724</a></dd><button class="copy" type="button" data-copy="0431 287 724">Copy</button></div>
+        <div><dt>Call</dt><dd><a href="tel:+61481861415">0481 861 415</a></dd><button class="copy" type="button" data-copy="0481 861 415">Copy</button></div>
+        <div><dt>Email</dt><dd><a href="mailto:tarun@tjbuildingdesigners.com.au">tarun@tjbuildingdesigners.com.au</a></dd><button class="copy" type="button" data-copy="tarun@tjbuildingdesigners.com.au">Copy</button></div>
+        <div><dt>Visit</dt><dd>71 Kempsie Rd, Upper Mt Gravatt QLD 4122</dd><span></span></div>
+      </dl>
+      <div style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center">
+        <a class="cta" href="https://tjbuildingdesigners.com.au/contact-us" target="_blank" rel="noopener">Start your project</a>
+        <div class="social"><a href="https://www.instagram.com/tjbuildingdesigners" target="_blank" rel="noopener">Instagram ↗</a><a href="https://www.facebook.com/tjbuildingdesigners" target="_blank" rel="noopener">Facebook ↗</a><a href="https://www.linkedin.com/company/tj-building-designers" target="_blank" rel="noopener">LinkedIn ↗</a></div>
+      </div>
+    </article>
+  </section>
+</main>
+<footer class="wrap"><div class="inner"><span>© 2026 Tarun Jangra Building Designers</span><span>Projects across Brisbane, the Gold Coast, the Sunshine Coast, Moreton Bay and the Lockyer Valley</span></div></footer>
+
+<div id="labels" aria-hidden="true"></div>
+
+<dialog id="pd" aria-labelledby="pdname">
+  <button class="x" type="button" id="pdx">Close ✕</button>
+  <div class="pd">
+    <div class="pics"><img class="main" id="pdimg" alt=""><div class="thumbs" id="pdthumbs"></div></div>
+    <div class="info">
+      <div class="eyebrow" id="pdmeta"></div>
+      <h2 id="pdname"></h2>
+      <p class="desc" id="pddesc"></p>
+      <dl id="pdspecs"></dl>
+      <div class="nav"><button class="ghost" type="button" id="pdprev">← Previous</button><button class="cta" type="button" id="pdnext">Next project →</button></div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+const PROJECTS=[{"slug": "tesla-ern-harley-drive", "name": "Tesla Burleigh Heads", "loc": "Burleigh Heads", "cat": "ind", "status": "Completed", "desc": "The Tesla showroom located at 6 Ern Harley Drive, Burleigh Heads is a newly delivered automotive retail facility with a total gross floor area of 4,912.92 m². The development has been designed in accordance with Tesla’s global showroom standards, ensuring consistency with the brand’s international identity and customer experience. The facility integrates vehicle display, customer service, and delivery functions within a cohesive layout. Architecturally, the building presents a contemporary form that reflects Tesla’s core values of innovation, precision, and forward-thinking design, creating a refined and high-performance retail environment aligned with the brand’s vision.", "specs": [["Site area", "12,212 m²"], ["Site cover", "50.6 %"], ["Status", "Completed"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["tesla-ern-harley-drive-1.jpg", 1600, 1066], ["tesla-ern-harley-drive-2.jpg", 1600, 1067], ["tesla-ern-harley-drive-3.jpg", 1600, 1066], ["tesla-ern-harley-drive-4.jpg", 1600, 1280]]}, {"slug": "562-grassdale-road-gumdale", "name": "Grassdale Residence", "loc": "Gumdale", "cat": "res", "status": "Design Phase", "desc": "This elegant two storey home influenced by french provincial design with a grand entrance framed by columns and a decorative pediment. The symmetrical layout creates balance and uniformity, with arched windows and detailed trim work giving the home its classical character. Wrought iron balcony handrails add a touch of sophistication to the upper level facade treatment. The home is organised with a central living area and two side wings that house the family room, study and guest bedroom. The layout provides clear separation between entertaining spaces and private family areas. The design works well on a large block, with covered verandahs at the rear extending the living space outdoors.", "specs": [["Built-up area", "897.8 m²"], ["Status", "Design Phase"]], "imgs": [["562-grassdale-road-gumdale-1.jpg", 1600, 1143], ["562-grassdale-road-gumdale-2.jpg", 1600, 1143], ["562-grassdale-road-gumdale-3.jpg", 1600, 1067]]}, {"slug": "grout-street-macgregor", "name": "Grout Street Offices", "loc": "MacGregor", "cat": "com", "status": "Design Stage", "desc": "The radically contemporary offices located on Grout Street offer a unique alternative to the established style of office. The bold formatic approach with the smooth rounded corner makes for a welcoming building, combined with the abundant use of natural materials such as timber and stone throughout the entirety of the building. The unique form combined with the other facades allows for privacy for the occupants from the surrounding site, but still allows for natural daylighting to occur deep within the floorplate. The organisation of the program allows for both ample parking space, with a safe and interesting pedestrian entry that can be easily identified from both the street and within the carpark. This also allows for a large amount of space dedicated to greenery on the lower floors, activating the ground floor.", "specs": [["Site area", "612.6 m²"], ["Built-up area", "369.5 m²"], ["Status", "Design Stage"]], "imgs": [["grout-street-macgregor-1.jpg", 1600, 1131], ["grout-street-macgregor-2.jpg", 1600, 1067], ["grout-street-macgregor-3.jpg", 1600, 1131], ["grout-street-macgregor-4.jpg", 1600, 1067]]}, {"slug": "378-380-redbank-plains", "name": "Redbank Plains Townhouses", "loc": "Redbank Plains", "cat": "th", "status": "DA Stage", "desc": "Discover modern living at its finest in Redbank Plains, Queensland. TJ Building Designers present a luxuriously designed residential community across 7169m² with light-filled homes throughout without compromising on density which also brings vertical rhythm and streetscape presence to the composition. This carefully designed Community Living ensures each residence benefits from adequate building setbacks, ventilation, and natural surroundings. Beyond your front door, ample space for communal area awaits to unwind, connect with neighbours, and enjoy the lifestyle you deserve. This is more than a development; it’s a place to belong. A rare collection of architecturally designed townhouses in Redbank Plains, crafted for those who are seeking luxurious lifestyle, connection with nature and community.", "specs": [["Site area", "7169 m²"], ["Status", "DA Stage"], ["Builder", "Signature Homes"]], "imgs": [["378-380-redbank-plains-1.jpg", 1600, 1131], ["378-380-redbank-plains-2.jpg", 1600, 800]]}, {"slug": "tesla-flinders-lane", "name": "Tesla Maroochydore", "loc": "Maroochydore", "cat": "ind", "status": "Construction Phase", "desc": "The Tesla Showroom at Lot 409, Flinders Lane in Maroochydore is a purpose-built automotive retail and service facility, encompassing a total gross floor area of 3,010.4 m² with a site coverage of approximately 49.6%. Its architectural simplicity is intentionally designed to contrast with the advanced technology it represents. A generous glazed façade creates a strong visual connection between the street and the interior. Inside, the spatial layout carefully guides visitors through a curated and immersive brand experience. From the sequence of arrival to the selection of materials and finishes, every element reflects Tesla’s commitment to technology infused with luxury and defined by simplicity..", "specs": [["Built-up area", "3,010.4 m²"], ["Status", "Construction Phase"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["tesla-flinders-lane-1.jpg", 1600, 686], ["tesla-flinders-lane-2.jpg", 1600, 592], ["tesla-flinders-lane-3.jpg", 1600, 694], ["tesla-flinders-lane-4.jpg", 1600, 547]]}, {"slug": "jasper-street", "name": "Jasper Street", "loc": "", "cat": "res", "status": "Design Stage", "desc": "An innovative contemporary form of differing volumes with a calculated use of materials, this residence is the culmination of local site context mixed with a high degree of luxury. Opting to use a significant amount of glass on the facade means that the home is well lit with an abundance of natural light, complimented by beautiful views of the whites hill reserve from the front balcony and living room. The interior finishes reinforce luxury living in the home, with a strong selection of soft natural materials that compliment the natural light being filtered through to the interior spaces. A large double height space opens up the open plan kitchen/living/dining room, creating a living central node for the home.", "specs": [["Site area", "728 m²"], ["Built-up area", "755 m²"], ["Status", "Design Stage"], ["Engineer", "SECS Engineering"]], "imgs": [["jasper-street-1.jpg", 1600, 1200], ["jasper-street-2.jpg", 1600, 1200], ["jasper-street-3.jpg", 1600, 1200], ["jasper-street-4.jpg", 1600, 1200]]}, {"slug": "chandler-house", "name": "Chandler House", "loc": "", "cat": "res", "status": "Completed", "desc": "A renovation to an existing home, the client approached with the need for much larger living spaces for a growing family and a facelift to the existing dwelling. Utilising the existing modern forms from the previous dwelling, the extension carefully extends into the generous landscape while retaining the essence of the home. The exterior material choices accentuate and modernise the existing building, and allow the building to respond to the surrrounding site context. The updated interiors are bold and contemporary, finished with a luxurious touch. The material choices and updated design create an environment of opulence, with succint bold accents and generous space within each room combined with multiple double height spaces to allow for ample natural light and ventilation, as well as creating intimate moments of delight throughout.", "specs": [["Site area", "10,889.3 m² / 2.69 Acres"], ["Built-up area", "1085.5 m²"], ["Status", "Completed"], ["Engineer", "M&J Consulting Engineers"]], "imgs": [["chandler-house-1.jpg", 1600, 1200], ["chandler-house-2.jpg", 1600, 1200], ["chandler-house-3.jpg", 1600, 1200], ["chandler-house-4.jpg", 1600, 1200]]}, {"slug": "huet-street", "name": "Huet Street", "loc": "", "cat": "res", "status": "Completed", "desc": "A deliberate and bold use of the contemporary form juxtaposes this house within its context, choosing to stand out over blending in. The modern exterior form is characterised by its use of stark material contrast, using a combination of aluminium cladding with white render and tile framed in black to create distinction and identity to each element of the facade. This carries down throughout the design, highlighting each individual element on the facade as it continues through. The spaces are concieved on three different levels, with both a covered and uncovered front balcony area capturing distant city views from kitchen and living areas on top level. An abundance of natural light and air flows into the dining and living areas on both floors utilising an open plan configuration, optimising energy passivity and environmental comfort in the home.", "specs": [["Site area", "568.8 m²"], ["Built-up area", "291.3 m²"], ["Status", "Completed"], ["Engineer", "M&J Consulting Engineers"]], "imgs": [["huet-street-1.jpg", 1600, 1200], ["huet-street-2.jpg", 1600, 1200], ["huet-street-3.jpg", 1600, 1200], ["huet-street-4.jpg", 1600, 1200]]}, {"slug": "janda-street", "name": "Janda Street", "loc": "", "cat": "res", "status": "Completed", "desc": "Built as an addition to an original dwelling, the extension pulls away dramatically from the original building’s form and style, cementing itself as a new visual identity for the dwelling. On approach from the street, the extension is largely hidden behind the existing home, only to be revealed by walking through into the new space. The extension is characterised by a new contemporary selection of both form and material, with brick and black trimdek cladding as the main facade materials. Additionally the main aspect of the extension looks back into the backyard and bush, away from the street-face which in turn provides opportunity for more intimate, private living spaces. Multiple void spaces deep in the floorplate punch through the upper floor and are fed light from exterior skylights, bringing abundant natural light into all spaces of the renovation to create visual comfort for the occupants. Additionally, the interior spaces are grand, with large spaces in combination with a strong visual consistency with its material selection that complements the new exterior material language.", "specs": [["Site area", "1694 m²"], ["Built-up area", "873.3 m²"], ["Status", "Completed"]], "imgs": [["janda-street-1.jpg", 1600, 1200], ["janda-street-2.jpg", 1600, 1200], ["janda-street-3.jpg", 1600, 1200], ["janda-street-4.jpg", 1600, 1200]]}, {"slug": "gatton-residence", "name": "Gatton Residence", "loc": "", "cat": "res", "status": "Design Stage", "desc": "Being afforded the luxury of acreage in the town of Gatton, this Residence extends through a series of axis’ along the site. The dramatic symmetry of the central living area defines both the architectural style, as well as an informal meeting point within the series of forms. The two wings that offshoot from the central node house both bedrooms and other practical spaces, each having a defined program however formally are all stitched together to the node through glazed hallways that define the physical connection. The dwelling rises from the earth, complimenting the existing movement of the topography instead of defining a new movement, while the materials continue the respect to the local context. This is primarily through the use of locally sourced and available materials, which are recycled timber and steel. In further respect to both local climate and context, there is a signficant amount of expansive outdoor areas that allow for living to not solely be contained to the interior of the dwelling.", "specs": [["Site area", "283.5 Hectares"], ["Built-up area", "1601.1 m²"], ["Status", "Design Stage"], ["Engineer", "Paterdis Structural Engineering"], ["Builder", "Proudlock Pty Ltd"]], "imgs": [["gatton-residence-1.jpg", 1600, 1200], ["gatton-residence-2.jpg", 1600, 1200], ["gatton-residence-3.jpg", 1600, 1200], ["gatton-residence-4.jpg", 1600, 1200]]}, {"slug": "ellington-street", "name": "Ellington Street", "loc": "", "cat": "res", "status": "Design Stage", "desc": "An 800sqm lot with a steep slope at the back has been subdivided into two separate residences on small lots respectively, and as such the architectural form and decisions made purposefully define each dwelling as its on separate entity from the other. This is achieved from differing forms, and alternating materials with 51 Ellington Street having a unique visual identity with its use of arches, softer formatic approach and material selection while 53 Ellington takes a more rigid approach with a darker selection of materials. However the consistent choice of the same brick elements bring the buildings in together, completing the ying and yang like conditions. The interior approach is identical, with both interior details complimenting each respective exterior conditions but in stark contrast to the other. In this specific instance however the material selections, although different, are both strongly based in natural materials or with a subtle tone to make the most of the small room sizes defined by the lot size. However there is no hinderance to the amount of natural light and ventilation each recieve, as well as the ability for each dwellings living room to expand out into the backyard to make use of the climatic conditions.", "specs": [["Site area", "51 – 404 m² / 53 – 404.6 m²"], ["Built-up area", "51 – 288.8 m² / 53 – 285.7 m²"], ["Status", "Design Stage"], ["Engineer", "M&J Consulting Engineers"], ["Builder", "Proudlock Pty Ltd"]], "imgs": [["ellington-street-1.jpg", 1457, 1093], ["ellington-street-2.jpg", 1600, 1200], ["ellington-street-3.jpg", 1600, 1200], ["ellington-street-4.jpg", 1600, 1200]]}, {"slug": "moncrief-street", "name": "Moncrief Street", "loc": "", "cat": "res", "status": "Construction", "desc": "A simple and elegent contemporary architectural form, this residence sits within its context with a strong visual identity and use of contrasting materials. The simplistic facade has been delicately ornamented with a repetition of dark aluminium slats, to provide interest as well as opportunity for privacy and shading. Furthermore, the large massed form of the entrance sits heavily over which defines the entrance as a space of compression to allow for a greater moment of expansion once travelled through to the living room. The open plan living/kitchen/dining space is emboldended by the large double height space, spilling natural light into the space in combination with the exterior glazing which carefully bridges the gap between interior and exterior space. This creates an opportunity for the occupants to expand their living space and let it spill out into the outdoor living/pool area. Additionally, the open plan and natural material choices allow them to benefit from visual and thermal comfort conditions that the site and architecture provides them with.", "specs": [["Site area", "614.7 m²"], ["Built-up area", "504 m²"], ["Status", "Construction"], ["Engineer", "GDS Consulting Engineers"], ["Builder", "Bright Black Developments"]], "imgs": [["moncrief-street-1.jpg", 1600, 1200], ["moncrief-street-2.jpg", 1600, 1200], ["moncrief-street-3.jpg", 1600, 1200]]}, {"slug": "servius-street", "name": "Servius Street", "loc": "", "cat": "res", "status": "Construction", "desc": "The strong contemporary form of this dwelling is articulated with confident straight lines that clearly define the prominent, symmetrical masses of the building. These large spaces are further defined by the bold use of timber and stone which provide the building with an earthy, natural tone to immediately dictate a comfortable environment for the users of the space. The building responds to the existing site conditions with consistent views towards the city from the inside and out provided by ample exterior balcony spaces along the side of the building. The interiors are filled with an abundance of natural light and ventilation and complimented by multiple double height spaces that regularly punctuate the upper floor plan. This brings the light downward, and fills the space. The interior finish complements the exterior elements with soft, light finishes and an open-plan style living/kitchen/dining.", "specs": [["Site area", "717.3 m²"], ["Built-up area", "361.3 m²"], ["Status", "Construction"]], "imgs": [["servius-street-1.jpg", 1600, 1200], ["servius-street-2.jpg", 1440, 1080], ["servius-street-3.jpg", 1600, 1200], ["servius-street-4.jpg", 1600, 1200]]}, {"slug": "boston-road-residence", "name": "Boston Road Residence", "loc": "", "cat": "res", "status": "Design Stage", "desc": "The Boston Road Residence is a grand celebration of classical architecture, situated on vast acreage in Belmont. In a decision to return to the classical, a series of symmetrical grand gestures are made on the front facade and centred on the seven metre high entry into the home adorned with ornamentation. On approach from the road entry, the visually theatrical water fountain sits aligned with the axis of the building, reinforcing the grandeur of the residence. The opulent and spacious interiors of the home are a continuation of the themes present from the interior, and are finished with rigorous ornate details and luxurious materials. The home is divided into two different designated zones, the entry and bedrooms divided with the open plan kitchen /living /dining being joined by a small walkway, defining public and private spaces clearly.", "specs": [["Site area", "10,113.6 m² / 2.5 Acres"], ["Built-up area", "805 m²"], ["Status", "Design Stage"]], "imgs": [["boston-road-residence-1.jpg", 1600, 1200], ["boston-road-residence-2.jpg", 1600, 1200], ["boston-road-residence-3.jpg", 1600, 1200], ["boston-road-residence-4.jpg", 1600, 1200]]}, {"slug": "st-leonards-road", "name": "St Leonards Road", "loc": "", "cat": "res", "status": "", "desc": "Built as an addition to an original dwelling, the extension pulls away dramatically from the original building’s form and style, cementing itself as a new visual identity for the dwelling. On approach from the street, the extension is largely hidden behind the existing home, only to be revealed by walking through into the new space. The extension is characterised by a new contemporary selection of both form and material, with brick and black trimdek cladding as the main facade materials. Additionally the main aspect of the extension looks back into the backyard and bush, away from the street-face which in turn provides opportunity for more intimate, private living spaces. Multiple void spaces deep in the floorplate punch through the upper floor and are fed light from exterior skylights, bringing abundant natural light into all spaces of the renovation to create visual comfort for the occupants. Additionally, the interior spaces are grand, with large spaces in combination with a strong visual consistency with its material selection that complements the new exterior material language.", "specs": [], "imgs": [["st-leonards-road-1.jpg", 1600, 1200], ["st-leonards-road-2.jpg", 1600, 1200], ["st-leonards-road-3.jpg", 1600, 1200]]}, {"slug": "watford-street", "name": "Watford Street", "loc": "", "cat": "res", "status": "Completed", "desc": "A modern queensland home with a minimalistic form defined by clean lines, for a small family on a small lot. Its repetitive use of natural finishes inside and out, along with its strong connection to the gardens surrounding the building this home creates a safe and tranquil experience for its occupants in a environment that reflects contemporary ideals around nature and architecture. Once entered, a gracious and welcoming double height entry foyer leads to an open plan kitchen/living/dining space, providing glimpses to Mt Gravatt hills throughout. These spaces are finished with light and natural materials that enhance the spatial qualities of each room in the home, supporting a safe and family orientated environment.", "specs": [["Site area", "434 m²"], ["Built-up area", "184.2 m²"], ["Status", "Completed"], ["Engineer", "M&J Consulting Engineers"]], "imgs": [["watford-street-1.jpg", 1600, 1200], ["watford-street-2.jpg", 1600, 1200], ["watford-street-3.jpg", 1600, 1200], ["watford-street-4.jpg", 1600, 1200]]}, {"slug": "childcare-centre", "name": "Childcare Centre", "loc": "", "cat": "com", "status": "DA Approved", "desc": "An irregular roof-edge line defines the new centre with a strong and unique architectural identity, which identifies each classroom subtly through its contemporary form. The consistent use of timber and other earthy tones re-inforces physical and visual connection to nature as an important tenent for education centres, while the subtle and soft nature of the materials contributes to a safe and engaging environment for the childcare centre. The interior design is designed with the intention to be flexible, and allow educators to dictate the interior condition to the methods or subject of teaching required.Additionally the expansive green space connects all of the classrooms together, creating an informal meeting space between the classrooms as well as providing varied modes of play for the children. It also strengthens the visual connection to the outdoors.", "specs": [["Site area", "11,665 m² / 2.8 Acres"], ["Built-up area", "1291.8 m²"], ["Status", "DA Approved"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["childcare-centre-1.jpg", 1600, 1200], ["childcare-centre-2.jpg", 1600, 1200], ["childcare-centre-3.jpg", 1600, 1200]]}, {"slug": "village-complex", "name": "Village Complex", "loc": "", "cat": "com", "status": "DA Approved", "desc": "Proposed mixed-use complex comprising of a specialised medical centre, fitness centre, furniture store and generalised shops to serve as a new node for Crestmead. The complex is comprised of two large forms separated by a large parking lot, providing a clear distinction between the programs that are situated within the separate buildings. The material choices are unique in their selection between the two buildings, with the form of each stitching them together across the parking lot.The medical centre, acting as the central node for the lot, situates itself with its materiality and practical application of plan to provide users with the feeling of comfort, and safety with a strong use of natural materials and use of greenery surrounding. Conversely, the retail dwellings use a bolder and more exciting form of material selection to provide interest and intrigue, promoting the businesses they house.", "specs": [["Site area", "15,968 m² / 3.94 Acres"], ["Built-up area", "6973.5 m² / 1.7 Acres"], ["Status", "DA Approved"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["village-complex-1.jpg", 1600, 1200], ["village-complex-2.jpg", 1544, 1158], ["village-complex-3.jpg", 1600, 1200]]}, {"slug": "emporio-shopping", "name": "Emporio Shopping", "loc": "", "cat": "com", "status": "Completed", "desc": "Renovation of an existing building to create a new identity for the shopping precinct in Underwood. The renovation took the design language in a new direction, opting to modernise an aging and forgotten precinct and updating it to become a vibrant and diverse centre. The contemporary style of commercial building introduces a simplistic form with purposeful repetition of elements to create interest and a new visual identity. Additionally, the use of an new aluminium louvres ties together the exterior cladding across the expanded entry massing, providing cohesion in the highlighted elements. The new shopping precinct has the ability to house a diverse range of clientel, and adds value to the current site context with its new visual identity, as well as opportunities for small businesses to establish themselves in the local area.", "specs": [["Site area", "3626.3 m²"], ["Built-up area", "983.7 m²"], ["Status", "Completed"], ["Engineer", "SECS Engineering"]], "imgs": [["emporio-shopping-1.jpg", 1600, 1200], ["emporio-shopping-2.jpg", 1600, 1200], ["emporio-shopping-3.jpg", 1600, 1200], ["emporio-shopping-4.jpg", 1600, 1200]]}, {"slug": "equestrian-centre", "name": "Equestrian Centre", "loc": "", "cat": "com", "status": "Design Stage", "desc": "Defined by its unique open-air approach to equestrian stadium design, the proposed multi-purpose arena situates itself within the existing Boonah Showgrounds Precinct, drastically adding more alternative sports and events to the Showgrounds venue. The expansive pitched roof provides cover from the weather elements while being an impressive architectural element that is achieved through a series of hidden trusses. As the stadium sits down within the site context, it appears as if the building conforms to the landscape around it along with the open air nature of the facade to provide passive cooling and ventilation for the stadium.", "specs": [["Site area", "88,005 m² / 8.8 Hectares"], ["Built-up area", "5468.9 m² / 1.35 Acres"], ["Status", "Design Stage"], ["Engineer", "SECS Engineering"]], "imgs": [["equestrian-centre-1.jpg", 1600, 1200], ["equestrian-centre-2.jpg", 1600, 1200], ["equestrian-centre-3.jpg", 1600, 1200]]}, {"slug": "tesla", "name": "Tesla Delivery Centre", "loc": "", "cat": "ind", "status": "Completed", "desc": "Designed in combination with a strong company design language and rigorous functionality requirements, the Tesla Delivery Centre delivers a bold architectural statement consistent with the company vision and values that embody Tesla. The simplistic and contemporary facility exterior designates a desired sense of luxury and efficiency, and allows for the signage and entry to become the focal points. The design language as a whole takes on an innovative, futuristic identity which is consistent through to the interior space. Inside the warehouse the rigorously-efficient plan is the antithesis of the company’s existing practices, as everything has been organised with a high level of functionality and efficiency for its intended purpose. Architecturally the interior elements support this high degree of functionality, providing a well illuminated space with high ceilings in the main warehouse space alongside a resolved material palette that complements the company’s futuristic aesthetic which is carried through into the office spaces and entry.", "specs": [["Site area", "14,908 m² / 3.6 Acres"], ["Built-up area", "11,154.8 m² / 2.75 Acres"], ["Status", "Completed"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["tesla-1.jpg", 1600, 1200], ["tesla-2.jpg", 1600, 1200], ["tesla-3.jpg", 1600, 1200], ["tesla-4.jpg", 1600, 1200]]}, {"slug": "meakin-road", "name": "Meakin Road", "loc": "", "cat": "ind", "status": "Completed", "desc": "Designed in combination with a strong company design language and rigorous functionality requirements, the Tesla Delivery Centre delivers a bold architectural statement consistent with the company vision and values that embody Tesla. The simplistic and contemporary facility exterior designates a desired sense of luxury and efficiency, and allows for the signage and entry to become the focal points. The design language as a whole takes on an innovative, futuristic identity which is consistent through to the interior space. Inside the warehouse the rigorously-efficient plan is the antithesis of the company’s existing practices, as everything has been organised with a high level of functionality and efficiency for its intended purpose. Architecturally the interior elements support this high degree of functionality, providing a well illuminated space with high ceilings in the main warehouse space alongside a resolved material palette that complements the company’s futuristic aesthetic which is carried through into the office spaces and entry.", "specs": [["Site area", "3422.2 m²"], ["Built-up area", "2483.4 m²"], ["Status", "Completed"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["meakin-road-1.jpg", 1600, 1200], ["meakin-road-2.jpg", 1600, 1200], ["meakin-road-3.jpg", 1600, 1200], ["meakin-road-4.jpg", 1600, 1200]]}, {"slug": "queens-road", "name": "Queens Road", "loc": "", "cat": "ind", "status": "Completed", "desc": "A series of warehouses located on Queens Road, the simplistic and contemporary forms create a refined architectural palette reflect the functionality requirements of the warehouse precinct, opting to stand out with the colours chosen over the architectural form. The dark grey concrete masses are subtly divided by the designated office locations, defined by the alternative colorbond finish and strong horizontal lines created by the exterior glazing which brings a sufficient amount of daylighting deep into the floorplate. In the larger warehouse spaces, a large floorplan dominates the space which has been allocated for potential occupants of these spaces to complete their specific industrial use, as well as access to vital amenities such large double-height spaces and roller doors. The pre-cast concrete panel construction additionally allows for fast and efficient construction and demolition if need be.", "specs": [["Site area", "3904.4 m²"], ["Built-up area", "2598.9 m²"], ["Status", "Completed"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["queens-road-1.jpg", 1600, 1200], ["queens-road-2.jpg", 1600, 1200], ["queens-road-3.jpg", 1600, 1200], ["queens-road-4.jpg", 1600, 1200]]}, {"slug": "lot-3031", "name": "Lot 30 + 31", "loc": "", "cat": "ind", "status": "Construction", "desc": "An office and production precinct located within Crestmead, the buildings provide beneficial industry and service to the local area. The architectural form of the proposal articulates a strong difference between the human-centred office locations and the industrial production program of the precinct. It is articulated through the complexity of the area, where the offices are visual markers for the potential clients through the use of colour, repetitive elements and changes within the massing and form. Additionally, these areas provide passive shading to the interior spaces without taking away from the interior light quality. In the larger production spaces, ample space has been allocated for potential occupants of these spaces for their specific industrial use, and access to vital amenities has been provided within the architecture, such as large double-height spaces and roller doors. The pre-cast concrete panel construction additionally allows for fast and efficient construction and demolition if need be.", "specs": [["Site area", "30 – 3495.9 m² / 31 – 3496 m²"], ["Built-up area", "30 – 2804 m² / 31 – 2539 m²"], ["Status", "Construction"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["lot-3031-1.jpg", 1600, 1200], ["lot-3031-2.jpg", 1600, 1200], ["lot-3031-3.jpg", 1600, 1200], ["lot-3031-4.jpg", 1600, 1201]]}, {"slug": "lot-29", "name": "Lot 29", "loc": "", "cat": "ind", "status": "Construction", "desc": "A dual warehouse development located within Crestmead, the bold modern forms of the office spaces protrude from the established mass effectively defining the differing uses of space from the warehouse space. Primarily, these forms are abundant with strong horizontal lines and exterior glazing, effectively daylighting the offices spaces inside. The concept of natural daylighting continues through to the warehouse spaces too, with a series of repetitious windows breaking up the large exterior form. Additionally, the contemporary colour palette creates interest and visual amenity for the offices, promoting the businesses from the road and carpark as well as establishing itself as a node for the human-centred spaces. In the larger warehouse areas, a significant amount of space has been allocated for the occupants of these spaces to complete their specific industrial use, and access to vital amenities has been provided within the architecture such as large double-height spaces and roller doors. The pre-cast concrete panel construction additionally allows for fast and efficient construction and demolition if need be, and can be easily repainted.", "specs": [["Site area", "8078.3 m² / 1.9 Acres"], ["Built-up area", "6301.1 m² / 1.5 Acres"], ["Status", "Construction"], ["Engineer", "Paterdis Structural Engineering"]], "imgs": [["lot-29-1.jpg", 1600, 1200], ["lot-29-2.jpg", 1600, 1200], ["lot-29-3.jpg", 1600, 1200]]}, {"slug": "bartlett-street", "name": "Bartlett Street", "loc": "", "cat": "th", "status": "DA Approved", "desc": "A sophisticated collection of modern townhouses situated in the suburb of Morningside, designed with a strong emphasis on community living and lifestyle. The series of townhouses are emboldened by the contemporary approach to both form and materiality, offering a natural selection of materials that complements the surrounding context and creating a strong visual coordination with the strong forms seen in each townhouse. The interior design choices for each individual townhouses are uniquely bold and contemporary, finished with a combination of a strong sense of warmth, quality of design and precision to stand the test of time. The spaces also offer large expanses for outdoor living and connection to the surrounding context through both the priority of open plan living and a strong focus on natural daylight and visual connection.", "specs": [["Site area", "607.4 m²"], ["Built-up area", "538.4 m²"], ["Status", "DA Approved"], ["Engineer", "M&J Consulting Engineers"]], "imgs": [["bartlett-street-1.jpg", 1600, 1200], ["bartlett-street-2.jpg", 1600, 1200], ["bartlett-street-3.jpg", 1600, 1200]]}, {"slug": "gallagher-street", "name": "Gallagher Street", "loc": "", "cat": "th", "status": "Design Stage", "desc": "A boutique and beautifully crafted collection of modern townhouses situated in Kedron, designed with a strong emphasis on community living and lifestyle. The series of townhouses are emboldened by the simplistic but contemporary approach to both form and materiality, offering a soft and natural selection of materials that complements the surrounding context. The unique entrance to the site offers a strong visual threshold, establishing a new and unique indentity for the dwellings. The interior design choices for each individual townhouses are uniquely bold and contemporary, finished with a combination of a strong sense of warmth, quality of design and precision to stand the test of time. All townhouses boast an impressive open plan living/kitchen/dining space which is complimented by the large double height space, spilling natural light into the space in combination with the exterior glazing which carefully bridges the gap between interior and exterior space.", "specs": [["Site area", "634.8 m²"], ["Built-up area", "936.99 m²"], ["Status", "Design Stage"], ["Engineer", "SECS Engineering"], ["Builder", "Sustainable Homes"]], "imgs": [["gallagher-street-1.jpg", 1600, 1200], ["gallagher-street-2.jpg", 1600, 1171], ["gallagher-street-3.jpg", 1600, 1199], ["gallagher-street-4.jpg", 1600, 1170]]}];
+const CAPS=['New residential','Alterations & additions','Industrial','Commercial','Multi-residential','Heritage design','Hospitality & retail'];
+const CATS={all:'All',res:'Residential',com:'Commercial',ind:'Industrial',th:'Townhouse / Apartment'};
+const STAGES=[
+ ['Concept / schematic design','1:200','We listen, visit the site and sketch options until the big moves feel right.'],
+ ['Design development','1:100','Plans, elevations and materials get resolved and tested against budget and council rules.'],
+ ['Interior design','1:50','Layouts, joinery and finishes so the inside works as hard as the outside.'],
+ ['Construction documentation','1:20','The full drawing set and details your builder and certifier need to price and build.'],
+ ['Tendering','—','We help you get comparable quotes from builders and choose with confidence.'],
+ ['Contract administration','—','We stay on through construction to keep the build true to the drawings.'],
+];
+const TEAM=[
+ ['Tarun Jangra','Director','tarun','B.Arch, University of Kerala (1997). Founded The Design Grid in Chandigarh in 1999, then moved to Brisbane in 2006 and became a registered Building Designer.'],
+ ['Sonika Jangra','Director','sonika','B.Arch, Chandigarh College of Architecture (1996). Residences, interiors, commercial and industrial work in Chandigarh and Brisbane.'],
+ ['Khushbu “K” Bansal','Associate','khushbu','M.Arch, Deakin University (2021). Drawn to vernacular architecture.'],
+ ['Luke Vellacott','Graduate of Architecture','luke','Hons B.Design, QUT (2022). Technical detailing and compliance documentation.'],
+ ['Nora Ip','Graduate of Architecture','nora','Graduate of QUT.'],
+ ['Franz San Jose','Graduate of Architecture','franz','Graduate of QUT, majoring in architecture.'],
+];
+window.PROJECTS=PROJECTS;
+</script>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js';
+const BASE = document.querySelector('meta[name="asset-base"]').content;
+const $ = s => document.querySelector(s);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const smooth = (a, b, v) => { const t = clamp((v - a) / (b - a)); return t * t * (3 - 2 * t); };
+const easeIO = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SMALL = matchMedia('(max-width: 760px)').matches;
+const vh = () => innerHeight;
+const P = PROJECTS;
+
+/* ---------- static content ---------- */
+$('#caps').innerHTML = CAPS.map(c => `<li>${c}</li>`).join('');
+const storyEl = $('#story'), after = $('#after-process');
+STAGES.forEach((s, i) => {
+  const d = document.createElement('div');
+  d.className = 'panel' + (i % 2 ? ' r' : '');
+  if (i === 0) d.id = 'process';
+  d.dataset.rail = i === 0 ? 'Process' : '';
+  d.innerHTML = `<article class="sheet">
+    <div style="display:flex;gap:18px;align-items:flex-end"><div class="stage-n">${i + 1}</div>
+    <div class="eyebrow">${i === 0 ? 'Process · Six stages, one team<br>' : ''}Stage ${i + 1} of 6</div></div>
+    <h2>${s[0]}</h2><p>${s[2]}</p>
+    <div class="tb"><div><b>Stage</b>${String(i + 1).padStart(2, '0')}</div><div><b>Scale</b>${s[1] === '—' ? 'NTS' : s[1]}</div><div><b>Model</b>${['Wireframe', 'Massing', 'Plan cut', 'Exploded', 'Plan view', 'As built'][i]}</div></div>
+  </article>`;
+  storyEl.insertBefore(d, after);
+});
+const panels = [...storyEl.querySelectorAll('.panel')];
+// rail
+const rail = $('#rail');
+const railItems = panels.map((p, i) => {
+  if (!p.id && i) p.id = 'p' + i;
+  const a = document.createElement('a');
+  a.href = '#' + (i ? p.id : 'top');
+  const label = i === 0 ? 'Cover' : (p.dataset.rail || ('Stage ' + (i - 2)));
+  a.innerHTML = `<span>${label}</span><i></i>`;
+  a.setAttribute('aria-label', label);
+  rail.appendChild(a); return a;
+});
+// team
+$('#ring').innerHTML = TEAM.map((t, i) => `<article style="--i:${i}"><img src="${BASE}img/${t[2]}.jpg" alt="${t[0]}" loading="lazy"><div class="who"><b>${t[0]}</b><span>${t[1]}</span><p>${t[3]}</p></div></article>`).join('');
+// fix asset paths for any base
+document.querySelectorAll('[data-src]').forEach(el => { if (el.tagName === 'IMG') el.src = BASE + el.dataset.src; });
+document.querySelectorAll('[data-poster]').forEach(el => el.poster = BASE + el.dataset.poster);
+
+/* ---------- copy buttons ---------- */
+document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', () => {
+  const t = b.dataset.copy;
+  const done = () => { b.textContent = 'Copied'; setTimeout(() => b.textContent = 'Copy', 1600); };
+  try { navigator.clipboard.writeText(t).then(done, () => sel(b)); } catch { sel(b); }
+}));
+function sel(b) { const dd = b.parentElement.querySelector('dd'); const r = document.createRange(); r.selectNodeContents(dd); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+
+/* ---------- videos: load when near ---------- */
+const vio = new IntersectionObserver(es => es.forEach(e => {
+  const v = e.target;
+  if (e.isIntersecting) {
+    if (!v.src) { v.src = BASE + (SMALL && v.dataset.srcM ? v.dataset.srcM : v.dataset.src); }
+    if (!RM) v.play().catch(() => {});
+  } else v.pause();
+}), { rootMargin: '200px' });
+document.querySelectorAll('video[data-src]').forEach(v => vio.observe(v));
+
+/* ---------- project dialog ---------- */
+const CATN = { res: 'Residential', com: 'Commercial', ind: 'Industrial', th: 'Townhouse / Apartment' };
+const dlg = $('#pd'); let cur = 0, curList = P.map((_, i) => i);
+function openProject(i, list) {
+  if (list) curList = list;
+  cur = i; const p = P[i];
+  $('#pdname').textContent = p.name;
+  $('#pdmeta').textContent = [CATN[p.cat], p.loc, p.status].filter(Boolean).join(' · ');
+  $('#pddesc').textContent = p.desc;
+  $('#pdspecs').innerHTML = p.specs.filter(s => s[0] !== 'Status').map(s => `<div><dt>${s[0]}</dt><dd>${s[1]}</dd></div>`).join('');
+  const show = k => { $('#pdimg').src = BASE + 'img/m/' + p.imgs[k][0]; $('#pdimg').alt = `${p.name}, image ${k + 1} of ${p.imgs.length}`; $('#pdthumbs').querySelectorAll('button').forEach((b, j) => b.setAttribute('aria-current', j === k)); };
+  $('#pdthumbs').innerHTML = p.imgs.map((im, k) => `<button type="button" aria-label="Image ${k + 1}"><img src="${BASE}img/t/${im[0]}" alt=""></button>`).join('');
+  $('#pdthumbs').querySelectorAll('button').forEach((b, k) => b.onclick = () => show(k));
+  show(0);
+  if (!dlg.open) dlg.showModal();
+}
+const step = d => { const k = curList.indexOf(cur); openProject(curList[(k + d + curList.length) % curList.length]); };
+$('#pdx').onclick = () => dlg.close();
+$('#pdprev').onclick = () => step(-1);
+$('#pdnext').onclick = () => step(1);
+dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+document.querySelectorAll('[data-open]').forEach(b => b.onclick = () => openProject(P.findIndex(p => p.slug === b.dataset.open)));
+
+/* ---------- list view + filters ---------- */
+const work = $('#work');
+let filter = 'all';
+const visible = () => P.map((p, i) => i).filter(i => filter === 'all' || P[i].cat === filter);
+function buildFilters() {
+  const counts = { all: P.length }; P.forEach(p => counts[p.cat] = (counts[p.cat] || 0) + 1);
+  $('#filters').innerHTML = Object.entries(CATS).map(([k, v]) => `<button type="button" data-f="${k}" aria-pressed="${k === filter}">${v}<span>${counts[k]}</span></button>`).join('');
+  $('#filters').querySelectorAll('button').forEach(b => b.onclick = () => { filter = b.dataset.f; buildFilters(); layoutGallery(); buildGrid(); });
+}
+function buildGrid() {
+  const v = visible();
+  $('#gridlist').innerHTML = v.map((i, k) => { const p = P[i]; return `<li><button type="button" data-i="${i}"><img src="${BASE}img/t/${p.imgs[0][0]}" alt="" loading="lazy"><span class="n">${String(k + 1).padStart(2, '0')} · ${CATN[p.cat]}${p.loc ? ' · ' + p.loc : ''}</span><b>${p.name}</b></button></li>`; }).join('');
+  $('#gridlist').querySelectorAll('button').forEach(b => b.onclick = () => openProject(+b.dataset.i, visible()));
+}
+buildFilters(); buildGrid();
+$('#tolist').onclick = () => { work.classList.add('list'); work.scrollIntoView(); };
+$('#to3d').onclick = () => { work.classList.remove('list'); sizeWork(); work.scrollIntoView(); };
+function sizeWork() { if (!work.classList.contains('list')) work.style.height = (visible().length * (SMALL ? 26 : 22) + 100) + 'vh'; }
+sizeWork();
+
+/* ---------- WebGL ---------- */
+const canvas = $('#gl');
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+} catch (e) { fail(); }
+function fail() {
+  document.body.classList.add('nogl');
+  canvas.style.backgroundImage = `url(${BASE}img/m/janda-street-1.jpg)`;
+  work.classList.add('list');
+}
+
+if (renderer) {
+renderer.setPixelRatio(Math.min(devicePixelRatio, SMALL ? 1.5 : 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.localClippingEnabled = true;
+
+/* === Scene A: the house model === */
+const A = new THREE.Scene();
+const camA = new THREE.PerspectiveCamera(SMALL ? 46 : 30, 1, .5, 500);
+const hemi = new THREE.HemisphereLight(0xffffff, 0x9aa09e, 1.1);
+const sun = new THREE.DirectionalLight(0xffffff, 2.8);
+sun.castShadow = true;
+const sc = sun.shadow.camera; sc.left = -30; sc.right = 30; sc.top = 30; sc.bottom = -30; sc.near = 1; sc.far = 140;
+sun.shadow.mapSize.set(SMALL ? 1024 : 2048, SMALL ? 1024 : 2048);
+sun.shadow.bias = -0.0005; sun.shadow.normalBias = 0.03; sun.shadow.radius = 3;
+A.add(hemi, sun, sun.target);
+const warm1 = new THREE.PointLight(0xffb25e, 0, 16, 1.4); warm1.position.set(-4, 2.4, 1);
+const warm2 = new THREE.PointLight(0xffb25e, 0, 14, 1.4); warm2.position.set(4, 5.4, 1);
+A.add(warm1, warm2);
+
+const cut = new THREE.Plane(new THREE.Vector3(0, -1, 0), 99);
+const std = (c, o = {}) => new THREE.MeshStandardMaterial(Object.assign({ color: c, roughness: .92, metalness: 0, clippingPlanes: [cut] }, o));
+const C = { card: new THREE.Color(0xF5F5F2), clad: new THREE.Color(0x34373A), cardw: new THREE.Color(0xE6E6E1), accent: new THREE.Color(0xF08A24), timber: new THREE.Color(0xB98C5E) };
+const M = {
+  base: std(0xDAD9D3, { clippingPlanes: [] }),
+  ground: std(0xCDD1C7, { clippingPlanes: [] }),
+  card: std(0xF5F5F2), card2: std(0xE6E6E1), clad: std(0xF5F5F2), tree: std(0xEFEFEA),
+  glass: std(0xA9BDC7, { roughness: .12, metalness: .1, transparent: true, opacity: .42, emissive: 0xFFB25E, emissiveIntensity: 0, depthWrite: false }),
+  inter: std(0xE6E6E1), pool: std(0x8EC3D2, { roughness: .2, clippingPlanes: [] }),
+};
+const LM = new THREE.LineBasicMaterial({ color: 0x1B1F24, transparent: true, opacity: 0, clippingPlanes: [cut] });
+const solids = [M.card, M.card2, M.clad, M.tree, M.inter, M.base, M.ground, M.pool];
+
+const model = new THREE.Group(); A.add(model);
+const parts = [];
+const LAYERS = ['Site', 'Ground slab', 'Ground floor', 'First floor slab', 'First floor', 'Roof'];
+function add(mesh, layer, edges = true, shadow = true) {
+  mesh.castShadow = shadow; mesh.receiveShadow = true;
+  if (edges) mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry, 20), LM));
+  model.add(mesh);
+  parts.push({ m: mesh, layer, y: mesh.position.y, d: Math.random() });
+  return mesh;
+}
+// box by min-y (bottom) coordinates
+function box(w, h, d, x, y, z, mat, layer, edges, shadow) { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat); m.position.set(x, y + h / 2, z); return add(m, layer, edges, shadow); }
+function tree(x, z, s = 1) {
+  const g = new THREE.Group();
+  const t = new THREE.Mesh(new THREE.CylinderGeometry(.08 * s, .1 * s, 2.2 * s, 6), M.tree); t.position.y = 1.1 * s;
+  const c = new THREE.Mesh(new THREE.IcosahedronGeometry(1.25 * s, 1), M.tree); c.position.y = 2.9 * s;
+  [t, c].forEach(m => { m.castShadow = true; m.receiveShadow = true; m.add(new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry, 20), LM)); g.add(m); });
+  g.position.set(x, 0, z); model.add(g); parts.push({ m: g, layer: 0, y: 0, d: Math.random() });
+}
+// Layer 0: site
+box(46, .6, 34, 0, -.6, 0, M.base, 0, true, false);
+box(30, .04, 22, -2, 0, 1, M.ground, 0, false, false);
+box(4.6, .05, 12, 13.5, 0, 9, M.card2, 0, true, false);           // driveway
+box(9, .06, 3.2, -6.5, 0, 10.2, M.pool, 0, true, false);          // pool
+box(10.4, .1, .5, -6.5, 0, 12.1, M.card2, 0, true, false);         // pool coping
+[[-17, -9, 1.1], [-15.5, 6, .9], [16, -9, 1.2], [18.5, 0, .8], [-18, 12, .8], [4, 13, .7], [8, -12, .9]].forEach(t => tree(...t));
+// Layer 1: ground slab
+box(20, .4, 12, 0, 0, 0, M.card2, 1);
+// Layer 2: ground floor (front, +z, faces north)
+const G0 = .4, H = 3;
+box(20, H, .3, 0, G0, -5.85, M.card, 2);
+box(.3, H, 11.4, -9.85, G0, 0, M.card, 2);
+box(.3, H, 11.4, 9.85, G0, 0, M.card, 2);
+box(.7, H, .3, -3.6, G0, 5.85, M.card, 2);
+box(1.6, H, .3, 5.2, G0, 5.85, M.card, 2);
+box(19.4, H - .2, .06, 0, G0, 5.9, M.glass, 2, false, false);
+box(.15, H, 6, 1.2, G0, -2.8, M.card2, 2);
+box(6, H, .15, 6.8, G0, -.8, M.card2, 2);
+box(3.4, .9, 1, -1.6, G0, 1.6, M.inter, 2);                     // kitchen island
+box(5.6, .9, .65, -4.2, G0, -5.35, M.inter, 2);                 // kitchen bench
+box(3, .45, 1, -7, G0, -1.2, M.inter, 2); box(3, .9, .25, -7, G0, -1.8, M.inter, 2); // sofa
+box(2.4, .75, 1.1, -6.6, G0, 2.8, M.inter, 2);                  // dining
+box(2, .5, 2.2, 7.6, G0, -3.4, M.inter, 2);                     // bed
+for (let s = 0; s < 11; s++) box(1.1, .27 * (s + 1), .28, 2.4, G0, 3.8 - s * .28, M.card2, 2, s % 3 === 0); // stair
+// Layer 3: first floor slab + terrace
+const G1 = G0 + H;
+box(13.6, .35, 11, 3.2, G1, .5, M.card2, 3);
+box(6.4, .35, 12, -6.8, G1, 0, M.card2, 3);
+box(6.4, 1, .05, -6.8, G1 + .35, 5.95, M.glass, 3, false, false);
+box(.05, 1, 12, -9.97, G1 + .35, 0, M.glass, 3, false, false);
+// Layer 4: upper box (clad)
+const G2 = G1 + .35, H2 = 3;
+box(13, H2, .3, 3.5, G2, -4.35, M.clad, 4);
+box(.3, H2, 9.4, -2.85, G2, .5, M.clad, 4);
+box(.3, H2, 9.4, 9.85, G2, .5, M.clad, 4);
+box(13, .9, .3, 3.5, G2, 5.35, M.clad, 4);
+box(13, .55, .3, 3.5, G2 + H2 - .55, 5.35, M.clad, 4);
+box(12.4, H2 - 1.45, .05, 3.5, G2 + .9, 5.4, M.glass, 4, false, false);
+box(.05, 1.6, 4, -2.88, G2 + .9, 1.5, M.glass, 4, false, false);
+box(2, .5, 2.2, 6.5, G2, -2.6, M.inter, 4); box(2, .5, 2.2, 1.2, G2, -2.6, M.inter, 4);
+box(4, .1, 3.5, 3.5, G2, 2.6, M.inter, 4, false);
+box(.15, H2, 5, 3.9, G2, -1.9, M.card2, 4);
+// Layer 5: roof
+const G3 = G2 + H2;
+box(14.2, .32, 11.2, 3.5, G3, .5, M.card, 5);
+box(3.2, .5, 2.2, 1, G3 + .32, -1.5, M.card2, 5);
+for (let k = 0; k < 4; k++) { const m = box(1.6, .06, 2.6, 5 + k * 1.75, G3 + .55, -1, M.clad, 5, true, true); m.rotation.x = -.25; }
+
+// labels
+const labelBox = $('#labels');
+const mkLabel = (t, cls = '') => { const s = document.createElement('div'); s.className = 'lbl ' + cls; s.textContent = t; labelBox.appendChild(s); return s; };
+const layerLabels = LAYERS.map(t => mkLabel(t));
+const LY = [0, .3, 1.8, 3.6, 5.2, 6.9];
+const dimLabels = [mkLabel('20.0 m', 'dim'), mkLabel('12.0 m', 'dim')];
+
+/* === Scene B: portfolio corridor === */
+const B = new THREE.Scene();
+const NIGHT = new THREE.Color(0x101316);
+B.background = NIGHT;
+B.fog = new THREE.Fog(0x101316, 6, SMALL ? 26 : 34);
+const camB = new THREE.PerspectiveCamera(SMALL ? 62 : 48, 1, .1, 200);
+const GAP = SMALL ? 5.2 : 6, XO = SMALL ? 1.15 : 3.5, PW = SMALL ? 3.2 : 4.6;
+const loader = new THREE.TextureLoader();
+const planeGeo = new THREE.PlaneGeometry(PW, PW * .75);
+const frameGeo = new THREE.PlaneGeometry(PW + .14, PW * .75 + .14);
+const tiles = P.map((p, i) => {
+  const mat = new THREE.MeshBasicMaterial({ color: 0x2a2e33 });
+  loader.load(BASE + 'img/t/' + p.imgs[0][0], t => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; mat.map = t; mat.color.set(0xffffff); mat.needsUpdate = true; });
+  const g = new THREE.Group();
+  const fr = new THREE.Mesh(frameGeo, new THREE.MeshBasicMaterial({ color: 0x2b3035 })); fr.position.z = -.02;
+  const m = new THREE.Mesh(planeGeo, mat); m.userData.i = i;
+  g.add(fr, m); B.add(g);
+  return { g, m, i, pos: new THREE.Vector3(0, 0, -200), rot: 0, s: 0, ts: 0 };
+});
+const floor = new THREE.GridHelper(400, 200, 0x2c3238, 0x1c2126); floor.position.set(0, -2.9, -150); B.add(floor);
+{ // drifting dust
+  const n = 900, a = new Float32Array(n * 3);
+  for (let k = 0; k < n; k++) { a[k * 3] = (Math.random() - .5) * 16; a[k * 3 + 1] = (Math.random() - .3) * 7; a[k * 3 + 2] = 10 - Math.random() * 190; }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(a, 3));
+  B.add(new THREE.Points(g, new THREE.PointsMaterial({ color: 0x8a9298, size: .035, transparent: true, opacity: .7 })));
+}
+let order = [];
+function layoutGallery() {
+  order = visible();
+  tiles.forEach(t => t.ts = 0);
+  order.forEach((i, k) => {
+    const t = tiles[i], side = k % 2 ? 1 : -1;
+    t.pos.set(side * XO, (k % 3 - 1) * .35 + (SMALL ? side * .9 : 0), -k * GAP);
+    t.rot = -side * (SMALL ? .18 : .42); t.ts = 1;
+  });
+  sizeWork();
+}
+layoutGallery();
+
+/* === sizing === */
+function resize() {
+  const w = innerWidth, h = innerHeight;
+  renderer.setSize(w, h, false);
+  camA.aspect = camB.aspect = w / h;
+  camA.fov = w / h < .8 ? 46 : 30;
+  camA.updateProjectionMatrix(); camB.updateProjectionMatrix();
+}
+addEventListener('resize', resize); resize();
+
+/* === story keyframes (one per panel) === */
+// az/el: camera orbit (radians); d: distance; ty: target height; hr: hour of day on 21 Dec;
+// wire: line opacity; solid: surface opacity; ex: explode; clip: section-cut height; int: interiors lit; fin: finished materials; lab/dim: labels
+const K = [
+  { az: .62, el: .40, d: 44, tx: 0, ty: 2.5, hr: 8.2, wire: .18, solid: 1, ex: 0, clip: 99, int: 0, fin: 0, lab: 0, dim: 0 },
+  { az: -.35, el: .30, d: 36, tx: 3, ty: 3, hr: 11.5, wire: .1, solid: 1, ex: 0, clip: 99, int: 0, fin: 0, lab: 0, dim: 0 },
+  { az: -1.0, el: .52, d: 40, tx: -3, ty: 2, hr: 16.3, wire: .1, solid: 1, ex: 0, clip: 99, int: 0, fin: 0, lab: 0, dim: 0 },
+  { az: .95, el: .55, d: 40, tx: 3, ty: 3, hr: 10, wire: 1, solid: .05, ex: 0, clip: 99, int: 0, fin: 0, lab: 0, dim: 0 },
+  { az: .35, el: .42, d: 36, tx: -3, ty: 3, hr: 13, wire: .3, solid: 1, ex: 0, clip: 99, int: 0, fin: 0, lab: 0, dim: 0 },
+  { az: .15, el: 1.05, d: 34, tx: 2, ty: 0, hr: 12, wire: .35, solid: 1, ex: 0, clip: 1.7, int: 1, fin: 0, lab: 0, dim: 0 },
+  { az: .78, el: .22, d: 52, tx: -4, ty: 7, hr: 10.5, wire: .65, solid: .9, ex: 1, clip: 99, int: .5, fin: 0, lab: 1, dim: 0 },
+  { az: 0, el: 1.48, d: 46, tx: 3, ty: 0, hr: 12, wire: 1, solid: .85, ex: 0, clip: 99, int: 0, fin: 0, lab: 0, dim: 1 },
+  { az: -.55, el: .2, d: 30, tx: -3, ty: 3, hr: 18.55, wire: .05, solid: 1, ex: 0, clip: 99, int: .4, fin: 1, lab: 0, dim: 0 },
+  { az: -.95, el: .32, d: 36, tx: 4, ty: 3, hr: 19.4, wire: .05, solid: 1, ex: 0, clip: 99, int: .4, fin: 1, lab: 0, dim: 0 },
+];
+const FINALE = { az: 0, el: .3, d: 42, tx: -6, ty: 3, hr: 20.3, wire: .05, solid: 1, ex: 0, clip: 99, int: .4, fin: 1, lab: 0, dim: 0 };
+if (SMALL) { K.forEach(k => { k.d *= 1.25; k.tx = 0; }); FINALE.tx = 0; FINALE.ty = 7; FINALE.d *= 1.2; }
+const S = Object.assign({}, K[0]);  // smoothed live state
+const T = Object.assign({}, K[0]);  // target state
+
+/* sun position for Brisbane on 21 December */
+const LAT = -27.47 * Math.PI / 180, DEC = -23.44 * Math.PI / 180;
+function sunDir(hr, out) {
+  const H = (hr - 12) * 15 * Math.PI / 180;
+  const el = Math.asin(Math.sin(LAT) * Math.sin(DEC) + Math.cos(LAT) * Math.cos(DEC) * Math.cos(H));
+  const az = Math.atan2(-Math.sin(H), Math.tan(DEC) * Math.cos(LAT) - Math.sin(LAT) * Math.cos(H)); // from north, east positive
+  // world: north = +z (street side), east = -x
+  out.set(-Math.sin(az) * Math.cos(el), Math.sin(el), Math.cos(az) * Math.cos(el));
+  return { el, az };
+}
+const sd = new THREE.Vector3();
+const SKY_DAY = new THREE.Color(0xE3E8E8), SKY_GOLD = new THREE.Color(0xEAD3BC), SKY_NIGHT = new THREE.Color(0x101316);
+const WHITE = new THREE.Color(0xffffff), SUNWARM = new THREE.Color(0xFFC08A);
+const sky = new THREE.Color(), tmpC = new THREE.Color();
+const dot = $('#sundot'), clock = $('#clock'), hudStage = $('#hudstage'), hud = $('#hud');
+const STAGE_TXT = ['Model 1:100', 'Model 1:100', 'Sun study', 'Stage 1 · Wireframe', 'Stage 2 · Massing', 'Stage 3 · Plan cut 1.7 m', 'Stage 4 · Exploded', 'Stage 5 · Plan view', 'Stage 6 · As built', 'Dusk'];
+
+let build = RM ? 1 : 0, buildStart = performance.now() + 250;
+let mx = 0, my = 0, smx = 0, smy = 0;
+addEventListener('pointermove', e => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; });
+
+function applyModel(st, t) {
+  // camera
+  const az = st.az + smx * .12 + (RM ? 0 : Math.sin(t * .00012) * .03), el = clamp(st.el - smy * .05, .05, 1.5);
+  const tgt = new THREE.Vector3(st.tx, st.ty, 0);
+  camA.position.set(tgt.x + Math.sin(az) * Math.cos(el) * st.d, tgt.y + Math.sin(el) * st.d, Math.cos(az) * Math.cos(el) * st.d);
+  camA.lookAt(tgt);
+  // sun
+  const s = sunDir(st.hr, sd), sinE = Math.sin(s.el);
+  sun.position.copy(sd).multiplyScalar(60); sun.target.position.set(0, 0, 0);
+  const day = smooth(-.1, .12, sinE);
+  sun.intensity = 3.4 * smooth(-.02, .15, sinE);
+  sun.color.copy(SUNWARM).lerp(WHITE, smooth(.05, .5, sinE));
+  hemi.intensity = lerp(.22, 1.1, day);
+  hemi.color.copy(WHITE).lerp(tmpC.set(0x6f86a8), 1 - day);
+  sky.copy(SKY_GOLD).lerp(SKY_DAY, smooth(.08, .55, sinE)).lerp(SKY_NIGHT, 1 - smooth(-.14, .06, sinE));
+  A.background = sky;
+  const night = 1 - day;
+  // hud
+  const hh = Math.floor(st.hr), mm = Math.floor((st.hr - hh) * 60 / 5) * 5;
+  clock.textContent = String(hh).padStart(2, '0') + ':' + String(mm).padStart(2, '0');
+  const r = 13 * Math.cos(Math.max(s.el, 0) * .9);
+  dot.setAttribute('cx', 20 - Math.sin(s.az) * r); dot.setAttribute('cy', 20 - Math.cos(s.az) * r);
+  dot.setAttribute('opacity', sinE > -.05 ? 1 : .25);
+  document.documentElement.style.setProperty('--hud-ink', night > .5 ? '#E9ECEA' : '#15181B');
+  // materials
+  LM.opacity = st.wire; LM.color.set(night > .5 ? 0x9aa2a8 : 0x1B1F24);
+  const op = st.solid;
+  solids.forEach(m => { const tr = op < .99; if (m.transparent !== tr) { m.transparent = tr; m.needsUpdate = true; } m.opacity = op; m.depthWrite = op > .5; });
+  M.glass.opacity = .42 * op;
+  M.clad.color.copy(C.card).lerp(C.clad, st.fin);
+  M.card2.color.copy(C.cardw).lerp(C.timber, st.fin * .0);
+  M.inter.color.copy(C.cardw).lerp(C.accent, Math.max(st.int, 0));
+  M.glass.color.set(0xA9BDC7).lerp(tmpC.set(0x2a3238), st.fin * .7);
+  M.glass.emissiveIntensity = night * st.fin * 1.6;
+  warm1.intensity = warm2.intensity = night * st.fin * 40;
+  cut.constant = st.clip;
+  // parts: build + explode
+  const bt = build;
+  parts.forEach(p => {
+    const start = p.layer / 6 * .72 + p.d * .1;
+    const k = clamp((bt - start) / .2), e = easeIO(k);
+    p.m.visible = k > 0;
+    p.m.position.y = p.y + p.layer * st.ex * 2.6 + (1 - e) * 4;
+    p.m.scale.y = Math.max(.001, e);
+  });
+  // labels
+  const v = new THREE.Vector3(), W = innerWidth, Hh = innerHeight;
+  const place = (el, x, y, z, o) => { v.set(x, y, z).project(camA); el.style.transform = `translate(${(v.x * .5 + .5) * W}px,${(-v.y * .5 + .5) * Hh}px) translate(0,-50%)`; el.style.opacity = o; };
+  layerLabels.forEach((el, i) => place(el, 11.5, LY[i] + i * st.ex * 2.6, 6.2, st.lab));
+  place(dimLabels[0], -1, .5, 7.2, st.dim);
+  place(dimLabels[1], 10.6, .5, 0, st.dim);
+  return night;
+}
+
+/* === gallery frame === */
+const ray = new THREE.Raycaster(), pt = new THREE.Vector2();
+let hoverI = -1, nowI = -1;
+const stick = $('#workstick');
+stick.addEventListener('pointermove', e => {
+  pt.set(e.clientX / innerWidth * 2 - 1, -e.clientY / innerHeight * 2 + 1);
+  ray.setFromCamera(pt, camB);
+  const hit = ray.intersectObjects(tiles.filter(t => t.ts).map(t => t.m))[0];
+  hoverI = hit ? hit.object.userData.i : -1;
+  stick.classList.toggle('hover', hoverI >= 0);
+});
+stick.addEventListener('pointerleave', () => { hoverI = -1; });
+stick.addEventListener('click', e => {
+  if (e.target.closest('button,a')) return;
+  pt.set(e.clientX / innerWidth * 2 - 1, -e.clientY / innerHeight * 2 + 1);
+  ray.setFromCamera(pt, camB);
+  const hit = ray.intersectObjects(tiles.filter(t => t.ts).map(t => t.m))[0];
+  if (hit) openProject(hit.object.userData.i, order);
+});
+$('#nowopen').onclick = () => nowI >= 0 && openProject(nowI, order);
+let camZ = 10, camZT = 10;
+function applyGallery(q, t, dt) {
+  const len = (order.length - 1) * GAP;
+  camZT = lerp(9, -len + 4, q);
+  camZ = RM ? camZT : lerp(camZ, camZT, 1 - Math.pow(.0015, dt));
+  camB.position.set(smx * 1.2, smy * -.6 + .2, camZ);
+  camB.lookAt(smx * .4, 0, camZ - 10);
+  let best = 1e9, bi = -1;
+  tiles.forEach(tl => {
+    const k = 1 - Math.pow(.002, dt);
+    tl.g.position.lerp(tl.pos, RM ? 1 : k);
+    tl.s = lerp(tl.s, tl.ts * (tl.i === hoverI ? 1.06 : 1), RM ? 1 : k);
+    tl.g.scale.setScalar(Math.max(.001, tl.s));
+    tl.g.visible = tl.s > .01;
+    const dz = camZ - tl.g.position.z;
+    // turn to face the visitor as they pass
+    tl.g.rotation.y = tl.rot * smooth(-2, 14, dz);
+    if (tl.ts && dz > 2.5 && dz < best) { best = dz; bi = tl.i; }
+  });
+  if (bi !== nowI && bi >= 0) {
+    nowI = bi; const p = P[bi], k = order.indexOf(bi);
+    $('#nowidx').innerHTML = String(k + 1).padStart(2, '0') + `<small> / ${String(order.length).padStart(2, '0')}</small>`;
+    $('#nowname').textContent = p.name;
+    $('#nowmeta').textContent = [CATN[p.cat], p.loc, p.status].filter(Boolean).join(' · ');
+  }
+}
+
+/* === scroll-driven CSS vars === */
+const qEls = [...document.querySelectorAll('#tesla, #team')];
+const enterEls = [...document.querySelectorAll('[data-q="enter"]')];
+const tones = [...document.querySelectorAll('[data-tone]')];
+const tesvid = $('#teslavid');
+
+/* === main loop === */
+let last = performance.now(), mode = '';
+function frame(t) {
+  const dt = Math.min(.1, (t - last) / 1000); last = t;
+  smx = lerp(smx, mx, .05); smy = lerp(smy, my, .05);
+  if (build < 1) build = clamp((t - buildStart) / 2600);
+  const H = vh();
+  // which scene owns the screen?
+  const rs = storyEl.getBoundingClientRect(), rw = work.getBoundingClientRect(), rc = $('#contact').getBoundingClientRect();
+  let scene = null, night = 0;
+  if (rs.bottom > 0 && rs.top < H) {
+    const p = clamp(-rs.top / (rs.height - H)) * (K.length - 1);
+    const i = Math.min(K.length - 2, Math.floor(p)), f = easeIO(clamp(p - i));
+    for (const k in T) T[k] = lerp(K[i][k], K[i + 1][k], f);
+    const ri = Math.round(p);
+    railItems.forEach((a, j) => a.classList.toggle('on', j === ri));
+    hudStage.textContent = STAGE_TXT[ri] || '';
+    scene = 'A';
+  } else if (rc.top < H && rc.bottom > 0) {
+    Object.assign(T, FINALE); T.az = FINALE.az + (RM ? 0 : t * .00004); T.hr = FINALE.hr;
+    scene = 'A';
+  } else if (rw.top < H && rw.bottom > 0 && !work.classList.contains('list')) {
+    scene = 'B';
+  }
+  const showHud = rs.bottom > H * .5 && rs.top < H * .5;
+  hud.classList.toggle('off', !showHud); rail.classList.toggle('off', !showHud);
+  if (scene === 'A') {
+    if (mode !== 'A') Object.assign(S, T);         // jump when entering
+    const a = RM ? 1 : 1 - Math.pow(.004, dt);
+    for (const k in S) S[k] = lerp(S[k], T[k], a);
+    night = applyModel(S, t);
+    labelBox.style.display = '';
+    renderer.render(A, camA);
+  } else labelBox.style.display = 'none';
+  if (scene === 'B') {
+    const q = clamp(-rw.top / (rw.height - H));
+    applyGallery(q, t, dt);
+    renderer.render(B, camB);
+  }
+  mode = scene || mode;
+  // header tone
+  let dark = false;
+  for (const el of tones) { const r = el.getBoundingClientRect(); if (r.top <= 40 && r.bottom > 40) { dark = el.dataset.tone === 'dark'; break; } }
+  if (rs.top <= 40 && rs.bottom > 40) dark = night > .55;
+  document.body.classList.toggle('tone-dark', dark);
+  // css progress
+  if (!RM) {
+    qEls.forEach(el => { const r = el.getBoundingClientRect(); el.style.setProperty('--q', clamp(-r.top / (r.height - H) * (el.id === 'tesla' ? 1.6 : 1)).toFixed(4)); });
+    enterEls.forEach(el => { const r = el.getBoundingClientRect(); el.style.setProperty('--q', easeIO(clamp((H - r.top) / (H * .75))).toFixed(4)); });
+  }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+} else {
+  // no WebGL: CSS-only progress
+  addEventListener('scroll', () => {}, { passive: true });
+}
+
+</script>
