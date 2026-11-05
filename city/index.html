@@ -142,26 +142,67 @@ footer{background:var(--ink);color:#a8afb4;font-size:.8rem;padding-block:20px ca
 footer .inner{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 footer .social{display:flex;gap:16px}footer a{text-decoration:none}
 
-/* project sheet */
-dialog#pd{border:0;padding:0;width:min(1180px,100vw);max-width:100vw;max-height:100dvh;height:min(840px,100dvh);background:var(--sheet);color:var(--ink);border-radius:10px}
-dialog#pd::backdrop{background:rgba(27,31,35,.6);backdrop-filter:blur(4px)}
-.pd{display:grid;grid-template-columns:1.5fr 1fr;height:100%}
-.pd .pics{background:#111;display:grid;grid-template-rows:1fr auto;min-height:0}
-.pd .main{width:100%;height:100%;object-fit:contain;min-height:0;display:block}
-.pd .strip{display:flex;gap:6px;padding:8px;overflow-x:auto}
-.pd .strip button{border:2px solid transparent;padding:0;background:none;flex:none}
-.pd .strip button[aria-current="true"]{border-color:var(--sheet)}
-.pd .strip img{width:84px;height:63px;object-fit:cover;display:block}
-.pd .info{padding:26px;display:flex;flex-direction:column;gap:14px;overflow:auto;min-width:0;border-top:6px solid var(--zc,var(--ink))}
-.pd h2{font-size:clamp(1.9rem,3vw,2.7rem)}
-.pd .desc{font-size:.95rem;color:#3b4248}
-.pd dl{margin:0;border-top:1px solid var(--rule)}
-.pd dl div{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:8px 0;border-bottom:1px solid var(--rule)}
-.pd dt{font-family:var(--mono);font-size:.64rem;text-transform:uppercase;color:var(--mute);padding-top:3px}
-.pd dd{margin:0}
-.pd .nav{display:flex;justify-content:space-between;gap:10px;margin-top:auto;padding-top:8px}
-#pd .x{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:calc(12px + env(safe-area-inset-right,0px));z-index:2;background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:.4em .8em;font-family:var(--mono);font-size:.68rem;text-transform:uppercase}
-@media (max-width:860px){.pd{grid-template-columns:1fr;grid-template-rows:auto 1fr}.pd .main{aspect-ratio:4/3;height:auto}.pd .info{padding:18px}dialog#pd{border-radius:0}}
+/* project story: a full-screen takeover */
+dialog#pd{border:0;padding:0;width:100vw;height:100dvh;max-width:100vw;max-height:100dvh;margin:0;inset:0;background:var(--ink);color:var(--sheet);overflow:hidden}
+dialog#pd::backdrop{background:var(--ink)}
+dialog#pd[open]{animation:pdIn .35s cubic-bezier(.2,.7,.2,1)}
+@keyframes pdIn{from{opacity:0;transform:scale(1.02)}to{opacity:1;transform:none}}
+.pd-scroll{height:100%;overflow-y:auto;overscroll-behavior:contain;outline:0}
+.pd-top{position:fixed;top:0;left:0;right:0;z-index:3;display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));pointer-events:none}
+.pd-top > *{pointer-events:auto}
+.glass{background:rgba(17,17,17,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#FBFBFA;border:0;border-radius:8px;min-height:44px;display:inline-flex;align-items:center;gap:10px;padding:0 16px;font-weight:700;font-size:.92rem;text-decoration:none}
+.glass.i{width:44px;padding:0;justify-content:center}
+.glass .k{color:#E6E9E8}
+.pd-arrows{display:flex;gap:8px}
+.pd-hero{position:relative;height:100dvh;min-height:560px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+.pd-hero > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pd-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(17,17,17,.5) 0%,rgba(17,17,17,0) 22%,rgba(17,17,17,0) 42%,rgba(17,17,17,.88) 84%)}
+.pd-cap{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;padding:0 max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));max-width:1440px;width:100%;margin:0 auto;padding-inline:clamp(16px,3vw,40px)}
+.pd-cap .k{color:#E6E9E8}
+.pd-cap h2{font-size:clamp(3rem,9vw,8.4rem);letter-spacing:-.05em;line-height:.86;margin-top:12px;max-width:12ch}
+.pd-nums{display:flex;gap:clamp(18px,3vw,36px);padding-bottom:8px}
+.pd-nums div{display:flex;flex-direction:column}
+.pd-nums b{font-size:clamp(1.6rem,3vw,2.6rem);letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1.05}
+.pd-peek{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;height:110px;margin-top:36px;padding-inline:clamp(16px,3vw,40px);max-width:1440px;width:100%;margin-inline:auto}
+.pd-peek button{all:unset;cursor:pointer;display:block;height:150px;border-radius:8px 8px 0 0;overflow:hidden}
+.pd-peek button:focus-visible{outline:2px solid #FBFBFA;outline-offset:2px}
+.pd-peek img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.pd-peek button:hover img{transform:scale(1.03)}
+.pd-body{background:var(--sheet);color:var(--ink);position:relative}
+.pd-band{height:8px;background:var(--zc,var(--ink))}
+.pd-inner{max-width:1440px;margin:0 auto;padding:clamp(40px,6vw,88px) clamp(16px,3vw,40px)}
+.pd-story{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(28px,5vw,80px)}
+.pd-story .lead{font-size:clamp(1.2rem,1.8vw,1.55rem);line-height:1.4;font-weight:500;letter-spacing:-.01em;color:var(--ink)}
+.pd-story dl{margin:0;border-top:1px solid var(--rule)}
+.pd-story dl div{display:grid;grid-template-columns:130px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid var(--rule)}
+.pd-story dt{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;color:var(--mute);padding-top:3px}
+.pd-story dd{margin:0;font-variant-numeric:tabular-nums}
+.pd-rank{margin-top:22px;display:flex;flex-direction:column;gap:6px}
+.pd-rank .bars{display:grid;grid-template-columns:minmax(0,150px) 1fr 64px;gap:5px 10px;align-items:center;font-size:.82rem}
+.pd-rank .bars i{display:block;height:8px;border-radius:2px;background:#C9CDD0}
+.pd-rank .bars .me{font-weight:700}
+.pd-rank .bars .me i{background:var(--zc)}
+.pd-rank .bars span:nth-child(3n){text-align:right;font-variant-numeric:tabular-nums}
+.pd-gal{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:clamp(36px,5vw,64px)}
+.pd-gal img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block;border-radius:8px}
+.pd-gal img:first-child:nth-last-child(odd),.pd-gal img.wide{grid-column:1/-1;aspect-ratio:16/8}
+.pd-next{display:block;position:relative;height:clamp(260px,40vh,420px);overflow:hidden;color:#FBFBFA;text-decoration:none;cursor:pointer;border:0;padding:0;width:100%;background:#111;font:inherit;text-align:left}
+.pd-next img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.7;transition:opacity .3s,transform .6s}
+.pd-next:hover img{opacity:.9;transform:scale(1.02)}
+.pd-next span.c{position:absolute;left:clamp(16px,3vw,40px);right:clamp(16px,3vw,40px);bottom:clamp(20px,3vw,40px);display:flex;flex-direction:column;gap:8px}
+.pd-next .k{color:#E6E9E8}
+.pd-next b{font-size:clamp(2.2rem,6vw,5.4rem);font-weight:900;letter-spacing:-.045em;line-height:.9}
+@media (max-width:760px){
+  .pd-top .glass.back span{display:none}
+  .pd-chip{display:none!important}
+  .pd-story{grid-template-columns:1fr}
+  .pd-gal{grid-template-columns:1fr}
+  .pd-gal img.wide{aspect-ratio:3/2}
+  .pd-peek{grid-template-columns:repeat(2,minmax(0,1fr));height:90px}
+  .pd-peek button:nth-child(3){display:none}
+}
+@media (prefers-reduced-motion: reduce){dialog#pd[open]{animation:none}}
 body.nogl .district .stick{position:relative;height:auto;justify-content:center}body.nogl .district{height:auto;padding-block:40px}
 </style>
 
@@ -242,11 +283,31 @@ body.nogl .district .stick{position:relative;height:auto;justify-content:center}
 <footer class="wrap"><div class="inner"><span>© 2026 Tarun Jangra Building Designers · Brisbane, the Gold Coast, the Sunshine Coast, Moreton Bay and the Lockyer Valley</span><span class="social"><a href="https://www.instagram.com/tjbuildingdesigners" target="_blank" rel="noopener">Instagram ↗</a><a href="https://www.facebook.com/tjbuildingdesigners" target="_blank" rel="noopener">Facebook ↗</a><a href="https://www.linkedin.com/company/tj-building-designers" target="_blank" rel="noopener">LinkedIn ↗</a></span></div></footer>
 
 <dialog id="pd" aria-labelledby="pdname">
-  <button class="x" type="button" id="pdx">Close ✕</button>
-  <div class="pd">
-    <div class="pics"><img class="main" id="pdimg" alt=""><div class="strip" id="pdstrip"></div></div>
-    <div class="info"><div class="k" id="pdmeta"></div><h2 id="pdname"></h2><p class="desc" id="pddesc"></p><dl id="pdspecs"></dl>
-      <div class="nav"><button class="btn o" type="button" id="pdprev">← Previous</button><button class="btn" type="button" id="pdnext">Next project →</button></div></div>
+  <div class="pd-top">
+    <button class="glass back" type="button" id="pdx" aria-label="Back to the city"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg><span>Back to the city</span></button>
+    <div class="glass pd-chip" id="pdchip"></div>
+    <div class="pd-arrows"><button class="glass i" type="button" id="pdprev" aria-label="Previous project"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg></button><button class="glass i" type="button" id="pdnext" aria-label="Next project"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg></button></div>
+  </div>
+  <div class="pd-scroll" id="pdscroll" tabindex="-1" autofocus>
+    <header class="pd-hero">
+      <img id="pdimg" alt="">
+      <div class="pd-cap">
+        <div><div class="k" id="pdmeta"></div><h2 id="pdname"></h2></div>
+        <div class="pd-nums" id="pdnums"></div>
+      </div>
+      <div class="pd-peek" id="pdpeek"></div>
+    </header>
+    <div class="pd-body">
+      <div class="pd-band"></div>
+      <div class="pd-inner">
+        <div class="pd-story">
+          <div><div class="k" style="margin-bottom:14px">The project</div><p class="lead" id="pddesc"></p></div>
+          <div><dl id="pdspecs"></dl><div class="pd-rank"><span class="k" id="pdrankk"></span><div class="bars" id="pdrank"></div></div></div>
+        </div>
+        <div class="pd-gal" id="pdgal"></div>
+      </div>
+      <button class="pd-next" type="button" id="pdnextbig"><img id="pdnextimg" alt=""><span class="c"><span class="k" id="pdnextk"></span><b id="pdnextname"></b></span></button>
+    </div>
   </div>
 </dialog>
 
@@ -344,27 +405,47 @@ const vio = new IntersectionObserver(es => es.forEach(e => {
 }), { rootMargin: '200px' });
 document.querySelectorAll('video[data-src]').forEach(v => vio.observe(v));
 
-/* ---------- project sheet ---------- */
+/* ---------- project story (full-screen) ---------- */
 const ORDER = ZK.flatMap(z => byZ[z]);
 const dlg = $('#pd'); let cur = 0;
+const zcVar = p => `var(${Z[p.cat].css})`;
 function openProject(i) {
-  cur = i; const p = P[i];
+  cur = i; const p = P[i], list = byZ[p.cat], k = list.indexOf(i);
+  dlg.style.setProperty('--zc', zcVar(p));
+  $('#pdchip').innerHTML = `<span class="sw" style="background:${zcVar(p)}"></span><span class="k">${Z[p.cat].name} · ${k + 1} of ${list.length}</span>`;
+  $('#pdmeta').textContent = [p.loc, p.status].filter(Boolean).join(' · ') || Z[p.cat].name;
   $('#pdname').textContent = p.name;
-  $('#pdmeta').textContent = [Z[p.cat].name, p.loc, p.status].filter(Boolean).join(' · ');
+  $('#pdimg').src = BASE + 'img/m/' + p.imgs[0][0]; $('#pdimg').alt = p.name;
+  const sp = Object.fromEntries(p.specs);
+  const nums = [];
+  if (sp['Site area']) nums.push([p.siteTxt.replace(' m²', ''), 'Site m²']);
+  if (sp['Built-up area'] || p.slug === 'tesla-ern-harley-drive') nums.push([p.builtTxt.replace(' m²', ''), 'Floor m²']);
+  if (sp['Site cover']) nums.push([sp['Site cover'].replace(' %', '%'), 'Site cover']);
+  $('#pdnums').innerHTML = nums.map(n => `<div><b>${n[0]}</b><span class="k">${n[1]}</span></div>`).join('');
+  $('#pdpeek').innerHTML = p.imgs.slice(1, 4).map((im, j) => `<button type="button" aria-label="See photo ${j + 2}"><img src="${BASE}img/m/${im[0]}" alt="" loading="lazy"></button>`).join('');
+  $('#pdpeek').querySelectorAll('button').forEach(b => b.onclick = () => $('#pdgal').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' }));
   $('#pddesc').textContent = p.desc;
-  $('#pdspecs').innerHTML = p.specs.filter(s => s[0] !== 'Status').map(s => `<div><dt>${s[0]}</dt><dd>${s[1]}</dd></div>`).join('') || '<div><dt>Areas</dt><dd>Not published</dd></div>';
-  dlg.style.setProperty('--zc', `var(${Z[p.cat].css})`);
-  $('#pdstrip').innerHTML = p.imgs.map((im, k) => `<button type="button" aria-label="Image ${k + 1}"><img src="${BASE}img/t/${im[0]}" alt=""></button>`).join('');
-  const show = k => { $('#pdimg').src = BASE + 'img/m/' + p.imgs[k][0]; $('#pdimg').alt = `${p.name}, image ${k + 1} of ${p.imgs.length}`; $('#pdstrip').querySelectorAll('button').forEach((b, j) => b.setAttribute('aria-current', j === k)); };
-  $('#pdstrip').querySelectorAll('button').forEach((b, k) => b.onclick = () => show(k));
-  show(0);
+  $('#pdspecs').innerHTML = [['Category', Z[p.cat].name], ...p.specs].map(s => `<div><dt>${s[0]}</dt><dd>${s[1]}</dd></div>`).join('');
+  $('#pdrankk').textContent = `Floor area in the ${Z[p.cat].name.toLowerCase()} district`;
+  const max = Math.max(...list.map(j => P[j].built));
+  $('#pdrank').innerHTML = list.map(j => { const q = P[j]; return `<span${j === i ? ' class="me"' : ''}>${q.name}</span><span${j === i ? ' class="me"' : ''}><i style="width:${(q.built / max * 100).toFixed(1)}%"></i></span><span${j === i ? ' class="me"' : ''}>${q.builtTxt === '—' ? 'est.' : fmt(q.built)}</span>`; }).join('');
+  $('#pdgal').innerHTML = p.imgs.map((im, j) => `<img src="${BASE}img/m/${im[0]}" alt="${p.name}, photo ${j + 1} of ${p.imgs.length}" loading="lazy"${j === 0 && p.imgs.length % 2 === 1 ? ' class="wide"' : ''}>`).join('');
+  const n = list[(k + 1) % list.length], np = P[n];
+  $('#pdnextk').textContent = `Next in ${Z[p.cat].name} · ${(k + 2 > list.length ? 1 : k + 2)} of ${list.length}`;
+  $('#pdnextname').textContent = np.name + ' →';
+  $('#pdnextimg').src = BASE + 'img/m/' + np.imgs[0][0];
+  $('#pdnextbig').onclick = () => openProject(n);
+  $('#pdscroll').scrollTop = 0;
   if (!dlg.open) dlg.showModal();
 }
-const stepP = d => openProject(ORDER[(ORDER.indexOf(cur) + d + ORDER.length) % ORDER.length]);
+const stepP = d => { const list = byZ[P[cur].cat]; openProject(list[(list.indexOf(cur) + d + list.length) % list.length]); };
 $('#pdx').onclick = () => dlg.close();
 $('#pdprev').onclick = () => stepP(-1);
 $('#pdnext').onclick = () => stepP(1);
-dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+dlg.addEventListener('keydown', e => { if (e.key === 'ArrowRight') stepP(1); if (e.key === 'ArrowLeft') stepP(-1); });
+dlg.addEventListener('close', () => document.documentElement.style.overflow = '');
+dlg.addEventListener('cancel', () => document.documentElement.style.overflow = '');
+const _show = dlg.showModal.bind(dlg); dlg.showModal = () => { document.documentElement.style.overflow = 'hidden'; _show(); };
 let hot = -1;
 document.querySelectorAll('.panel li button').forEach(b => {
   b.onclick = () => openProject(+b.dataset.i);
