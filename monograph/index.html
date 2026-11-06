@@ -14,12 +14,12 @@
    photography left to speak. The one loud thing is a single house model in a fixed WebGL layer that
    moves through the six design stages as you scroll, then comes back lit at dusk for the contact. */
 :root{
-  --stone:#E8E4DC;
-  --paper:#F4F1EB;
+  --stone:#E3E3DD;
+  --paper:#F1F1ED;
   --ink:#1C1A17;
-  --mute:#6F695F;
+  --mute:#676A63;
   --rule:rgba(28,26,23,.14);
-  --clay:#9C4F33;
+  --clay:#40604C;
   --night:#141311;
   --serif:"Newsreader",Georgia,"Times New Roman",serif;
   --sans:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
@@ -90,7 +90,7 @@ body.in #hero .h-in.d3{transition-delay:.3s}
   #hero .foot .mid{display:none}
   #hero .foot p{font-size:14px}
 }
-body.nogl #hero{background:linear-gradient(rgba(232,228,220,.55),rgba(232,228,220,.9)),var(--fallback) center/cover}
+body.nogl #hero{background:linear-gradient(rgba(227,227,221,.55),rgba(227,227,221,.9)),var(--fallback) center/cover}
 
 /* ---------- selected work ---------- */
 #work{background:var(--paper);padding:clamp(80px,12vw,180px) 0 clamp(60px,8vw,120px)}
@@ -106,7 +106,7 @@ body.nogl #hero{background:linear-gradient(rgba(232,228,220,.55),rgba(232,228,22
 .feat:nth-child(even) .a{grid-column:5 / span 8}
 .feat:nth-child(even) .cap{grid-column:1 / span 4}
 .feat:nth-child(even) .b{grid-column:1 / span 3}
-.ph{position:relative;overflow:hidden;background:#DDD8CE;cursor:pointer}
+.ph{position:relative;overflow:hidden;background:#D9D9D2;cursor:pointer}
 .ph img{width:100%;height:100%;object-fit:cover;transform:scale(1.12);transition:transform 1.8s cubic-bezier(.2,.7,.1,1),filter .6s ease}
 .ph{clip-path:inset(12% 8% 12% 8%);transition:clip-path 1.4s cubic-bezier(.2,.7,.1,1)}
 .ph.on{clip-path:inset(0 0 0 0)}
@@ -154,7 +154,7 @@ body.nogl #hero{background:linear-gradient(rgba(232,228,220,.55),rgba(232,228,22
 @media (max-width:760px){
   #process .intro{height:60svh}
   .step{align-items:flex-end;padding-bottom:6svh}
-  .step .txt{width:100%;background:rgba(232,228,220,.86);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);padding:18px 18px 20px;margin:0 -2px;opacity:.0}
+  .step .txt{width:100%;background:rgba(227,227,221,.86);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);padding:18px 18px 20px;margin:0 -2px;opacity:.0}
   .step.on .txt{opacity:1}
   .step .meta .n{font-size:40px}
   .step p{font-size:15px}
@@ -262,7 +262,7 @@ body.nogl #hero{background:linear-gradient(rgba(232,228,220,.55),rgba(232,228,22
 /* ---------- project sheet ---------- */
 #sheet{position:fixed;inset:0;z-index:40;background:var(--paper);overflow-y:auto;overscroll-behavior:contain;transform:translateY(100%);transition:transform .8s cubic-bezier(.7,0,.2,1);visibility:hidden}
 #sheet.open{transform:none;visibility:visible}
-#sheet .bar{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:16px var(--gut-r) 16px var(--gut);background:rgba(244,241,235,.9);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+#sheet .bar{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:16px var(--gut-r) 16px var(--gut);background:rgba(241,241,237,.9);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
 #sheet .bar button{font:500 13px/1 var(--sans);display:inline-flex;gap:10px;align-items:center;padding:8px 0}
 #sheet .bd{display:grid;grid-template-columns:repeat(12,1fr);gap:24px;padding-top:40px;padding-bottom:80px}
 #sheet .side{grid-column:1 / span 4;position:sticky;top:100px;align-self:start}
@@ -703,7 +703,7 @@ const vo=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting?vis.add(e.t
 [heroEl,procEl,contactEl].forEach(el=>vo.observe(el));
 
 const cur={...K[0],n:0,opt:0};let pS=0,t0=performance.now(),spin=0,first=true;
-const stoneC=new THREE.Color('#E8E4DC'),nightC=new THREE.Color('#141311'),tmpC=new THREE.Color();
+const stoneC=new THREE.Color('#E3E3DD'),nightC=new THREE.Color('#141311'),tmpC=new THREE.Color();
 const v3=new THREE.Vector3(),target=new THREE.Vector3(0,3.2,0);
 
 function frame(now){
