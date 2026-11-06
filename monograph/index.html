@@ -51,6 +51,7 @@ em{font-style:italic}
 /* ---------- nav ---------- */
 .nav{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:18px var(--gut-r) 18px var(--gut);mix-blend-mode:difference;color:#fff;pointer-events:none}
 .nav > *{pointer-events:auto}
+.nav.over{mix-blend-mode:normal;color:#F2EFE9}
 .nav img{height:22px;width:auto;filter:invert(1)}
 .nav ul{display:flex;gap:28px;list-style:none;font:500 13px/1 var(--sans);letter-spacing:.02em}
 .nav ul a{position:relative;padding:6px 0}
@@ -68,29 +69,36 @@ section{position:relative;z-index:2}
 .wrap{padding-left:var(--gut);padding-right:var(--gut-r)}
 
 /* ---------- hero: the type sits behind the model ---------- */
-#hero{z-index:0}
-#hero .pin{position:relative;height:100vh;height:100svh;display:grid;grid-template-rows:1fr auto;padding-top:90px;padding-bottom:28px;overflow:hidden}
-#hero h1{align-self:center;font:300 clamp(64px,13.2vw,250px)/.86 var(--serif);letter-spacing:-.035em;display:grid;gap:.04em}
+#hero{z-index:2;background:var(--night);color:#F2EFE9;overflow:hidden}
+#hero .film{position:absolute;inset:0;will-change:transform}
+#hero .film video{width:100%;height:100%;object-fit:cover}
+#hero .film::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,13,12,.45) 0%,rgba(14,13,12,.05) 32%,rgba(14,13,12,.1) 60%,rgba(14,13,12,.72) 100%)}
+#hero .pin{position:relative;z-index:1;height:100vh;height:100svh;display:grid;grid-template-rows:1fr auto;padding-top:90px;padding-bottom:28px;overflow:hidden}
+#hero h1{align-self:end;margin-bottom:4vh;font:300 clamp(64px,12vw,230px)/.86 var(--serif);letter-spacing:-.035em;display:grid;gap:.04em;text-shadow:0 2px 30px rgba(0,0,0,.25)}
 #hero h1 span{display:block}
 #hero h1 span:nth-child(2){text-align:right;font-style:italic}
-#hero .foot{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;align-items:end;border-top:1px solid var(--rule);padding-top:16px}
+#hero .foot{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;align-items:end;border-top:1px solid rgba(242,239,233,.3);padding-top:16px}
+#hero .k{color:rgba(242,239,233,.75)}
+#hero .now{display:inline-flex;align-items:center;gap:10px;color:inherit;font:500 11px/1.3 var(--sans);letter-spacing:.14em;text-transform:uppercase}
+#hero .now i{width:7px;height:7px;border-radius:50%;background:#E7B98C;animation:blink 2s ease-in-out infinite}
+@keyframes blink{50%{opacity:.25}}
+#hero .now:hover{color:#E7B98C}
 #hero .foot p{max-width:34ch;font-size:15px}
 #hero .foot .mid{text-align:center}
 #hero .foot .r{text-align:right}
 #hero .cue{display:inline-flex;align-items:center;gap:10px}
-#hero .cue b{display:block;width:1px;height:28px;background:var(--ink);transform-origin:top;animation:cue 2.2s ease-in-out infinite}
+#hero .cue b{display:block;width:1px;height:28px;background:currentColor;transform-origin:top;animation:cue 2.2s ease-in-out infinite}
 @keyframes cue{0%{transform:scaleY(0)}50%{transform:scaleY(1);transform-origin:top}50.1%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 #hero .h-in{opacity:0;transform:translateY(24px);transition:opacity 1.2s ease,transform 1.2s cubic-bezier(.2,.7,.1,1)}
 body.in #hero .h-in{opacity:1;transform:none}
 body.in #hero .h-in.d2{transition-delay:.15s}
 body.in #hero .h-in.d3{transition-delay:.3s}
 @media (max-width:760px){
-  #hero h1{font-size:clamp(54px,18vw,120px);align-self:start;margin-top:4vh}
+  #hero h1{font-size:clamp(54px,17vw,120px)}
   #hero .foot{grid-template-columns:1fr auto}
   #hero .foot .mid{display:none}
   #hero .foot p{font-size:14px}
 }
-body.nogl #hero{background:linear-gradient(rgba(227,227,221,.55),rgba(227,227,221,.9)),var(--fallback) center/cover}
 
 /* ---------- selected work ---------- */
 #work{background:var(--paper);padding:clamp(64px,8vw,120px) 0 clamp(20px,3vw,40px)}
@@ -297,11 +305,12 @@ body.nogl #hero{background:linear-gradient(rgba(227,227,221,.55),rgba(227,227,22
 
 <main id="top">
   <section id="hero" aria-label="Introduction">
+    <div class="film" id="hfilm"><video id="hvid" muted loop playsinline autoplay preload="auto" aria-hidden="true"></video></div>
     <div class="pin wrap">
       <h1><span class="h-in">Considered</span><span class="h-in d2">buildings.</span></h1>
       <div class="foot h-in d3">
         <p>Tarun Jangra Building Designers. Homes, workplaces and industrial buildings across South East Queensland, drawn in Brisbane since 2006.</p>
-        <div class="mid k">27 projects · 6 stages · 1 studio</div>
+        <div class="mid"><button type="button" class="now" id="hnow"><i></i>Now showing · Tesla Burleigh Heads</button></div>
         <div class="r k"><span class="cue"><b></b>Scroll</span></div>
       </div>
     </div>
@@ -483,6 +492,16 @@ addEventListener('scroll',stageScroll,{passive:true});addEventListener('resize',
 /* team + caps */
 $('#team').innerHTML=TEAM.map(t=>`<figure class="rv"><div class="pf"><img src="${BASE}img/${t[2]}.jpg" alt="${esc(t[0])}" loading="lazy"></div><figcaption><b>${esc(t[0])}</b><span>${esc(t[1])}</span></figcaption></figure>`).join('');
 $('#caps').innerHTML=CAPS.map(c=>`<li>${c}</li>`).join('');
+
+/* hero film: their own drone footage, a lighter cut on phones; it eases back as you scroll away */
+const hvid=$('#hvid'),hfilm=$('#hfilm');
+hvid.poster=`${BASE}media/tesla-poster.jpg`;hvid.src=`${BASE}media/${matchMedia('(max-width:760px)').matches?'tesla-drone-m':'tesla-drone'}.mp4`;
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches)hvid.play().catch(()=>{});else hvid.removeAttribute('autoplay');
+new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting?hvid.play().catch(()=>{}):hvid.pause())).observe(hfilm);
+$('#hnow').onclick=()=>openSheet('tesla-ern-harley-drive');
+const navEl=document.querySelector('.nav');
+const navOver=()=>navEl.classList.toggle('over',scrollY<hfilm.parentElement.offsetHeight-50);navOver();
+addEventListener('scroll',()=>{navOver();const t=Math.min(1,scrollY/innerHeight);hfilm.style.transform=`translateY(${t*18}vh) scale(${1+t*.06})`;},{passive:true});
 
 /* films */
 const vid=$('#vid'),vtag=$('#vtag'),PH=matchMedia('(max-width:760px)');
@@ -686,7 +705,7 @@ const lbEls=[...labelsEl.children];
 /* visibility: render only while the model can be seen */
 const vis=new Set();
 const vo=new IntersectionObserver(es=>es.forEach(e=>e.isIntersecting?vis.add(e.target.id):vis.delete(e.target.id)),{rootMargin:'10% 0px'});
-[heroEl,procEl,contactEl].forEach(el=>vo.observe(el));
+[procEl,contactEl].forEach(el=>vo.observe(el));
 
 const cur={...K[0],n:0,opt:0};let pS=0,t0=performance.now(),spin=0,first=true;
 const stoneC=new THREE.Color('#E3E3DD'),nightC=new THREE.Color('#141311'),tmpC=new THREE.Color();
