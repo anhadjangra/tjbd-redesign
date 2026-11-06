@@ -99,38 +99,60 @@ body.nogl #hero{background:linear-gradient(rgba(227,227,221,.55),rgba(227,227,22
 .sec-head h2 em{color:var(--clay)}
 .sec-head .aside{grid-column:9 / span 4;font-size:15px;color:var(--mute);max-width:36ch}
 .sec-head .aside a{color:var(--ink);border-bottom:1px solid var(--rule)}
-.feat{display:grid;grid-template-columns:repeat(12,1fr);gap:24px;margin-bottom:clamp(56px,7vw,110px);align-items:start}
-.feat .a{grid-column:1 / span 8;grid-row:1 / span 2}
-.feat .cap{grid-column:9 / span 4;grid-row:1;padding-top:6px}
-.feat .b{grid-column:10 / span 3;grid-row:2;align-self:end}
-.feat:nth-child(even) .a{grid-column:5 / span 8}
-.feat:nth-child(even) .cap{grid-column:1 / span 4}
-.feat:nth-child(even) .b{grid-column:1 / span 3}
 .ph{position:relative;overflow:hidden;background:#D9D9D2;cursor:pointer}
-.ph img{width:100%;height:100%;object-fit:cover;transform:scale(1.12);transition:transform 1.8s cubic-bezier(.2,.7,.1,1),filter .6s ease}
-.ph{clip-path:inset(12% 8% 12% 8%);transition:clip-path 1.4s cubic-bezier(.2,.7,.1,1)}
+.ph img{width:100%;height:100%;object-fit:cover;transform:scale(1.08);transition:transform 1.8s cubic-bezier(.2,.7,.1,1),opacity .45s ease}
+.ph{clip-path:inset(10% 6% 10% 6%);transition:clip-path 1.4s cubic-bezier(.2,.7,.1,1)}
 .ph.on{clip-path:inset(0 0 0 0)}
 .ph.on img{transform:scale(1.02)}
 .ph:hover img{transform:scale(1.05)}
-.feat .a{aspect-ratio:3/2}
-.feat .b{aspect-ratio:4/5}
-.cap .no{font:400 13px/1 var(--sans);color:var(--clay);letter-spacing:.06em}
-.cap h3{font:300 clamp(32px,3.4vw,54px)/1 var(--serif);letter-spacing:-.02em;margin:14px 0 22px}
-.cap dl{display:grid;grid-template-columns:auto 1fr;gap:8px 20px;font-size:14px;border-top:1px solid var(--rule);padding-top:14px;margin-bottom:20px}
+.ph img.out{opacity:0}
+/* tabs by sector, then one big project with a strip of the rest of that sector under it */
+.wtabs{display:flex;gap:clamp(18px,3vw,44px);border-bottom:1px solid var(--rule);margin-bottom:clamp(22px,3vw,36px);overflow-x:auto;scrollbar-width:none}
+.wtabs::-webkit-scrollbar{display:none}
+.wtabs button{position:relative;font:300 clamp(24px,2.6vw,40px)/1 var(--serif);letter-spacing:-.015em;padding:0 0 14px;color:var(--mute);white-space:nowrap;transition:color .3s}
+.wtabs button sup{font:500 11px/1 var(--sans);letter-spacing:.04em;margin-left:5px;vertical-align:top;position:relative;top:4px}
+.wtabs button::after{content:"";position:absolute;left:0;right:100%;bottom:-1px;height:2px;background:var(--ink);transition:right .45s cubic-bezier(.2,.7,.1,1)}
+.wtabs button[aria-selected=true]{color:var(--ink)}
+.wtabs button[aria-selected=true]::after{right:0}
+.show{display:grid;grid-template-columns:repeat(12,1fr);gap:24px;align-items:start}
+.show .big{grid-column:1 / span 8;aspect-ratio:16/10;max-height:50svh;width:100%}
+.cap{grid-column:9 / span 4;padding-top:2px;transition:opacity .35s ease}
+.cap.out{opacity:0}
+.cap .no{font:400 13px/1 var(--sans);color:var(--clay);letter-spacing:.06em;font-variant-numeric:tabular-nums}
+.cap h3{font:300 clamp(30px,3.2vw,50px)/1 var(--serif);letter-spacing:-.02em;margin:12px 0 18px;text-wrap:balance}
+.cap dl{display:grid;grid-template-columns:auto 1fr;gap:7px 20px;font-size:14px;border-top:1px solid var(--rule);padding-top:12px;margin-bottom:16px}
 .cap dt{color:var(--mute)}
 .cap p{font-size:15px;color:#3E3A34;max-width:42ch}
-.more{display:inline-flex;align-items:center;gap:10px;margin-top:22px;font:500 13px/1 var(--sans);letter-spacing:.04em;padding-bottom:6px;border-bottom:1px solid var(--ink)}
+.more{display:inline-flex;align-items:center;gap:10px;margin-top:18px;font:500 13px/1 var(--sans);letter-spacing:.04em;padding-bottom:6px;border-bottom:1px solid var(--ink)}
 .more span{transition:transform .3s ease}
 .more:hover span{transform:translateX(5px)}
+.strip-wrap{grid-column:1 / -1;display:grid;gap:12px;margin-top:6px}
+.strip-head{display:flex;justify-content:space-between;align-items:center}
+.strip-head .arr{display:flex;gap:6px}
+.strip-head .arr button{width:38px;height:38px;border:1px solid var(--rule);border-radius:50%;font-size:15px;transition:background .3s,color .3s}
+.strip-head .arr button:hover{background:var(--ink);color:var(--paper)}
+.strip{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding-bottom:4px;overscroll-behavior-x:contain}
+.strip::-webkit-scrollbar{display:none}
+.card{flex:none;width:clamp(150px,15vw,220px);text-align:left;scroll-snap-align:start;display:grid;gap:8px;opacity:.55;transition:opacity .3s}
+.card:hover,.card[aria-current=true]{opacity:1}
+.card .t{aspect-ratio:4/3;overflow:hidden;background:#D9D9D2;position:relative}
+.card .t::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 0 var(--ink);transition:box-shadow .3s}
+.card[aria-current=true] .t::after{box-shadow:inset 0 -3px 0 0 var(--ink)}
+.card img{width:100%;height:100%;object-fit:cover;transition:transform .8s ease}
+.card:hover img{transform:scale(1.05)}
+.card b{font:400 17px/1.15 var(--serif);display:block}
+.card span{font-size:12px;color:var(--mute)}
 @media (max-width:760px){
   .sec-head{grid-template-columns:1fr;gap:18px}
   .sec-head h2,.sec-head .aside{grid-column:1}
-  .feat,.feat:nth-child(even){grid-template-columns:repeat(6,1fr);gap:14px}
-  .feat .a,.feat:nth-child(even) .a{grid-column:1 / -1;grid-row:1}
-  .feat .cap,.feat:nth-child(even) .cap{grid-column:1 / span 4;grid-row:2}
-  .feat .b,.feat:nth-child(even) .b{grid-column:5 / span 2;grid-row:2;align-self:start;margin-top:8px}
-  .cap h3{margin:10px 0 16px}
+  .show{grid-template-columns:1fr;gap:16px}
+  .show .big,.cap,.strip-wrap{grid-column:1}
+  .cap h3{margin:10px 0 14px}
   .cap p{display:none}
+  .card{width:42vw}
+  .wtabs{gap:18px}
+  .wtabs button{font-size:22px;padding-bottom:10px}
+  .show .big{max-height:none}
 }
 
 /* ---------- process: one pinned screen; the stages swap in place as you scroll ---------- */
@@ -177,36 +199,6 @@ body.nogl #hero{background:linear-gradient(rgba(227,227,221,.55),rgba(227,227,22
 @media (max-width:760px){
   #film .row{flex-direction:column;align-items:flex-start}
   #film .frame{aspect-ratio:4/5;max-height:none}
-}
-
-/* ---------- index ---------- */
-#index{background:var(--paper);padding:clamp(40px,5vw,80px) 0 clamp(64px,8vw,120px)}
-.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:28px}
-.filters button{font:500 12px/1 var(--sans);letter-spacing:.04em;padding:10px 14px;border:1px solid var(--rule);border-radius:999px}
-.filters button sup{font-size:9px;color:var(--mute);margin-left:3px}
-.filters button[aria-pressed=true]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.filters button[aria-pressed=true] sup{color:#bbb}
-.tbl{border-top:1px solid var(--ink)}
-.tr{display:grid;grid-template-columns:56px 1.6fr 1fr 1fr 1fr 1.1fr;gap:20px;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--rule);cursor:pointer;transition:padding .35s ease,color .25s}
-.tr.h{cursor:default;padding:12px 0}
-.tr.h > *{font:500 11px/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
-.tr .nm{font:300 clamp(22px,2vw,30px)/1.1 var(--serif);letter-spacing:-.01em}
-.tr .i{font-size:13px;color:var(--mute);font-variant-numeric:tabular-nums}
-.tr:not(.h):hover{padding-left:14px;color:var(--clay)}
-.tr .th{display:none}
-.tr.gone{display:none}
-#peek{position:fixed;left:0;top:0;width:280px;aspect-ratio:4/3;z-index:30;pointer-events:none;opacity:0;transform:translate(-50%,-50%) scale(.9);transition:opacity .25s ease,transform .35s ease;overflow:hidden;background:#ddd}
-#peek.on{opacity:1}
-#peek img{width:100%;height:100%;object-fit:cover}
-@media (max-width:900px){
-  .tr{grid-template-columns:64px 1fr auto;gap:14px;align-items:center;padding:12px 0}
-  .tr.h{display:none}
-  .tr .loc,.tr .st,.tr .ar{display:none}
-  .tr .th{display:block;width:64px;aspect-ratio:1;object-fit:cover;background:#ddd}
-  .tr .i{display:none}
-  .tr .ty{font-size:12px;color:var(--mute);text-align:right}
-  .tr:not(.h):hover{padding-left:0}
-  #peek{display:none}
 }
 
 /* ---------- studio ---------- */
@@ -292,14 +284,12 @@ body.nogl #hero{background:linear-gradient(rgba(227,227,221,.55),rgba(227,227,22
 <div id="bg"></div>
 <div id="stage" aria-hidden="true"></div>
 <div id="labels" aria-hidden="true"></div>
-<div id="peek" aria-hidden="true"><img alt=""></div>
 
 <nav class="nav" aria-label="Main">
   <a href="#top" aria-label="Tarun Jangra Building Designers, back to top"><img data-src="media/logo-black.png" alt="Tarun Jangra Building Designers" width="705" height="129"></a>
   <ul>
     <li><a href="#work">Work</a></li>
     <li class="hide-s"><a href="#process">Process</a></li>
-    <li><a href="#index">Index</a></li>
     <li class="hide-s"><a href="#studio">Studio</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
@@ -321,9 +311,17 @@ body.nogl #hero{background:linear-gradient(rgba(227,227,221,.55),rgba(227,227,22
     <div class="wrap">
       <div class="sec-head rv">
         <h2 id="work-h">Selected <em>work</em></h2>
-        <p class="aside">Eight buildings from twenty-seven: houses, offices, showrooms and warehouses. Every project is in the <a href="#index">index</a>.</p>
+        <p class="aside">Twenty-seven buildings, grouped by sector. Pick a project from the strip, or open it for the full story.</p>
       </div>
-      <div id="feats"></div>
+      <div class="wtabs" id="wtabs" role="tablist" aria-label="Sector"></div>
+      <div class="show" id="show" role="tabpanel">
+        <div class="ph big" id="big" data-open><img id="bigimg" alt=""></div>
+        <div class="cap" id="cap"></div>
+        <div class="strip-wrap">
+          <div class="strip-head"><span class="k" id="cnt"></span><div class="arr"><button type="button" id="prev" aria-label="Previous projects">←</button><button type="button" id="next" aria-label="More projects">→</button></div></div>
+          <div class="strip" id="strip" role="list"></div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -346,17 +344,6 @@ body.nogl #hero{background:linear-gradient(rgba(227,227,221,.55),rgba(227,227,22
         </div>
       </div>
       <div class="frame"><video id="vid" muted loop playsinline preload="metadata"></video><span class="tag" id="vtag"></span></div>
-    </div>
-  </section>
-
-  <section id="index" aria-labelledby="idx-h">
-    <div class="wrap">
-      <div class="sec-head rv">
-        <h2 id="idx-h">Index</h2>
-        <p class="aside">All twenty-seven projects. Open any row for the drawings, the numbers and the full story.</p>
-      </div>
-      <div class="filters" id="filters" role="group" aria-label="Filter projects"></div>
-      <div class="tbl" id="tbl" role="list"></div>
     </div>
   </section>
 
@@ -443,22 +430,38 @@ const firstSentence=t=>{const m=t.match(/^.{40,}?[.!?](\s|$)/);return m?m[0].tri
 document.querySelectorAll('[data-src]').forEach(el=>el.src=BASE+el.dataset.src);
 document.body.style.setProperty('--fallback',`url("${BASE}img/l/jasper-street-1.webp")`);
 
-/* featured */
-$('#feats').innerHTML=FEATURED.map((s,n)=>{
-  const p=bySlug[s];const a=p.imgs[0][0], b=(p.imgs[1]||p.imgs[0])[0];
-  const area=spec(p,'Built-up area')||spec(p,'Site area');
-  return `<article class="feat" data-slug="${s}">
-    <div class="ph a" data-open><img ${img(a,'(max-width:760px) 100vw, 66vw')} alt="${esc(p.name)}" loading="lazy"></div>
-    <div class="cap rv">
-      <div class="no">${pad(n+1)} / ${pad(FEATURED.length)}</div>
-      <h3>${esc(p.name)}</h3>
-      <dl>${p.loc?`<dt>Place</dt><dd>${esc(p.loc)}</dd>`:''}<dt>Type</dt><dd>${CATS[p.cat]}</dd>${p.status?`<dt>Status</dt><dd>${esc(p.status)}</dd>`:''}${area?`<dt>${spec(p,'Built-up area')?'Floor area':'Site area'}</dt><dd>${esc(area)}</dd>`:''}</dl>
-      <p>${esc(firstSentence(p.desc))}</p>
-      <button class="more" type="button" data-open>View project <span aria-hidden="true">→</span></button>
-    </div>
-    <div class="ph b" data-open><img ${img(b,'(max-width:760px) 33vw, 25vw')} alt="" loading="lazy"></div>
-  </article>`;}).join('');
-$('#feats').addEventListener('click',e=>{const t=e.target.closest('[data-open]');if(t)openSheet(t.closest('.feat').dataset.slug)});
+/* work showcase: three sectors, one big project at a time */
+const SECTORS=[['res','Residential',['res','th']],['com','Commercial',['com']],['ind','Industrial',['ind']]];
+const rank=s=>{const i=FEATURED.indexOf(s);return i<0?99:i};
+const lists=Object.fromEntries(SECTORS.map(([k,,cs])=>[k,PROJECTS.filter(p=>cs.includes(p.cat)).sort((a,b)=>rank(a.slug)-rank(b.slug))]));
+let sector='res',sel=0;
+$('#wtabs').innerHTML=SECTORS.map(([k,n])=>`<button type="button" role="tab" data-k="${k}" aria-selected="${k===sector}" aria-controls="show">${n}<sup>${lists[k].length}</sup></button>`).join('');
+const bigimg=$('#bigimg'),cap=$('#cap');
+function capHTML(p,i,n){const area=spec(p,'Built-up area')||spec(p,'Site area');
+  return `<div class="no">${pad(i+1)} / ${pad(n)}</div><h3>${esc(p.name)}</h3>
+  <dl>${p.loc?`<dt>Place</dt><dd>${esc(p.loc)}</dd>`:''}<dt>Type</dt><dd>${CATS[p.cat]}</dd>${p.status?`<dt>Status</dt><dd>${esc(p.status)}</dd>`:''}${area?`<dt>${spec(p,'Built-up area')?'Floor area':'Site area'}</dt><dd>${esc(area)}</dd>`:''}</dl>
+  <p>${esc(firstSentence(p.desc))}</p><button class="more" type="button" data-open>View project <span aria-hidden="true">→</span></button>`;}
+function pick(i,instant){const L=lists[sector];sel=i;const p=L[i];
+  document.querySelectorAll('#strip .card').forEach((c,j)=>c.setAttribute('aria-current',j===i));
+  const go=()=>{const f=p.imgs[0][0].replace(/\.jpg$/,'');bigimg.alt=p.name;
+    bigimg.srcset=`${BASE}img/l/${f}.webp 1200w, ${BASE}img/xl/${f}.webp 2400w`;bigimg.sizes='(max-width:760px) 100vw, 66vw';bigimg.src=`${BASE}img/l/${f}.webp`;
+    cap.innerHTML=capHTML(p,i,L.length);cap.classList.remove('out');
+    const done=()=>bigimg.classList.remove('out');bigimg.complete?done():(bigimg.onload=done,bigimg.onerror=done);};
+  if(instant)go();else{bigimg.classList.add('out');cap.classList.add('out');setTimeout(go,260);}
+  $('#cnt').textContent=`${pad(i+1)} of ${pad(L.length)} ${SECTORS.find(s=>s[0]===sector)[1].toLowerCase()}`;}
+function setSector(k,instant){sector=k;
+  document.querySelectorAll('#wtabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.k===k));
+  $('#strip').innerHTML=lists[k].map((p,i)=>`<button class="card" type="button" role="listitem" data-i="${i}" aria-current="false">
+    <span class="t"><img src="${BASE}img/t/${p.imgs[0][0]}" alt="" loading="lazy"></span><span><b>${esc(p.name)}</b><span>${esc([p.loc,p.status].filter(Boolean).join(' · ')||CATS[p.cat])}</span></span></button>`).join('');
+  $('#strip').scrollLeft=0;pick(0,instant);}
+$('#wtabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b&&b.dataset.k!==sector)setSector(b.dataset.k)});
+$('#wtabs').addEventListener('keydown',e=>{if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft')return;const ks=SECTORS.map(s=>s[0]);
+  const k=ks[(ks.indexOf(sector)+(e.key==='ArrowRight'?1:2))%3];setSector(k);document.querySelector(`#wtabs [data-k="${k}"]`).focus();});
+$('#strip').addEventListener('click',e=>{const c=e.target.closest('.card');if(c&&+c.dataset.i!==sel)pick(+c.dataset.i)});
+const stripBy=d=>{const s=$('#strip');s.scrollBy({left:d*s.clientWidth*.8,behavior:'smooth'})};
+$('#prev').onclick=()=>stripBy(-1);$('#next').onclick=()=>stripBy(1);
+$('#show').addEventListener('click',e=>{if(e.target.closest('[data-open]'))openSheet(lists[sector][sel].slug)});
+setSector('res',true);
 
 /* process steps */
 $('#steps').innerHTML=STAGES.map((s,i)=>`<div class="step${i?'':' on'}" data-i="${i}">
@@ -480,27 +483,6 @@ addEventListener('scroll',stageScroll,{passive:true});addEventListener('resize',
 /* team + caps */
 $('#team').innerHTML=TEAM.map(t=>`<figure class="rv"><div class="pf"><img src="${BASE}img/${t[2]}.jpg" alt="${esc(t[0])}" loading="lazy"></div><figcaption><b>${esc(t[0])}</b><span>${esc(t[1])}</span></figcaption></figure>`).join('');
 $('#caps').innerHTML=CAPS.map(c=>`<li>${c}</li>`).join('');
-
-/* index */
-const counts={all:PROJECTS.length};PROJECTS.forEach(p=>counts[p.cat]=(counts[p.cat]||0)+1);
-$('#filters').innerHTML=Object.keys(CATS).map(c=>`<button type="button" data-c="${c}" aria-pressed="${c==='all'}">${CATS[c]}<sup>${counts[c]||0}</sup></button>`).join('');
-$('#tbl').innerHTML=`<div class="tr h"><span>No.</span><span>Project</span><span>Place</span><span>Type</span><span>Status</span><span>Site area</span></div>`+
- PROJECTS.map((p,i)=>`<div class="tr" role="listitem" tabindex="0" data-slug="${p.slug}" data-c="${p.cat}">
-  <img class="th" src="${BASE}img/t/${p.imgs[0][0]}" alt="" loading="lazy">
-  <span class="i">${pad(i+1)}</span><span class="nm">${esc(p.name)}</span><span class="loc">${esc(p.loc||'—')}</span><span class="ty">${CATS[p.cat]}</span><span class="st">${esc(p.status||'—')}</span><span class="ar i">${esc((spec(p,'Site area')||'—').split(' / ')[0])}</span></div>`).join('');
-$('#filters').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
-  document.querySelectorAll('#filters button').forEach(x=>x.setAttribute('aria-pressed',x===b));
-  document.querySelectorAll('#tbl .tr:not(.h)').forEach(r=>r.classList.toggle('gone',b.dataset.c!=='all'&&r.dataset.c!==b.dataset.c));});
-$('#tbl').addEventListener('click',e=>{const r=e.target.closest('.tr[data-slug]');if(r)openSheet(r.dataset.slug)});
-$('#tbl').addEventListener('keydown',e=>{const r=e.target.closest('.tr[data-slug]');if(r&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openSheet(r.dataset.slug)}});
-/* cursor peek */
-const peek=$('#peek'),pimg=peek.querySelector('img');let px=0,py=0,qx=0,qy=0,cur='';
-$('#tbl').addEventListener('pointermove',e=>{px=e.clientX;py=e.clientY;const r=e.target.closest('.tr[data-slug]');
-  if(!r||e.pointerType!=='mouse'){peek.classList.remove('on');return}
-  if(r.dataset.slug!==cur){cur=r.dataset.slug;pimg.src=`${BASE}img/m/${bySlug[cur].imgs[0][0]}`;}
-  peek.classList.add('on');});
-$('#tbl').addEventListener('pointerleave',()=>{peek.classList.remove('on');cur=''});
-(function loop(){qx+=(px-qx)*.18;qy+=(py-qy)*.18;peek.style.left=(qx+170)+'px';peek.style.top=qy+'px';requestAnimationFrame(loop)})();
 
 /* films */
 const vid=$('#vid'),vtag=$('#vtag'),PH=matchMedia('(max-width:760px)');
