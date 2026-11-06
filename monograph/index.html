@@ -68,8 +68,8 @@ section{position:relative;z-index:2}
 .wrap{padding-left:var(--gut);padding-right:var(--gut-r)}
 
 /* ---------- hero: the type sits behind the model ---------- */
-#hero{z-index:0;height:170vh;height:170svh}
-#hero .pin{position:sticky;top:0;height:100vh;height:100svh;display:grid;grid-template-rows:1fr auto;padding-top:90px;padding-bottom:28px;overflow:hidden}
+#hero{z-index:0}
+#hero .pin{position:relative;height:100vh;height:100svh;display:grid;grid-template-rows:1fr auto;padding-top:90px;padding-bottom:28px;overflow:hidden}
 #hero h1{align-self:center;font:300 clamp(64px,13.2vw,250px)/.86 var(--serif);letter-spacing:-.035em;display:grid;gap:.04em}
 #hero h1 span{display:block}
 #hero h1 span:nth-child(2){text-align:right;font-style:italic}
@@ -93,13 +93,13 @@ body.in #hero .h-in.d3{transition-delay:.3s}
 body.nogl #hero{background:linear-gradient(rgba(227,227,221,.55),rgba(227,227,221,.9)),var(--fallback) center/cover}
 
 /* ---------- selected work ---------- */
-#work{background:var(--paper);padding:clamp(80px,12vw,180px) 0 clamp(60px,8vw,120px)}
-.sec-head{display:grid;grid-template-columns:repeat(12,1fr);gap:24px;align-items:end;margin-bottom:clamp(56px,8vw,120px)}
+#work{background:var(--paper);padding:clamp(64px,8vw,120px) 0 clamp(20px,3vw,40px)}
+.sec-head{display:grid;grid-template-columns:repeat(12,1fr);gap:24px;align-items:end;margin-bottom:clamp(36px,5vw,72px)}
 .sec-head h2{grid-column:1 / span 7;font:300 clamp(40px,6vw,96px)/.95 var(--serif);letter-spacing:-.025em}
 .sec-head h2 em{color:var(--clay)}
 .sec-head .aside{grid-column:9 / span 4;font-size:15px;color:var(--mute);max-width:36ch}
 .sec-head .aside a{color:var(--ink);border-bottom:1px solid var(--rule)}
-.feat{display:grid;grid-template-columns:repeat(12,1fr);gap:24px;margin-bottom:clamp(90px,12vw,200px);align-items:start}
+.feat{display:grid;grid-template-columns:repeat(12,1fr);gap:24px;margin-bottom:clamp(56px,7vw,110px);align-items:start}
 .feat .a{grid-column:1 / span 8;grid-row:1 / span 2}
 .feat .cap{grid-column:9 / span 4;grid-row:1;padding-top:6px}
 .feat .b{grid-column:10 / span 3;grid-row:2;align-self:end}
@@ -133,38 +133,40 @@ body.nogl #hero{background:linear-gradient(rgba(227,227,221,.55),rgba(227,227,22
   .cap p{display:none}
 }
 
-/* ---------- process: transparent, the model does the talking ---------- */
-#process{padding:0}
-#process .intro{height:70vh;height:70svh;display:flex;align-items:flex-end;padding-bottom:10vh}
-#process .intro h2{font:300 clamp(40px,6vw,96px)/.95 var(--serif);letter-spacing:-.025em;max-width:11ch}
-#process .intro h2 em{color:var(--clay)}
-.step{min-height:100vh;min-height:100svh;display:flex;align-items:center}
-.step .txt{width:min(38vw,520px);opacity:.18;transition:opacity .6s ease}
-.step.on .txt{opacity:1}
-.step .meta{display:flex;gap:18px;align-items:baseline;margin-bottom:18px}
-.step .meta .n{font:300 64px/1 var(--serif);letter-spacing:-.03em}
+/* ---------- process: one pinned screen; the stages swap in place as you scroll ---------- */
+#process{height:280vh;height:280svh}
+#process .pin{position:sticky;top:0;height:100vh;height:100svh;display:flex;flex-direction:column;justify-content:center;gap:28px}
+#process h2{font:300 clamp(34px,4vw,60px)/.95 var(--serif);letter-spacing:-.025em;max-width:12ch}
+#process h2 em{color:var(--clay)}
+.tabs6{display:flex;gap:4px;flex-wrap:wrap;max-width:min(38vw,520px)}
+.tabs6 button{font:500 12px/1 var(--sans);letter-spacing:.06em;padding:9px 11px;border:1px solid var(--rule);border-radius:999px;transition:background .3s,color .3s,border-color .3s;font-variant-numeric:tabular-nums}
+.tabs6 button[aria-current=true]{background:var(--ink);color:var(--stone);border-color:var(--ink)}
+.stx{position:relative;width:min(38vw,520px);min-height:230px}
+.step{position:absolute;inset:0 0 auto 0;opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.7,.1,1);pointer-events:none}
+.step.on{opacity:1;transform:none;pointer-events:auto}
+.step .meta{display:flex;gap:18px;align-items:baseline;margin-bottom:14px}
+.step .meta .n{font:300 56px/1 var(--serif);letter-spacing:-.03em}
 .step .meta .s{font:500 12px/1 var(--sans);letter-spacing:.14em;color:var(--clay)}
-.step h3{font:300 clamp(30px,3vw,46px)/1.05 var(--serif);letter-spacing:-.015em;margin-bottom:16px}
-.step p{font-size:17px;max-width:40ch}
-.step p.note{font-size:14px;color:var(--mute);margin-top:14px}
-#rail{position:fixed;right:var(--gut-r);top:50%;transform:translateY(-50%);z-index:3;display:grid;gap:10px;opacity:0;transition:opacity .4s ease;pointer-events:none}
-#rail.on{opacity:1}
-#rail i{display:block;width:18px;height:1px;background:var(--ink);opacity:.25;transition:width .4s ease,opacity .4s ease;justify-self:end}
-#rail i.on{width:36px;opacity:1}
+.step h3{font:300 clamp(28px,2.6vw,40px)/1.05 var(--serif);letter-spacing:-.015em;margin-bottom:12px}
+.step p{font-size:16px;max-width:40ch}
+.step p.note{font-size:14px;color:var(--mute);margin-top:10px}
+#rail{display:none}
 @media (max-width:760px){
-  #process .intro{height:60svh}
-  .step{align-items:flex-end;padding-bottom:6svh}
-  .step .txt{width:100%;background:rgba(227,227,221,.86);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);padding:18px 18px 20px;margin:0 -2px;opacity:.0}
-  .step.on .txt{opacity:1}
-  .step .meta .n{font-size:40px}
+  #process{height:260svh}
+  #process .pin{justify-content:flex-end;gap:14px;padding-bottom:4svh}
+  #process h2{display:none}
+  .tabs6,.stx{max-width:none;width:100%}
+  .stx{min-height:190px;background:rgba(227,227,221,.86);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);margin:0 -2px}
+  .step{padding:16px 16px 18px}
+  .step .meta .n{font-size:38px}
   .step p{font-size:15px}
-  #rail{display:none}
+  .tabs6 button{padding:8px 10px}
 }
 
 /* ---------- film ---------- */
-#film{background:var(--paper);height:220vh;height:220svh}
-#film .pin{position:sticky;top:0;height:100vh;height:100svh;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow:hidden;padding:80px 0 30px}
-#film .frame{position:relative;width:100%;aspect-ratio:16/9;max-height:78svh;background:#111;overflow:hidden;will-change:clip-path}
+#film{background:var(--paper)}
+#film .pin{display:flex;flex-direction:column;align-items:center;padding:clamp(48px,6vw,90px) 0}
+#film .frame{position:relative;width:100%;aspect-ratio:16/9;max-height:80svh;background:#111;overflow:hidden}
 #film video{width:100%;height:100%;object-fit:cover}
 #film .row{width:100%;display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:22px}
 #film h2{font:300 clamp(32px,4vw,64px)/1 var(--serif);letter-spacing:-.02em}
@@ -173,14 +175,12 @@ body.nogl #hero{background:linear-gradient(rgba(227,227,221,.55),rgba(227,227,22
 #film .tabs button[aria-pressed=true]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 #film .tag{position:absolute;left:18px;bottom:16px;color:#fff;font:500 11px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;text-shadow:0 1px 8px rgba(0,0,0,.4)}
 @media (max-width:760px){
-  #film{height:auto}
-  #film .pin{position:relative;height:auto;padding:80px 0}
   #film .row{flex-direction:column;align-items:flex-start}
   #film .frame{aspect-ratio:4/5;max-height:none}
 }
 
 /* ---------- index ---------- */
-#index{background:var(--paper);padding:clamp(80px,10vw,160px) 0}
+#index{background:var(--paper);padding:clamp(40px,5vw,80px) 0 clamp(64px,8vw,120px)}
 .filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:28px}
 .filters button{font:500 12px/1 var(--sans);letter-spacing:.04em;padding:10px 14px;border:1px solid var(--rule);border-radius:999px}
 .filters button sup{font-size:9px;color:var(--mute);margin-left:3px}
@@ -240,7 +240,7 @@ body.nogl #hero{background:linear-gradient(rgba(227,227,221,.55),rgba(227,227,22
 }
 
 /* ---------- contact: transparent again, the model comes back at dusk ---------- */
-#contact{min-height:160vh;min-height:160svh;color:#EDE8DF;display:flex;flex-direction:column;justify-content:flex-end}
+#contact{min-height:100vh;min-height:100svh;color:#EDE8DF;display:flex;flex-direction:column;justify-content:flex-end}
 #contact .inner{padding-bottom:28px}
 #contact h2{font:300 clamp(48px,9vw,160px)/.9 var(--serif);letter-spacing:-.035em;margin-bottom:clamp(30px,5vw,70px)}
 #contact h2 em{color:#E7B98C}
@@ -292,7 +292,6 @@ body.nogl #hero{background:linear-gradient(rgba(227,227,221,.55),rgba(227,227,22
 <div id="bg"></div>
 <div id="stage" aria-hidden="true"></div>
 <div id="labels" aria-hidden="true"></div>
-<div id="rail" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 <div id="peek" aria-hidden="true"><img alt=""></div>
 
 <nav class="nav" aria-label="Main">
@@ -329,9 +328,10 @@ body.nogl #hero{background:linear-gradient(rgba(227,227,221,.55),rgba(227,227,22
   </section>
 
   <section id="process" aria-labelledby="proc-h">
-    <div class="wrap">
-      <div class="intro"><h2 id="proc-h" class="rv">One house, <em>six</em> stages.</h2></div>
-      <div id="steps"></div>
+    <div class="pin wrap">
+      <h2 id="proc-h">One house, <em>six</em> stages.</h2>
+      <div class="tabs6" id="tabs6" role="group" aria-label="Jump to a stage"></div>
+      <div class="stx" id="steps" aria-live="polite"></div>
     </div>
   </section>
 
@@ -461,9 +461,21 @@ $('#feats').innerHTML=FEATURED.map((s,n)=>{
 $('#feats').addEventListener('click',e=>{const t=e.target.closest('[data-open]');if(t)openSheet(t.closest('.feat').dataset.slug)});
 
 /* process steps */
-$('#steps').innerHTML=STAGES.map((s,i)=>`<div class="step" data-i="${i}"><div class="txt">
+$('#steps').innerHTML=STAGES.map((s,i)=>`<div class="step${i?'':' on'}" data-i="${i}">
   <div class="meta"><span class="n">${pad(i+1)}</span><span class="s">Stage · ${s[1]}</span></div>
-  <h3>${s[0]}</h3><p>${s[2]}</p><p class="note">${s[3]}</p></div></div>`).join('');
+  <h3>${s[0]}</h3><p>${s[2]}</p><p class="note">${s[3]}</p></div>`).join('');
+$('#tabs6').innerHTML=STAGES.map((s,i)=>`<button type="button" data-i="${i}" aria-current="${!i}" title="${s[0]}">${pad(i+1)}</button>`).join('');
+/* a stage tab scrolls to that stage's spot in the pinned section */
+const procEl=$('#process');
+const stageY=i=>procEl.offsetTop+(procEl.offsetHeight-innerHeight)*(i/(STAGES.length-1));
+$('#tabs6').addEventListener('click',e=>{const b=e.target.closest('button');if(b)scrollTo({top:stageY(+b.dataset.i),behavior:'smooth'})});
+let curStage=-1;
+function stageScroll(){const t=(scrollY-procEl.offsetTop)/(procEl.offsetHeight-innerHeight);
+  const i=Math.max(0,Math.min(STAGES.length-1,Math.round(t*(STAGES.length-1))));
+  if(i===curStage)return;curStage=i;
+  document.querySelectorAll('#steps .step').forEach((s,j)=>s.classList.toggle('on',j===i));
+  document.querySelectorAll('#tabs6 button').forEach((b,j)=>b.setAttribute('aria-current',j===i));}
+addEventListener('scroll',stageScroll,{passive:true});addEventListener('resize',stageScroll);stageScroll();
 
 /* team + caps */
 $('#team').innerHTML=TEAM.map(t=>`<figure class="rv"><div class="pf"><img src="${BASE}img/${t[2]}.jpg" alt="${esc(t[0])}" loading="lazy"></div><figcaption><b>${esc(t[0])}</b><span>${esc(t[1])}</span></figcaption></figure>`).join('');
@@ -499,17 +511,11 @@ function setFilm(i){const f=FILMS[i];const src=(i===0&&PH.matches)?'grout-reel-p
 let filmOn=false;setFilm(0);
 document.querySelector('#film .tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setFilm(+b.dataset.film)});
 new IntersectionObserver(es=>es.forEach(e=>{filmOn=e.isIntersecting;filmOn?vid.play().catch(()=>{}):vid.pause()}),{threshold:.25}).observe(vid);
-const frame=document.querySelector('#film .frame'),film=$('#film');
-function filmScroll(){ if(PH.matches){frame.style.clipPath='';return}
-  const r=film.getBoundingClientRect(),h=innerHeight;const t=Math.min(1,Math.max(0,-r.top/(r.height-h)*1.6));
-  const e=1-Math.pow(1-t,3);const ix=(1-e)*16, iy=(1-e)*12;frame.style.clipPath=`inset(${iy}% ${ix}% ${iy}% ${ix}%)`;}
-addEventListener('scroll',filmScroll,{passive:true});addEventListener('resize',filmScroll);filmScroll();
+
 
 /* reveals */
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}}),{rootMargin:'0px 0px -12% 0px'});
 document.querySelectorAll('.rv,.ph').forEach(el=>io.observe(el));
-const so=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('on',e.isIntersecting)),{rootMargin:'-45% 0px -45% 0px'});
-document.querySelectorAll('.step').forEach(el=>so.observe(el));
 requestAnimationFrame(()=>document.body.classList.add('in'));
 
 /* project sheet */
@@ -542,7 +548,7 @@ import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.m
 
 const PH=matchMedia('(max-width:760px)');
 const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
-const stage=document.getElementById('stage'), bgEl=document.getElementById('bg'), labelsEl=document.getElementById('labels'), rail=document.getElementById('rail');
+const stage=document.getElementById('stage'), bgEl=document.getElementById('bg'), labelsEl=document.getElementById('labels');
 
 let renderer;
 try{
@@ -674,16 +680,14 @@ const lerp=(a,b,t)=>a+(b-a)*t;
 function stateAt(p){p=Math.max(0,Math.min(K.length-1,p));const i=Math.min(K.length-2,Math.floor(p));const t=ss(.15,.85,p-i);
   const o={};for(const k of keys)o[k]=lerp(K[i][k],K[i+1][k],t);return o;}
 
-/* scroll anchors: p=0 at the top, p=n at the centre of step n */
-let anchors=[];const steps=[...document.querySelectorAll('.step')];
-const heroEl=document.getElementById('hero'),procEl=document.getElementById('process'),contactEl=document.getElementById('contact'),workEl=document.getElementById('work');
-function measure(){anchors=[0,...steps.map(s=>s.offsetTop+procEl.offsetTop+s.offsetHeight/2-innerHeight/2)];}
-function pFromScroll(y){if(y<=0)return 0;
-  for(let i=0;i<anchors.length-1;i++){if(y<anchors[i+1]){
-    // the hero to stage 1 gap holds the whole Selected work section, so stay at 0 until the process starts
-    if(i===0){const s=procEl.offsetTop-innerHeight*.6;return y<s?Math.min(.35,y/innerHeight*.35):lerp(.35,1,(y-s)/(anchors[1]-s));}
-    return i+(y-anchors[i])/(anchors[i+1]-anchors[i]);}}
-  return anchors.length-1;}
+/* scroll: p=0 for the hero and the work list, 0→1 as the process section arrives, then 1→6 across its pinned length */
+let pLen=1;
+const heroEl=document.getElementById('hero'),procEl=document.getElementById('process'),contactEl=document.getElementById('contact');
+function measure(){pLen=Math.max(1,procEl.offsetHeight-innerHeight);}
+function pFromScroll(y){const top=procEl.offsetTop;
+  if(y<top-innerHeight)return Math.min(.3,y/innerHeight*.3);
+  if(y<top)return lerp(.3,1,(y-(top-innerHeight))/innerHeight);
+  return 1+Math.min(1,(y-top)/pLen)*5;}
 
 /* pointer parallax */
 let mx=0,my=0;addEventListener('pointermove',e=>{if(e.pointerType!=='mouse')return;mx=e.clientX/innerWidth*2-1;my=e.clientY/innerHeight*2-1},{passive:true});
@@ -726,8 +730,6 @@ function frame(now){
 
   /* page background goes to dusk */
   tmpC.copy(stoneC).lerp(nightC,cur.n);bgEl.style.background='#'+tmpC.getHexString();
-  rail.classList.toggle('on',pS>.7&&pS<6.4&&vis.has('process')&&cur.lb<.2);
-  [...rail.children].forEach((r,i)=>r.classList.toggle('on',Math.round(pS)-1===i));
 
   if(!vis.size&&!first){labelsEl.style.opacity=0;return;}
   first=false;
