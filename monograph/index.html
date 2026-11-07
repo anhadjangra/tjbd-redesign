@@ -479,16 +479,21 @@ let ri=0,front=0,inView=true;
 $('#reel').innerHTML=REEL.map((r,i)=>`<button type="button" data-i="${i}" aria-label="Show ${r[3]}"><b></b></button>`).join('');
 const bars=[...document.querySelectorAll('#reel b')];
 function load(v,i){const r=REEL[i];v.poster=`${BASE}media/${r[2]}.jpg`;v.src=`${BASE}media/${PHONE?r[1]:r[0]}.mp4`;v.preload='auto';}
-function show(i){ri=i;const back=vids[1-front];load(back,i);back.currentTime=0;
-  const go=()=>{back.classList.add('on');vids[front].classList.remove('on');const old=vids[front];front=1-front;setTimeout(()=>old.pause(),1300);
+/* one switch at a time: timeupdate keeps firing until the swap lands, so a token drops stale calls */
+let busy=false,token=0;
+function show(i){const t=++token;busy=true;ri=i;const back=vids[1-front];back.pause();load(back,i);
+  const go=()=>{if(t!==token)return;const old=vids[front];
+    back.classList.add('on');old.classList.remove('on');front=1-front;busy=false;
+    setTimeout(()=>{if(old!==vids[front])old.pause()},1300);
     if(inView&&!STILL)back.play().catch(()=>{});};
-  back.readyState>=2?go():back.addEventListener('loadeddata',go,{once:true});
+  back.addEventListener('loadeddata',go,{once:true});back.addEventListener('error',go,{once:true});
   $('#hname').textContent=`Now showing · ${REEL[i][3]}`;bars.forEach((b,j)=>b.style.transform=j<i?'scaleX(1)':'scaleX(0)');}
 /* first clip straight into the front player */
 load(vids[0],0);vids[0].classList.add('on');if(!STILL)vids[0].play().catch(()=>{});
-vids.forEach(v=>v.addEventListener('timeupdate',()=>{if(v!==vids[front])return;const len=Math.min(CLIP,(v.duration||CLIP)-.5);
-  bars[ri].style.transform=`scaleX(${Math.min(1,v.currentTime/len)})`;if(v.currentTime>=len)show((ri+1)%REEL.length);}));
-vids.forEach(v=>v.addEventListener('ended',()=>{if(v===vids[front])show((ri+1)%REEL.length)}));
+const next=v=>{if(v===vids[front]&&!busy)show((ri+1)%REEL.length)};
+vids.forEach(v=>v.addEventListener('timeupdate',()=>{if(v!==vids[front]||busy)return;const len=Math.min(CLIP,(v.duration||CLIP)-.5);
+  bars[ri].style.transform=`scaleX(${Math.min(1,v.currentTime/len)})`;if(v.currentTime>=len)next(v);}));
+vids.forEach(v=>v.addEventListener('ended',()=>next(v)));
 $('#reel').addEventListener('click',e=>{const b=e.target.closest('button');if(b&&+b.dataset.i!==ri)show(+b.dataset.i)});
 new IntersectionObserver(es=>es.forEach(e=>{inView=e.isIntersecting;inView&&!STILL?vids[front].play().catch(()=>{}):vids[front].pause()})).observe(hfilm);
 $('#hnow').onclick=()=>openSheet(REEL[ri][4]);
