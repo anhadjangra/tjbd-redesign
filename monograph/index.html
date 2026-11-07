@@ -29,7 +29,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;scroll-behavior:auto}
-body{background:var(--stone);color:var(--ink);font:400 16px/1.55 var(--sans);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{background:var(--stone);color:var(--ink);font:400 16px/1.55 var(--sans);overflow-x:hidden;overflow-x:clip;-webkit-font-smoothing:antialiased}
 img,video{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
@@ -468,10 +468,11 @@ $('#steps').innerHTML=STAGES.map((s,i)=>`<div class="step${i?'':' on'}" data-i="
 $('#tabs6').innerHTML=STAGES.map((s,i)=>`<button type="button" data-i="${i}" aria-current="${!i}" title="${s[0]}">${pad(i+1)}</button>`).join('');
 /* a stage tab scrolls to that stage's spot in the pinned section */
 const procEl=$('#process');
-const stageY=i=>procEl.offsetTop+(procEl.offsetHeight-innerHeight)*(i/(STAGES.length-1));
+const procPin=procEl.querySelector('.pin');const travel=()=>Math.max(1,procEl.offsetHeight-procPin.offsetHeight);
+const stageY=i=>procEl.offsetTop+travel()*(i/(STAGES.length-1));
 $('#tabs6').addEventListener('click',e=>{const b=e.target.closest('button');if(b)scrollTo({top:stageY(+b.dataset.i),behavior:'smooth'})});
 let curStage=-1;
-function stageScroll(){const t=(scrollY-procEl.offsetTop)/(procEl.offsetHeight-innerHeight);
+function stageScroll(){const t=(scrollY-procEl.offsetTop)/travel();
   const i=Math.max(0,Math.min(STAGES.length-1,Math.round(t*(STAGES.length-1))));
   if(i===curStage)return;curStage=i;
   document.querySelectorAll('#steps .step').forEach((s,j)=>s.classList.toggle('on',j===i));
@@ -685,7 +686,7 @@ function stateAt(p){p=Math.max(0,Math.min(K.length-1,p));const i=Math.min(K.leng
 /* scroll: p=0 for the hero and the work list, 0→1 as the process section arrives, then 1→6 across its pinned length */
 let pLen=1;
 const heroEl=document.getElementById('hero'),procEl=document.getElementById('process'),contactEl=document.getElementById('contact');
-function measure(){pLen=Math.max(1,procEl.offsetHeight-innerHeight);}
+function measure(){pLen=Math.max(1,procEl.offsetHeight-procEl.querySelector('.pin').offsetHeight);}
 function pFromScroll(y){const top=procEl.offsetTop;
   if(y<top-innerHeight)return Math.min(.3,y/innerHeight*.3);
   if(y<top)return lerp(.3,1,(y-(top-innerHeight))/innerHeight);
