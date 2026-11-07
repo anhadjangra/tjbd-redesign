@@ -471,9 +471,9 @@ $('#caps').innerHTML=CAPS.map(c=>`<li>${c}</li>`).join('');
 
 /* hero film: their own drone footage, a lighter cut on phones; it eases back as you scroll away */
 const hfilm=$('#hfilm'),vids=[...hfilm.querySelectorAll('video')],REEL=[
-  ['tesla-drone','tesla-drone-m','tesla-poster','Tesla Burleigh Heads','tesla-ern-harley-drive'],
-  ['grassdale','grassdale-m','grassdale-poster','Grassdale Residence','562-grassdale-road-gumdale'],
-  ['grout-reel','grout-reel-p','grout-poster','Grout Street Offices','grout-street-macgregor']];
+  ['hero-tesla','hero-tesla-p','tesla-poster','Tesla Burleigh Heads','tesla-ern-harley-drive'],
+  ['hero-grassdale','hero-grassdale-p','grassdale-poster','Grassdale Residence','562-grassdale-road-gumdale'],
+  ['hero-grout','hero-grout-p','grout-poster','Grout Street Offices','grout-street-macgregor']];
 const PHONE=matchMedia('(max-width:760px)').matches,STILL=matchMedia('(prefers-reduced-motion: reduce)').matches,CLIP=14;
 let ri=0,front=0,inView=true;
 $('#reel').innerHTML=REEL.map((r,i)=>`<button type="button" data-i="${i}" aria-label="Show ${r[3]}"><b></b></button>`).join('');
