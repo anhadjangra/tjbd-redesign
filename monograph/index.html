@@ -20,7 +20,6 @@
   --mute:#676A63;
   --rule:rgba(28,26,23,.14);
   --clay:#40604C;
-  --bronze:#A27A4B;
   --night:#141311;
   --serif:"Newsreader",Georgia,"Times New Roman",serif;
   --sans:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
@@ -269,15 +268,10 @@ body.in #hero .h-in.d3{transition-delay:.3s}
 #sheet .pn{border-top:1px solid var(--ink);padding-top:22px;display:flex;justify-content:space-between;align-items:flex-start;gap:24px}
 #sheet .pn button{display:grid;gap:10px;text-align:left;max-width:48%}
 #sheet .pn .nxt{text-align:right;justify-items:end}
-#sheet .pn .lab{display:flex;align-items:center;gap:14px}
-#sheet .pn .nxt .lab{flex-direction:row}
-#sheet .pn .ar{position:relative;display:block;width:clamp(48px,9vw,140px);height:1px;background:var(--bronze);transition:width .45s cubic-bezier(.2,.7,.1,1)}
-#sheet .pn .ar::after{content:"";position:absolute;top:-6px;border:6.5px solid transparent}
-#sheet .pn .nxt .ar::after{right:-2px;border-left:11px solid var(--bronze);border-right:0}
-#sheet .pn .prv .ar::after{left:-2px;border-right:11px solid var(--bronze);border-left:0}
-#sheet .pn .prv .ar{width:clamp(28px,4vw,56px)}
-#sheet .pn button:hover .ar{width:clamp(64px,11vw,170px)}
-#sheet .pn .prv:hover .ar{width:clamp(40px,6vw,80px)}
+#sheet .pn .lab{display:inline-flex;align-items:center;gap:10px;font:500 13px/1 var(--sans);letter-spacing:.04em;padding-bottom:6px;border-bottom:1px solid var(--ink);color:var(--ink)}
+#sheet .pn .ar{transition:transform .3s ease}
+#sheet .pn .nxt:hover .ar{transform:translateX(5px)}
+#sheet .pn .prv:hover .ar{transform:translateX(-5px)}
 #sheet .pn b{font:300 clamp(26px,2.8vw,44px)/1.02 var(--serif);letter-spacing:-.02em;text-wrap:balance}
 #sheet .pn .prv b{font-size:clamp(17px,1.4vw,22px);color:var(--mute)}
 #sheet .pn button:hover b{color:var(--ink)}
@@ -390,8 +384,8 @@ body.in #hero .h-in.d3{transition-delay:.3s}
     <div class="gal" id="sh-gal"></div>
   </div>
   <div class="wrap pnw">
-    <div class="pn"><button type="button" class="prv" id="sh-prev"><span class="lab"><span class="ar" aria-hidden="true"></span><span class="k">Previous</span></span><b id="sh-prevname"></b></button>
-      <button type="button" class="nxt" id="sh-next"><span class="lab"><span class="k">Next project</span><span class="ar" aria-hidden="true"></span></span><b id="sh-nextname"></b></button></div>
+    <div class="pn"><button type="button" class="prv" id="sh-prev"><span class="lab"><span class="ar" aria-hidden="true">←</span>Previous</span><b id="sh-prevname"></b></button>
+      <button type="button" class="nxt" id="sh-next"><span class="lab">Next project<span class="ar" aria-hidden="true">→</span></span><b id="sh-nextname"></b></button></div>
   </div>
 </div>
 
