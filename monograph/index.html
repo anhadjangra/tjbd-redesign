@@ -20,6 +20,7 @@
   --mute:#676A63;
   --rule:rgba(28,26,23,.14);
   --clay:#40604C;
+  --bronze:#A27A4B;
   --night:#141311;
   --serif:"Newsreader",Georgia,"Times New Roman",serif;
   --sans:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
@@ -255,7 +256,7 @@ body.in #hero .h-in.d3{transition-delay:.3s}
 #sheet.open{transform:none;visibility:visible}
 #sheet .bar{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:16px var(--gut-r) 16px var(--gut);background:rgba(241,241,237,.9);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
 #sheet .bar button{font:500 13px/1 var(--sans);display:inline-flex;gap:10px;align-items:center;padding:8px 0}
-#sheet .bd{display:grid;grid-template-columns:repeat(12,1fr);gap:24px;padding-top:40px;padding-bottom:80px}
+#sheet .bd{display:grid;grid-template-columns:repeat(12,1fr);gap:24px;padding-top:40px;padding-bottom:56px}
 #sheet .side{grid-column:1 / span 4;position:sticky;top:100px;align-self:start}
 #sheet .side h2{font:300 clamp(40px,4.4vw,72px)/.95 var(--serif);letter-spacing:-.025em;margin:14px 0 26px}
 #sheet .side dl{display:grid;grid-template-columns:auto 1fr;gap:8px 20px;font-size:14px;border-top:1px solid var(--rule);padding-top:14px;margin-bottom:22px}
@@ -263,8 +264,23 @@ body.in #hero .h-in.d3{transition-delay:.3s}
 #sheet .side p{font-size:15px;color:#3E3A34}
 #sheet .gal{grid-column:6 / span 7;display:grid;gap:24px}
 #sheet .gal img{width:100%;height:auto;background:#ddd}
-#sheet .next{grid-column:1 / -1;border-top:1px solid var(--ink);padding-top:22px;display:flex;justify-content:space-between;align-items:baseline;cursor:pointer}
-#sheet .next b{font:300 clamp(30px,4vw,64px)/1 var(--serif);letter-spacing:-.02em}
+/* prev on the left, next on the right: a label with a drawn arrow, the name set beneath it */
+#sheet .pnw{padding-bottom:60px}
+#sheet .pn{border-top:1px solid var(--ink);padding-top:22px;display:flex;justify-content:space-between;align-items:flex-start;gap:24px}
+#sheet .pn button{display:grid;gap:10px;text-align:left;max-width:48%}
+#sheet .pn .nxt{text-align:right;justify-items:end}
+#sheet .pn .lab{display:flex;align-items:center;gap:14px}
+#sheet .pn .nxt .lab{flex-direction:row}
+#sheet .pn .ar{position:relative;display:block;width:clamp(48px,9vw,140px);height:1px;background:var(--bronze);transition:width .45s cubic-bezier(.2,.7,.1,1)}
+#sheet .pn .ar::after{content:"";position:absolute;top:-6px;border:6.5px solid transparent}
+#sheet .pn .nxt .ar::after{right:-2px;border-left:11px solid var(--bronze);border-right:0}
+#sheet .pn .prv .ar::after{left:-2px;border-right:11px solid var(--bronze);border-left:0}
+#sheet .pn .prv .ar{width:clamp(28px,4vw,56px)}
+#sheet .pn button:hover .ar{width:clamp(64px,11vw,170px)}
+#sheet .pn .prv:hover .ar{width:clamp(40px,6vw,80px)}
+#sheet .pn b{font:300 clamp(26px,2.8vw,44px)/1.02 var(--serif);letter-spacing:-.02em;text-wrap:balance}
+#sheet .pn .prv b{font-size:clamp(17px,1.4vw,22px);color:var(--mute)}
+#sheet .pn button:hover b{color:var(--ink)}
 @media (max-width:760px){
   #sheet .bd{grid-template-columns:1fr;padding-top:24px}
   #sheet .side,#sheet .gal{grid-column:1;position:static}
@@ -372,7 +388,10 @@ body.in #hero .h-in.d3{transition-delay:.3s}
   <div class="bd wrap">
     <div class="side"><div class="k" id="sh-meta"></div><h2 id="sh-name"></h2><dl id="sh-specs"></dl><p id="sh-desc"></p></div>
     <div class="gal" id="sh-gal"></div>
-    <div class="next" id="sh-next" role="button" tabindex="0"><span class="k">Next project</span><b id="sh-nextname"></b></div>
+  </div>
+  <div class="wrap pnw">
+    <div class="pn"><button type="button" class="prv" id="sh-prev"><span class="lab"><span class="ar" aria-hidden="true"></span><span class="k">Previous</span></span><b id="sh-prevname"></b></button>
+      <button type="button" class="nxt" id="sh-next"><span class="lab"><span class="k">Next project</span><span class="ar" aria-hidden="true"></span></span><b id="sh-nextname"></b></button></div>
   </div>
 </div>
 
@@ -516,6 +535,7 @@ function fill(i){const p=PROJECTS[i];openIdx=i;
   $('#sh-desc').textContent=p.desc;
   $('#sh-gal').innerHTML=p.imgs.map((f,j)=>`<img ${img(f[0],'(max-width:760px) 100vw, 58vw')} width="${f[1]}" height="${f[2]}" alt="${esc(p.name)}, image ${j+1}" ${j?'loading="lazy"':''}>`).join('');
   $('#sh-nextname').textContent=PROJECTS[(i+1)%PROJECTS.length].name;
+  $('#sh-prevname').textContent=PROJECTS[(i+PROJECTS.length-1)%PROJECTS.length].name;
   sheet.scrollTop=0;}
 function openSheet(slug){lastFocus=document.activeElement;fill(bySlug[slug].i);sheet.classList.add('open');document.documentElement.style.overflow='hidden';setTimeout(()=>sheet.focus({preventScroll:true}),50);}
 function closeSheet(){sheet.classList.remove('open');document.documentElement.style.overflow='';if(lastFocus)lastFocus.focus({preventScroll:true});}
@@ -523,7 +543,7 @@ window.openSheet=openSheet;
 $('#sh-close').onclick=closeSheet;
 addEventListener('keydown',e=>{if(e.key==='Escape'&&sheet.classList.contains('open'))closeSheet()});
 const nx=()=>fill((openIdx+1)%PROJECTS.length);
-$('#sh-next').onclick=nx;$('#sh-next').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();nx()}};
+$('#sh-next').onclick=nx;$('#sh-prev').onclick=()=>fill((openIdx+PROJECTS.length-1)%PROJECTS.length);
 })();
 </script>
 
